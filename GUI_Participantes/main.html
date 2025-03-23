@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head> 
+    <script src="main.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Registro de Participante</h1>
+</header>
+
+<style>
+    input, select
+    {
+        width: 20vw;
+    }
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    {
+        color: red;
+    }
+</style>
+
+<body>
+  <p>Nombre(s):</p>
+  <input type="text" id="inputNombre" placeholder="Ingrese su nombre o nombres..." />
+
+  <p>Apellido paterno:</p>
+  <input type="text" id="inputApellidoP" placeholder="Ingrese su apellido paterno..." />
+
+  <p>Apellido materno:</p>
+  <input type="text" id="inputApellidoM" placeholder="Ingrese su apellido materno..." />
+
+  <p>Correo electrónico:</p>
+  <input type="text" id="inputEmail" placeholder="Ingrese su correo..." />
+  <p id="txtEmailAlert"></p>
+
+  <p>Contraseña:</p>
+  <input type="password" id="inputPassword" placeholder="..." />
+  <p id="txtPasswordAlert"></p>
+
+  <p>Confirmar contraseña:</p>
+  <input type="password" id="inputConfirmPassword" placeholder="..." />
+  <p id="txtConfirmPasswordAlert"></p>
+
+  <p>Teléfono:</p>
+  <input type="number" id="inputPhone" placeholder="..." onkeydown="javascript: return event.keyCode == 69 ? false : true" />
+  
+  <br><br>
+  <p>Seleccione su institución:</p>
+  <select id="selectInstitution">
+    <option value="none">---</option>
+  </select>
+
+  <section id="dependencySection">
+    <br><br>
+    <p>Seleccione su dependencia:</p>
+    <select id="selectDependency">
+        <option value="none">---</option>
+    </select>
+  </section>
+  
+  <br><br>
+  <button id="btnConfirm">Confirmar</button>
+  <p id="txtConfirmAlert"></p>
+
+</body>
