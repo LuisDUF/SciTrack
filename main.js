@@ -7,7 +7,6 @@
                 alert("Por favor, ingrese el nombre de la institución.");
             }
         }
-
         function agregarDependencia() {
             let container = document.getElementById("dependencias-container");
             let input = document.createElement("input");
@@ -40,5 +39,48 @@
 
             console.log("Datos a subir:", data);
             alert("Datos registrados con exito (Ejemplaxio).");
+            localStorage.setItem("institucion", institucion);
+            localStorage.setItem("dependencias", JSON.stringify(dependencias));
+        
+            cargarDatos();
+        }
+        
+        function cargarDatos() {
+            let listaInstituciones = document.getElementById("lista-instituciones");
+            let listaDependencias = document.getElementById("lista-dependencias");
+            listaInstituciones.innerHTML = "";
+            listaDependencias.innerHTML = "";
+        
+            let institucion = localStorage.getItem("institucion");
+            let dependencias = JSON.parse(localStorage.getItem("dependencias")) || [];
+        
+            if (institucion) {
+                let item = document.createElement("li");
+                item.textContent = institucion;
+                let btnEliminar = document.createElement("button");
+                btnEliminar.textContent = "Eliminar";
+                btnEliminar.onclick = function () {
+                    localStorage.removeItem("institucion");
+                    localStorage.removeItem("dependencias");
+                    cargarDatos();
+                };
+                item.appendChild(btnEliminar);
+                listaInstituciones.appendChild(item);
+            }
+        
+            dependencias.forEach(dep => {
+                let item = document.createElement("li");
+                item.textContent = dep;
+                let btnEliminar = document.createElement("button");
+                btnEliminar.textContent = "Eliminar";
+                btnEliminar.onclick = function () {
+                    let nuevasDependencias = dependencias.filter(d => d !== dep);
+                    localStorage.setItem("dependencias", JSON.stringify(nuevasDependencias));
+                    cargarDatos();
+                };
+                item.appendChild(btnEliminar);
+                listaDependencias.appendChild(item);
+            });
         }
     
+
