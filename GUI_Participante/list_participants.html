@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/list_participants.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Lista de Participantes</h1>
+</header>
+
+<style>
+    input, select
+    {
+        width: 20vw;
+    }
+    div
+    {
+      padding: 2vh;
+      border-style: solid;
+      border-radius: 10px;
+    }
+</style>
+
+<body>
+  <p>Filtrar por convocatoria:</p>
+  <select id="selectContest">
+    <option value="none">---</option>
+  </select>
+
+  <p>Filtrar por institucion:</p>
+  <select id="selectInstitution">
+    <option value="none">---</option>
+  </select>
+
+  <br><br>
+  <div id="listParticipants">
+
+  </div>
+
+
+</body>
