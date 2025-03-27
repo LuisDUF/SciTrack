@@ -10,19 +10,28 @@
 </header>
 
 <style>
-    input, select
-    {
-        width: 20vw;
-    }
+
     div
     {
       padding: 2vh;
       border-style: solid;
       border-radius: 10px;
     }
+    ol {
+      list-style: none;
+      padding-left: 0%;
+    }
+    #boton_eliminar:hover{
+      cursor: pointer;
+    }
+    #boton_modificar:hover{
+      cursor: pointer;
+    }
 </style>
 
 <body>
-    <input type="number" placeholder="Id de equipo" id="input_num_equi">
-    <p id="resultado_asesor"></p> 
+    <input type="number" placeholder="Id de equipo" id="input_num_equi" min="1">
+    <ol id="resultado_asesor"></ol> 
+    <button id="boton_eliminar" onclick=delete_asesor()>Eliminar</button>
+    <button id="boton_modificar" onclick=modificar_asesor()>Modificar</button>
 </body>
