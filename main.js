@@ -57,6 +57,17 @@
             if (institucion) {
                 let item = document.createElement("li");
                 item.textContent = institucion;
+                
+                let btnEditar = document.createElement("button");
+                btnEditar.textContent = "Editar";
+                btnEditar.onclick = function () {
+                    let nuevoNombre = prompt("Ingrese el nuevo nombre de la institución:", institucion);
+                    if (nuevoNombre) {
+                        localStorage.setItem("institucion", nuevoNombre);
+                        cargarDatos();
+                    }
+                };
+                
                 let btnEliminar = document.createElement("button");
                 btnEliminar.textContent = "Eliminar";
                 btnEliminar.onclick = function () {
@@ -64,6 +75,8 @@
                     localStorage.removeItem("dependencias");
                     cargarDatos();
                 };
+                
+                item.appendChild(btnEditar);
                 item.appendChild(btnEliminar);
                 listaInstituciones.appendChild(item);
             }
@@ -71,6 +84,18 @@
             dependencias.forEach(dep => {
                 let item = document.createElement("li");
                 item.textContent = dep;
+                
+                let btnEditar = document.createElement("button");
+                btnEditar.textContent = "Editar";
+                btnEditar.onclick = function () {
+                    let nuevoNombre = prompt("Ingrese el nuevo nombre de la dependencia:", dep);
+                    if (nuevoNombre) {
+                        let nuevasDependencias = dependencias.map(d => d === dep ? nuevoNombre : d);
+                        localStorage.setItem("dependencias", JSON.stringify(nuevasDependencias));
+                        cargarDatos();
+                    }
+                };
+                
                 let btnEliminar = document.createElement("button");
                 btnEliminar.textContent = "Eliminar";
                 btnEliminar.onclick = function () {
@@ -78,9 +103,12 @@
                     localStorage.setItem("dependencias", JSON.stringify(nuevasDependencias));
                     cargarDatos();
                 };
+                
+                item.appendChild(btnEditar);
                 item.appendChild(btnEliminar);
                 listaDependencias.appendChild(item);
             });
         }
+        
     
 
