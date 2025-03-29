@@ -266,7 +266,13 @@ function showParticipants()
                                 )
                                 {
                                     participantsList.innerHTML = participantsList.innerHTML + `
-                                    <p>Nombre: ${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}</p>
+                                    <div class="student_section">
+                                        <p>Nombre: ${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}</p>
+                                        <p>ID: ${p.idParticipante}</p>
+                                        <p>Equipo: ${pr.nombre}</p>
+                                        <button id="${p.idParticipante}" class="btnEditParticipant">Editar</button>
+                                        <button id="${p.idParticipante}" class="btnDeleteParticipant">Eliminar</button>
+                                    </div>
                                     `;
                                     return false;
                                 }
@@ -279,4 +285,28 @@ function showParticipants()
             });
         });
     }
+
+    deleteParticipant();
+}
+
+function deleteParticipant()
+{
+  try
+  {
+    const btnDelete = document.getElementsByClassName('btnDeleteParticipant');
+    for (let p of btnDelete) {
+      p.onclick = function () {
+        PARTICIPANTS.forEach(par =>{
+            if (par.idParticipante == p.id)
+            {
+                alert('¡Alerta! ¿Estas seguro que deseas borrar al participante '+par.nombre+'? Esta acción NO se puede deshacer.')
+            }
+        });
+      }
+    }
+  }
+  catch(ex)
+  {
+    //alert(ex);
+  }
 }
