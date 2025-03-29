@@ -1,21 +1,7 @@
 //Constantes que se usarán temporalmente, mientras no se tiene conexion a la BD
 //import { TEAMS,PROJECTS,CONTESTS } from "./database_connection"
 
-const TEAMS =
-[
-    {
-        idEquipo:1,
-        Asesor_idAsesor:1
-    },
-    {
-        idEquipo:2,
-        Asesor_idAsesor:2
-    },
-    {
-        idEquipo:3,
-        Asesor_idAsesor:3
-    }
-]
+
 
 const PROJECTS = 
 [
@@ -75,6 +61,23 @@ const CONTESTS =
         estado:"Pendiente",
         Administrador_idAdministrador:1,
         Archivos_idArchivos:1,
+    }
+]
+
+
+const TEAMS =
+[
+    {
+        idEquipo:1,
+        Asesor_idAsesor:1
+    },
+    {
+        idEquipo:2,
+        Asesor_idAsesor:2
+    },
+    {
+        idEquipo:3,
+        Asesor_idAsesor:3
     }
 ]
 
@@ -176,6 +179,28 @@ window.onload = function ()
     const selectInstitution = document.getElementById('selectInstitution');
     const participantsList = document.getElementById('listParticipants');
 
+    const getInstitutions = async () => {
+        fetch("https://scitrackapi-production.up.railway.app/api/institucion/", {
+          method: "GET",
+        })
+        
+          .then((response) => response.json())
+          .then((data) => {
+            
+            data.forEach(d => {
+                console.log(d.nombre);
+            });
+            console.log(data);
+            INSTITUTIONS = data;
+            INSTITUTIONS.forEach(ins =>{
+                selectInstitution.innerHTML = selectInstitution.innerHTML + `
+                    <option value="${ins.idInstitucion}">${ins.nombre}</option>
+                `
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+    };
+
     CONTESTS.forEach(ins => {
         selectContest.innerHTML = selectContest.innerHTML + `
             <option value="${ins.idConvocatoria}">${ins.nombre}</option>
@@ -241,7 +266,13 @@ function showParticipants()
                                 )
                                 {
                                     participantsList.innerHTML = participantsList.innerHTML + `
-                                    <p>Nombre: ${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}</p>
+                                    <div class="student_section">
+                                        <p>Nombre: ${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}</p>
+                                        <p>ID: ${p.idParticipante}</p>
+                                        <p>Equipo: ${pr.nombre}</p>
+                                        <button id="${p.idParticipante}" class="btnEditParticipant">Editar</button>
+                                        <button id="${p.idParticipante}" class="btnDeleteParticipant">Eliminar</button>
+                                    </div>
                                     `;
                                     return false;
                                 }
@@ -254,4 +285,28 @@ function showParticipants()
             });
         });
     }
+
+    deleteParticipant();
+}
+
+function deleteParticipant()
+{
+  try
+  {
+    const btnDelete = document.getElementsByClassName('btnDeleteParticipant');
+    for (let p of btnDelete) {
+      p.onclick = function () {
+        PARTICIPANTS.forEach(par =>{
+            if (par.idParticipante == p.id)
+            {
+                alert('¡Alerta! ¿Estas seguro que deseas borrar al participante '+par.nombre+'? Esta acción NO se puede deshacer.')
+            }
+        });
+      }
+    }
+  }
+  catch(ex)
+  {
+    //alert(ex);
+  }
 }

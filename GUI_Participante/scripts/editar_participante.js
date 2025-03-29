@@ -10,60 +10,133 @@ const NUMBERS_PASSWORD = [0,1,2,3,4,5,6,7,8,9];
 //la siguiente constante fungira como placeholder, que eventualmente se reemplazará con un arreglo
 //que contenga un select.
 
-const DEPENDENCIES = [
-    {
-        idDependencia:1,
-        nombre:"Campus 1",
-        Institucion_idInstitucion:1,
-    },
-    {
-        idDependencia:2,
-        nombre:"Campus 2",
-        Institucion_idInstitucion:1,
-    },
-    {
-        idDependencia:3,
-        nombre:"Facultad de Bellas Artes",
-        Institucion_idInstitucion:2,
-    },
-    {
-        idDependencia:4,
-        nombre:"Facultad de Gastronomía",
-        Institucion_idInstitucion:2,
-    },
-    {
-        idDependencia:5,
-        nombre:"Facultad de Arquitectura",
-        Institucion_idInstitucion:2,
-    }      
-    ,
-    {
-        idDependencia:6,
-        nombre:"Campus Morelia",
-        Institucion_idInstitucion:3,
-    }      
-]
+let DEPENDENCIES = [];
 
-const INSTITUTIONS = [
-    {
-        idInstitucion:1,
-        nombre:"ITM Morelia"
-    },
-    {
-        idInstitucion:2,
-        nombre:"Universidad Michoacan de San Nicolas de Hidalgo"
-    }
-    ,
-    {
-        idInstitucion:3,
-        nombre:"Universidad Latina de America"
-    }
-]
+let INSTITUTIONS = [];
 
-//Los objetos anteriores siguen la misma estructura que las entidades correspondientes en la base de datos,
-//Por lo que en teoria, se pueden eventualmente reemplazar con un query real sin conflictos.
+let PARTICIPANT = [];
+
+let GENDERS = [];
+
+
+const insertParticipant = async (participante) => {
+    fetch("https://scitrackapi-production.up.railway.app/api/participante/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({participante}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert('Se han enviado sus datos.');
+        window.location.reload();
+        console.log(data);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
 
 window.onload = function () {
+    const pToEdit = sessionStorage.getItem('sci:participant_to_edit')
+    if ( pToEdit == undefined)
+    {
+        window.location = 'listar_participantes.html';
+    }
+
+    fetch("https://scitrackapi-production.up.railway.app/api/institucion/", {
+        method: "GET",
+    })
+    .then((response) => response.json())
+    .then((data) => {  
+        data.forEach(d => {
+              console.log(d.nombre);
+        });
+        console.log(data);
+        INSTITUTIONS = data;
+        INSTITUTIONS.forEach(ins =>{
+              selectInstitution.innerHTML = selectInstitution.innerHTML + `
+                  <option value="${ins.idInstitucion}">${ins.nombre}</option>
+              `
+        });
+
+        fetch("https://scitrackapi-production.up.railway.app/api/genero/", {
+            method: "GET",
+        })
+        .then((response) => response.json())
+        .then((data) => {  
+            data.forEach(d => {
+                  console.log(d.nombre);
+            });
+            console.log(data);
+            GENDERS = data;
+            GENDERS.forEach(ins =>{
+                  selectGender.innerHTML = selectGender.innerHTML + `
+                      <option value="${ins.idGenero}">${ins.nombre}</option>
+                  `
+            });
+
+            fetch("https://scitrackapi-production.up.railway.app/api/dependencia/", {
+                method: "GET",
+            })
+            .then((response) => response.json())
+            .then((data) => {     
+                data.forEach(d => {
+                    console.log(d.nombre);
+                });
+                    console.log(data);
+                    DEPENDENCIES = data;
+
+                    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${pToEdit}`, {
+                        method: "GET",
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {     
+                        PARTICIPANT = data[0];  
+                        {
+                            const dependencyUsed = DEPENDENCIES.find(d => d.idDependencia == PARTICIPANT.Dependencia_idDependencia);
+                            const idInstitucion = INSTITUTIONS.find(i=> i.idInstitucion == dependencyUsed.Institucion_idInstitucion);
+
+                            selectDependency.innerHTML = `<option value="none">---</option>`
+                            
+                            inputName.value = PARTICIPANT.nombre;
+                            inputApellidoP.value = PARTICIPANT.apellidoPaterno;
+                            inputApellidoM.value = PARTICIPANT.apellidoMaterno;
+                            inputEmail.value = PARTICIPANT.correo;
+                            inputPhone.value = PARTICIPANT.telefono;
+                            inputPassword.value = PARTICIPANT.contrasenia;
+                            inputConfirmPassword.value = PARTICIPANT.contrasenia;
+
+                            selectInstitution.value = idInstitucion.idInstitucion;
+
+                            DEPENDENCIES.forEach(ins =>{
+                                if (ins.Institucion_idInstitucion == idInstitucion.idInstitucion)
+                                {
+                                    selectDependency.innerHTML = selectDependency.innerHTML + `
+                                    <option value="${ins.idDependencia}">${ins.nombre}</option>
+                                    `
+                                }
+                            });
+
+                            selectDependency.value = PARTICIPANT.Dependencia_idDependencia;
+                            selectGender.value = PARTICIPANT.Genero_idGenero;
+                        }
+                    })
+                    .catch((error) => console.error("Error:", error));
+                
+                })
+            .catch((error) => console.error("Error:", error));
+
+
+        })
+        .catch((error) => console.error("Error:", error));
+
+    })
+    .catch((error) => console.error("Error:", error));
+
+
+    
+  
+
     const inputName = document.getElementById("inputNombre");
     const inputApellidoP = document.getElementById("inputApellidoP");
     const inputApellidoM = document.getElementById("inputApellidoM");
@@ -77,21 +150,14 @@ window.onload = function () {
     const dependecySection = document.getElementById('dependencySection');
     const selectInstitution = document.getElementById('selectInstitution');
     const selectDependency = document.getElementById('selectDependency');
+    const selectGender = document.getElementById('selectGender');
     //Se guardan todos los inputs de texto en un array para facilmente ver los valores de TODOS posteriormente.
     const inputs = [inputName,inputApellidoM,inputApellidoP,inputEmail,inputPassword,inputConfirmPassword,inputPhone];
     const btnConfirm = document.getElementById("btnConfirm");
     //Esconde las dependencias, antes de que se seleccione una institución
-    dependecySection.style.visibility='hidden';
-
-    //Agrega las instituciones disponibles al select de instituciones
-    INSTITUTIONS.forEach(ins =>{
-        selectInstitution.innerHTML = selectInstitution.innerHTML + `
-            <option value="${ins.idInstitucion}">${ins.nombre}</option>
-        `
-    });
 
     selectInstitution.onchange = function (){
-
+   
         selectDependency.innerHTML = `<option value="none">---</option>`
         const selection = selectInstitution.value;
         let someFound = false;
@@ -180,7 +246,7 @@ window.onload = function () {
             }
         });
 
-        if (selectInstitution.value != "none")
+        if (selectInstitution.value != "none" && selectGender.value != "none")
         {
             let continueConfirm = true;
             if (institutionHasDependecy)
@@ -196,19 +262,34 @@ window.onload = function () {
 
                 if (success && !passwordIssue && !passwordIssueConfirm && !emailIssue)
                 {
-                    alert('Se han enviado sus datos.');
-                    const resultParticipant = {
-                        nombre:inputName.value,
-                        apellidoPaterno:inputApellidoP.value,
-                        apellidoMaterno:inputApellidoM.value,
-                        correo:inputEmail.value,
-                        contraseña:inputPassword.value,
-                        telefono:inputPhone.value,
-                        Equipo_idEquipo:1,
-                        Dependencia_idDependencia:selectDependency.value,
-                    };
-                    alert(JSON.stringify(resultParticipant));
-                    window.location.reload();
+            
+                    //Se llama al metodo POST de la API en la tabla de participante, sirviendo basicamente como un insert
+                    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${pToEdit}`, {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        //Se construye un objeto de participante con los datos que se introducen en la página
+                        body: JSON.stringify({
+                            nombre:inputName.value,
+                            apellidoPaterno:inputApellidoP.value,
+                            apellidoMaterno:inputApellidoM.value,
+                            correo:inputEmail.value,
+                            contrasenia:inputPassword.value,
+                            telefono:inputPhone.value,
+                            Dependencia_idDependencia:selectDependency.value,
+                            Genero_idGenero:selectGender.value,
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Se han modificado los datos.');
+                        console.log(data);
+
+                        sessionStorage.setItem('sci:participant_to_edit',undefined);
+                        window.location = "listar_participantes.html";
+                    })
+                    .catch((error) => console.error("Error:", error));
                 }
             }
            
