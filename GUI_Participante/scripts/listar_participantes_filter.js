@@ -1,21 +1,7 @@
 //Constantes que se usarán temporalmente, mientras no se tiene conexion a la BD
 //import { TEAMS,PROJECTS,CONTESTS } from "./database_connection"
 
-const TEAMS =
-[
-    {
-        idEquipo:1,
-        Asesor_idAsesor:1
-    },
-    {
-        idEquipo:2,
-        Asesor_idAsesor:2
-    },
-    {
-        idEquipo:3,
-        Asesor_idAsesor:3
-    }
-]
+
 
 const PROJECTS = 
 [
@@ -75,6 +61,23 @@ const CONTESTS =
         estado:"Pendiente",
         Administrador_idAdministrador:1,
         Archivos_idArchivos:1,
+    }
+]
+
+
+const TEAMS =
+[
+    {
+        idEquipo:1,
+        Asesor_idAsesor:1
+    },
+    {
+        idEquipo:2,
+        Asesor_idAsesor:2
+    },
+    {
+        idEquipo:3,
+        Asesor_idAsesor:3
     }
 ]
 
@@ -175,6 +178,28 @@ window.onload = function ()
     const selectContest = document.getElementById('selectContest');
     const selectInstitution = document.getElementById('selectInstitution');
     const participantsList = document.getElementById('listParticipants');
+
+    const getInstitutions = async () => {
+        fetch("https://scitrackapi-production.up.railway.app/api/institucion/", {
+          method: "GET",
+        })
+        
+          .then((response) => response.json())
+          .then((data) => {
+            
+            data.forEach(d => {
+                console.log(d.nombre);
+            });
+            console.log(data);
+            INSTITUTIONS = data;
+            INSTITUTIONS.forEach(ins =>{
+                selectInstitution.innerHTML = selectInstitution.innerHTML + `
+                    <option value="${ins.idInstitucion}">${ins.nombre}</option>
+                `
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+    };
 
     CONTESTS.forEach(ins => {
         selectContest.innerHTML = selectContest.innerHTML + `

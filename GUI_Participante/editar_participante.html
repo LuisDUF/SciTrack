@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <head> 
-    <script src="scripts/main.js"></script>
+    <script src="scripts/editar_participante.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scitrack</title>
 </head>
 <header>
-  <h1>Registro de Participante</h1>
+  <h1>Editar</h1>
 </header>
 
 <style>
@@ -45,6 +45,12 @@
   <p>Teléfono:</p>
   <input type="number" id="inputPhone" placeholder="..." onkeydown="javascript: return event.keyCode == 69 ? false : true" />
   
+  <br><br>
+  <p>Genero:</p>
+  <select id="selectGender">
+    <option value="none">---</option>
+  </select>
+
   <br><br>
   <p>Seleccione su institución:</p>
   <select id="selectInstitution">
