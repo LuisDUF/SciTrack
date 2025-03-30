@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Institución</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,23 +14,30 @@
     </style>
     <script src="main.js" defer></script>
 </head>
+<header>
+    <h1>Registro de Instituciones </h1>
+</header>
 <body>
-    <h2>Registro de Institución</h2>
-    <label for="institucion">Nombre de la Institución:</label>
-    <input type="text" id="institucion">
-    <button onclick="mostrarDependencias()">Continuar</button>
 
-    <div id="dependencias-section" class="hidden">
-        <h3>Dependencias</h3>
-        <div id="dependencias-container"></div>
-        <button onclick="agregarDependencia()">Agregar Dependencia</button>
-        <button onclick="subirDatos()">Subir a la Base de Datos</button>
-    </div>
+
+
+    <h2>Registro de Institución</h2>
+    <input type="text" id="inputInstitucion" placeholder="Nombre de la institucion">
+    
+<br><br>
+
+<button id="btnEnviarInstitucion">Confirmar</button>
+
+
+    <h2>registro de dependencias</h2>
+    <input type="text" id="inputDependencia" placeholder="Nombre de la dependencia">
+
+<br><br>
+
+<button id="btnEnviarDependencia">Confirmar</button>
+
     <h3>Lista de Instituciones</h3>
     <ul id="lista-instituciones"></ul>
-
-    <h3>Lista de Dependencias</h3>
-    <ul id="lista-dependencias"></ul>
     
 </body>
 </html>
