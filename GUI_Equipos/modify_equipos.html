@@ -83,13 +83,14 @@
 <body>
     <h1>Modificar Equipo</h1>
     <form id="formModificarEquipo">
-        <label for="nombreEquipo">Nombre del Equipo:</label>
-        <input type="text" id="nombreEquipo" required>
 
-        <label for="asesor">Seleccionar Asesor:</label>
+
+        <label>Seleccionar Asesor:</label>
         <select id="asesor"></select>
 
         <h2>Participantes</h2>
+        <h3>Buscar Participantes</h2>
+        <input type="text" id="searchInput" placeholder="Buscar participante..." onkeyup="buscarParticipantes()">
         <table>
             <thead>
                 <tr>

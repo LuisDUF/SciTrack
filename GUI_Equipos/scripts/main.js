@@ -1,79 +1,71 @@
-const ASESOR = [
-    { idAsesor: 1, nombre: "Juan", apellidoPaterno: "Castillo", apellidoMaterno: "Martinez" },
-    { idAsesor: 2, nombre: "Raul", apellidoPaterno: "Román", apellidoMaterno: "Murillo" },
-];
+const MAX_PARTICIPANTES = 3;
+let EQUIPOS = [];
+let ASESOR = [];
+let PARTICIPANTE = [];
+const PARTICIPANTE_SESION = JSON.parse(localStorage.getItem("usuarioActual")) || null; 
 
-let EQUIPOS = [
-    { nombreEquipo: "Los Genios", participantes: 3, idAsesor: 1 },
-    { nombreEquipo: "Innovadores", participantes: 1, idAsesor: 2 }
-];
-const MAX_PARTICIPANTES = 5;
-
-
-window.onload = function () {
-    const selectAsesor = document.getElementById('selectAsesor');
-    const btnCrearEquipo = document.querySelector("form button");
-    const inputNombre = document.getElementById("inputNombre");
-
-    // Llenar el select de asesores
-    ASESOR.forEach(asesor => {
-        selectAsesor.innerHTML += `
-            <option value="${asesor.idAsesor}">${asesor.nombre} ${asesor.apellidoPaterno} ${asesor.apellidoMaterno}</option>
-        `;
-    });
-
-    // Mostrar lista inicial de equipos
-    mostrarEquipos();
-
-    // Función para crear un nuevo equipo
-    btnCrearEquipo.addEventListener("click", function (e) {
-        e.preventDefault();
-        const nombreEquipo = inputNombre.value.trim();
-        const idAsesor = parseInt(selectAsesor.value);
-
-        if (nombreEquipo === "" || idAsesor === "none" || isNaN(idAsesor)) {
-            alert("Por favor ingresa un nombre de equipo y selecciona un asesor.");
-            return;
-        }
-
-        const nuevoEquipo = {
-            nombreEquipo: nombreEquipo,
-            participantes: 1, // el creador cuenta como primer participante
-            idAsesor: idAsesor
-        };
-
-        EQUIPOS.push(nuevoEquipo);
-        alert(`¡Equipo "${nombreEquipo}" creado exitosamente!`);
-
-        // Limpiar campos
-        inputNombre.value = "";
-        selectAsesor.value = "none";
-
-        // Actualizar tabla
-        mostrarEquipos();
-    });
+window.onload = async function () {
+    await cargarAsesores();
+    await cargarParticipantes();
+    await cargarEquipos();
 };
 
-// Función para mostrar equipos en la tabla
+// Cargar asesores desde la API
+async function cargarAsesores() {
+    const selectAsesor = document.getElementById("selectAsesor");
+    try {
+        const response = await fetch("https://scitrackapi-production.up.railway.app/api/asesor/");
+        ASESOR = await response.json();
+        ASESOR.forEach(asesor => {
+            selectAsesor.innerHTML += `
+                <option value="${asesor.idAsesor}">${asesor.nombre} ${asesor.apellidoPaterno} ${asesor.apellidoMaterno}</option>
+            `;
+        });
+    } catch (error) {
+        console.error("Error al obtener asesores:", error);
+    }
+}
+
+// Cargar participantes desde la API
+async function cargarParticipantes() {
+    try {
+        const response = await fetch("https://scitrackapi-production.up.railway.app/api/participante/");
+        PARTICIPANTE = await response.json();
+    } catch (error) {
+        console.error("Error al obtener participantes:", error);
+    }
+}
+
+// Cargar equipos desde la API
+async function cargarEquipos() {
+    try {
+        const response = await fetch("https://scitrackapi-production.up.railway.app/api/equipo/");
+        EQUIPOS = await response.json();
+        mostrarEquipos();
+    } catch (error) {
+        console.error("Error al obtener equipos:", error);
+    }
+}
+
+// Mostrar equipos en la tabla
 function mostrarEquipos() {
     const table = document.querySelector("table");
     const tbodyExistente = table.querySelector("tbody");
-    if (tbodyExistente) {
-        tbodyExistente.remove();
-    }
+    if (tbodyExistente) tbodyExistente.remove();
 
     const tbody = document.createElement("tbody");
- 
-    EQUIPOS.forEach(equipo => {
-        const asesor = ASESOR.find(a => a.idAsesor === equipo.idAsesor);
-        const asesorNombre = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}` : "Sin asignar";
-        tbody.innerHTML += `
 
+    EQUIPOS.forEach(equipo => {
+        equipo.participantes = PARTICIPANTE.filter(p => p.idEquipo === equipo.idEquipo).length;
+        const asesor = ASESOR.find(a => a.idAsesor === equipo.Asesor_idAsesor);
+        const lider = PARTICIPANTE.find(p => p.idParticipante === equipo.Participante_idLider);
+        
+        tbody.innerHTML += `
             <tr>
-                <td>${equipo.nombreEquipo}</td>
+                <td>${lider ? `${lider.nombre} ${lider.apellidoPaterno}` : "Sin asignar"}</td>
                 <td>${equipo.participantes} / ${MAX_PARTICIPANTES}</td>
-                <td>${asesorNombre}</td>
-                <td><button onclick="unirseEquipo('${equipo.nombreEquipo}')">Unirse</button></td>
+                <td>${asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}` : "Sin asignar"}</td>
+                <td><button onclick="unirseEquipo('${equipo.idEquipo}')">Unirse</button></td>
             </tr>
         `;
     });
@@ -81,15 +73,85 @@ function mostrarEquipos() {
     table.appendChild(tbody);
 }
 
-// Función para unirse a un equipo
-function unirseEquipo(nombreEquipo) {
-    const equipo = EQUIPOS.find(eq => eq.nombreEquipo === nombreEquipo);
-    if (equipo.participantes < MAX_PARTICIPANTES) {
-        equipo.participantes += 1;
-        alert(`¡Te has unido al equipo "${nombreEquipo}"! Ahora tiene ${equipo.participantes} participantes.`);
-        mostrarEquipos();
+// Crear equipo
+document.getElementById("formCrearEquipo").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    
+    if (!PARTICIPANTE_SESION) {
+        alert("Debe iniciar sesión para crear un equipo.");
+        return;
     }
-    else {
-        alert("Este equipo ya ha alcanzado el número máximo de participantes.");
+
+    const selectAsesor = document.getElementById("selectAsesor");
+    const idAsesor = selectAsesor.value;
+
+    if (idAsesor === "none") {
+        alert("Seleccione un asesor.");
+        return;
+    }
+
+    const nuevoEquipo = {
+        Asesor_idAsesor: parseInt(idAsesor),
+        Participante_idLider: PARTICIPANTE_SESION.idParticipante
+    };
+
+    try {
+        const response = await fetch("https://scitrackapi-production.up.railway.app/api/equipo/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nuevoEquipo)
+        });
+
+        if (!response.ok) throw new Error("Error al crear el equipo.");
+        
+        const equipoCreado = await response.json();
+        EQUIPOS.push(equipoCreado);
+        mostrarEquipos();
+        alert("Equipo creado con éxito.");
+    } catch (error) {
+        console.error("Error al crear equipo:", error);
+        alert("Hubo un problema al crear el equipo.");
+    }
+});
+
+// Unirse a un equipo
+async function unirseEquipo(idEquipo) {
+    if (!PARTICIPANTE_SESION) {
+        alert("Debe iniciar sesión para unirse a un equipo.");
+        return;
+    }
+
+    const equipo = EQUIPOS.find(e => e.idEquipo == idEquipo);
+    if (!equipo) {
+        alert("El equipo no existe.");
+        return;
+    }
+
+    // Verificar si el equipo está lleno
+    const participantesEquipo = PARTICIPANTE.filter(p => p.idEquipo === equipo.idEquipo).length;
+    if (participantesEquipo >= MAX_PARTICIPANTES) {
+        alert("Este equipo ya está lleno.");
+        return;
+    }
+
+    // Actualizar participante con el ID del equipo
+    try {
+        const response = await fetch(`https://scitrackapi-production.up.railway.app/api/participante/${PARTICIPANTE_SESION.idParticipante}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idEquipo: equipo.idEquipo })
+        });
+
+        if (!response.ok) throw new Error("Error al unirse al equipo.");
+        
+        PARTICIPANTE_SESION.idEquipo = equipo.idEquipo;
+        localStorage.setItem("usuarioActual", JSON.stringify(PARTICIPANTE_SESION));
+        
+        await cargarParticipantes();
+        mostrarEquipos();
+        alert("Te has unido al equipo con éxito.");
+    } catch (error) {
+        console.error("Error al unirse al equipo:", error);
+        alert("No se pudo unir al equipo.");
     }
 }
