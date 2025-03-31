@@ -5,6 +5,12 @@
     const inputDependencia = document.getElementById("inputDependencia");
     const btnEnviarInstitucion = document.getElementById("btnEnviarInstitucion");
     const btnEnviarDependencia = document.getElementById("btnEnviarDependencia");
+    const btnBuscarDependencias = document.getElementById("btnBuscarDependencias");
+    const inputIdInstitucion = document.getElementById("inputIdInstitucion");
+    const inputIdInstitucionBusqueda = document.getElementById("inputBusquedaDependencias");
+
+    const idListaDependencias = document.getElementById("lista-dependencias");
+    
 
     listar_instituciones()
 
@@ -25,6 +31,8 @@
             alert("Institución registrada exitosamente");
         })
         .catch(error => console.error("Error:", error));
+
+        
     };
 
     btnEnviarDependencia.onclick = function () {
@@ -33,10 +41,15 @@
             return;
         }
 
+        if (inputIdInstitucion.value.trim() === "") {
+            alert("Ingrese la id de la institucion a asignar");
+            return;
+        }
+
         fetch("https://scitrackapi-production.up.railway.app/api/dependencia/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre: inputDependencia.value })
+            body: JSON.stringify({ nombre: inputDependencia.value, Institucion_idInstitucion: inputIdInstitucion.value })
         })
         .then(response => response.json())
         .then(data => {
@@ -46,8 +59,46 @@
         .catch(error => console.error("Error:", error));
     };
 
+    btnBuscarDependencias.onclick = function () {
 
+        vaciarLista(idListaDependencias.id)
+
+        if (inputIdInstitucionBusqueda.value.trim() === "") {
+            alert("Ingrese la ID a buscar de la institucion correspondiente a la dependencia");
+            return;
+        }
+
+        fetch("https://scitrackapi-production.up.railway.app/api/dependencia/"+inputIdInstitucionBusqueda.value, {
+            method: "GET",
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            const result = document.getElementById("lista-dependencias");
+            
+            data.forEach(dependencia => {
+                let fila = document.createElement("li");
+                fila.innerHTML = `
     
+                    ${dependencia.idDependencia}
+    
+                    ${dependencia.nombre} 
+                    
+                    <button id="btn_delete_${dependencia.idDependencia}" onclick="btnEliminarDependencia(${dependencia.idDependencia})">Eliminar</button>
+                `;
+                result.appendChild(fila);
+            });
+    
+            data.forEach(d => {
+                console.log(d.nombre);
+            });
+    
+            INSTITUCIONES = data;
+            console.log(data);
+    
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
 };
    
 function listar_instituciones(){
@@ -61,9 +112,12 @@ function listar_instituciones(){
         data.forEach(institucion => {
             let fila = document.createElement("li");
             fila.innerHTML = `
+
+                ${institucion.idInstitucion}
+
                 ${institucion.nombre} 
-                <button id="btn_${institucion.idInstitucion}" onclick="btnAsignar(${institucion.idInstitucion})">Asignar</button>
-                <button id="btn_delete_${institucion.idInstitucion}" onclick="btnEliminar(${institucion.idInstitucion})">Eliminar</button>
+                
+                <button id="btn_delete_${institucion.idInstitucion}" onclick="btnEliminarInstitucion(${institucion.idInstitucion})">Eliminar</button>
             `;
             result.appendChild(fila);
         });
@@ -79,27 +133,54 @@ function listar_instituciones(){
     .catch((error) => console.error("Error:", error));
 }
 
-// Función para manejar el click del botón
-function btnAsignar(idInstitucion) {
-    console.log("Botón presionado para la institución con id:", idInstitucion);
-    // Aquí puedes agregar la lógica que desees cuando el botón sea presionado
-}
-
-
-function btnEliminar(idInstitucion) {
+function btnEliminarInstitucion(idInstitucion) {
     console.log("Botón 'Eliminar' presionado para la institución con id:", idInstitucion);
-    // Aquí puedes agregar la lógica que desees para eliminar la institución, por ejemplo:
-    // Realizar una solicitud DELETE para eliminar la institución de la base de datos
+
     fetch(`https://scitrackapi-production.up.railway.app/api/institucion/${idInstitucion}`, {
         method: "DELETE",
     })
-    .then((response) => response.json())
-    .then((data) => {
+    .then(response => response.json())
+    .then(data => {
         console.log("Institución eliminada:", data);
-        // Eliminar la institución de la lista en la interfaz de usuario
-        document.getElementById(`btn_select_${idInstitucion}`).parentElement.remove();
+        
+        // Encontrar y eliminar el <li> que contiene el botón de eliminar
+        const item = document.getElementById(`item_${idInstitucion}`);
+        if (item) {
+            item.remove();
+        } else {
+            console.error("No se encontró el elemento a eliminar en el DOM.");
+        }
     })
-    .catch((error) => console.error("Error al eliminar:", error));
+    .catch(error => console.error("Error al eliminar:", error));
 }
 
+function btnEliminarDependencia(idDependencia) {
+    console.log("Botón 'Eliminar' presionado para la institución con id:", idDependencia);
 
+    fetch(`https://scitrackapi-production.up.railway.app/api/institucion/${idDependencia}`, {
+        method: "DELETE",
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Institución eliminada:", data);
+        
+        // Encontrar y eliminar el <li> que contiene el botón de eliminar
+        const item = document.getElementById(`item_${idDependencia}`);
+        if (item) {
+            item.remove();
+        } else {
+            console.error("No se encontró el elemento a eliminar en el DOM.");
+        }
+    })
+    .catch(error => console.error("Error al eliminar:", error));
+}
+
+function vaciarLista(idLista) {
+    const lista = document.getElementById(idLista);
+    if (lista) {
+        lista.innerHTML = ""; // Elimina todos los elementos dentro de la lista
+        console.log("Lista vaciada correctamente.");
+    } else {
+        console.error("No se encontró la lista con el ID proporcionado.");
+    }
+}
