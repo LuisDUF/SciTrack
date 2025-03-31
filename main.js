@@ -10,6 +10,7 @@
     const inputIdInstitucionBusqueda = document.getElementById("inputBusquedaDependencias");
 
     const idListaDependencias = document.getElementById("lista-dependencias");
+    const idListaInstituciones = document.getElementById("lista-instituciones");
     
 
     listar_instituciones()
@@ -155,16 +156,15 @@ function btnEliminarInstitucion(idInstitucion) {
 }
 
 function btnEliminarDependencia(idDependencia) {
-    console.log("Botón 'Eliminar' presionado para la institución con id:", idDependencia);
+    console.log("Botón 'Eliminar' presionado para la dependencia con id:", idDependencia);
 
-    fetch(`https://scitrackapi-production.up.railway.app/api/institucion/${idDependencia}`, {
+    fetch(`https://scitrackapi-production.up.railway.app/api/dependencia/${idDependencia}`, {
         method: "DELETE",
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Institución eliminada:", data);
+        console.log("Dependencia eliminada:", data);
         
-        // Encontrar y eliminar el <li> que contiene el botón de eliminar
         const item = document.getElementById(`item_${idDependencia}`);
         if (item) {
             item.remove();
