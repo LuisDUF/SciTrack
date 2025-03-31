@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scitrack</title>
+    <script src="scripts/modify_equipos.js" defer></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+        }
+
+        h1 { 
+            text-align: center; 
+        }
+
+        form { 
+            max-width: 400px; 
+            margin: 0 auto; 
+        }
+
+        label, input, select, button { 
+            display: block; 
+            width: 100%; 
+            margin-bottom: 10px; 
+        }
+
+        button { 
+            padding: 10px; 
+            border: none; 
+            cursor: pointer; 
+        }
+
+        .guardar { 
+            background-color: #4CAF50; 
+            color: white; 
+        }
+
+        .guardar:hover { 
+            background-color: #45a049; 
+        }
+
+        .cancelar {
+            background-color: #d9534f; 
+            color: white; 
+        }
+
+        .cancelar:hover { 
+            background-color: #c9302c; 
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+        }
+
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: center; 
+        }
+
+        th { 
+            background-color: #f2f2f2;
+         
+        }
+
+        .eliminar { 
+            background-color: #d9534f; 
+            color: white; 
+            padding: 5px; 
+            border: none; 
+            cursor: pointer; 
+        }
+
+        .eliminar:hover { 
+            background-color: #c9302c; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Modificar Equipo</h1>
+    <form id="formModificarEquipo">
+
+
+        <label>Seleccionar Asesor:</label>
+        <select id="asesor"></select>
+
+        <h2>Participantes</h2>
+        <h3>Buscar Participantes</h2>
+        <input type="text" id="searchInput" placeholder="Buscar participante..." onkeyup="buscarParticipantes()">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tablaParticipantes"></tbody>
+        </table>
+
+        <button type="submit" class="guardar">Guardar Cambios</button>
+    </form>
+    <button onclick="regresar()" class="cancelar">Cancelar</button>
+</body>
+</html>
