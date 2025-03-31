@@ -120,6 +120,15 @@ document.getElementById("formCrearEquipo").addEventListener("submit", async func
     }
 });
 
+
+// Crear asesor
+document.getElementById("formCrearEquipo").addEventListener("registrarAsesor", async function (event) {
+    event.preventDefault();
+    
+    
+    window.location.href = "GUI_Asesores/main.html";
+});
+
 // Función para buscar equipos
 function buscarEquipos() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();

@@ -59,11 +59,12 @@ function mostrarEquipos(filtrados = EQUIPOS) {
     filtrados.forEach(equipo => {
         const asesor = ASESOR.find(a => a.idAsesor === equipo.Asesor_idAsesor);
         const asesorNombre = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}` : "Sin asignar";
-
+        
         const lider = PARTICIPANTE.find(p => p.idParticipante === equipo.Participante_idLider);
         const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}` : "Sin asignar";
         tbody.innerHTML += `
             <tr>
+                <td>${equipo.idEquipo}</td>
                 <td>${nombreLider}</td>
                 <td>${equipo.participantes} / ${MAX_PARTICIPANTES}</td>
                 <td>${asesorNombre}</td>
@@ -88,6 +89,26 @@ function buscarEquipos() {
         const asesorNombre = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}` : "";
 
         return nombreLider.toLowerCase().includes(searchInput) ||
+               asesorNombre.toLowerCase().includes(searchInput);
+    });
+
+    mostrarEquipos(equiposFiltrados);
+}
+
+// Función para buscar equipos
+function buscarEquipos() {
+    const searchInput = document.getElementById("searchInput").value.toLowerCase();
+    const equiposFiltrados = EQUIPOS.filter(equipo => {
+        // Filtrar por nombre del líder, nombre del equipo o asesor
+        const asesor = ASESOR.find(a => a.idAsesor === equipo.Asesor_idAsesor);
+        const lider = PARTICIPANTE.find(p => p.idParticipante === equipo.Participante_idLider);
+        const id_equipo = EQUIPOS.find(e => e.idEquipo === equipo.idEquipo);
+        const id = id_equipo ? `${id_equipo.idEquipo}` : "";
+        const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}` : "";
+        const asesorNombre = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}` : "";
+
+        return id.toLowerCase().includes(searchInput) ||
+               nombreLider.toLowerCase().includes(searchInput) ||
                asesorNombre.toLowerCase().includes(searchInput);
     });
 

@@ -31,6 +31,13 @@
             background-color: #f2f2f2; 
         }
 
+        input{
+            display:block;
+            width:450px;
+            border-collapse: collapse;
+        }
+
+
         .delete { 
             background-color: #d9534f;
             color: white; 
@@ -63,11 +70,12 @@
     <h1>Gestión de Equipos</h1>
     <h2>Lista de Equipos</h2>
     <h3>Buscar Equipos</h3>
-    <input type="text" id="searchInput" placeholder="Buscar equipo..." onkeyup="buscarEquipos()">
+    <input type="text" id="searchInput" placeholder="Buscar equipo (ID del equipo, nombre del lider o del asesor)" onkeyup="buscarEquipos()">
 
     <table>
         <thead>
             <tr>
+                <th>ID del equipo</th>
                 <th>Nombre del Líder</th>
                 <th>Número de Participantes</th>
                 <th>Asesor</th>
