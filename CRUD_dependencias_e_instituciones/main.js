@@ -69,20 +69,22 @@
             return;
         }
 
-        fetch("https://scitrackapi-production.up.railway.app/api/dependencia/"+inputIdInstitucionBusqueda.value, {
+        fetch("https://scitrackapi-production.up.railway.app/api/dependencia/", {
             method: "GET",
         })
         .then((response) => response.json())
         .then((data) => {
+            const dependenciaSelecc = data.filter(elemento => elemento.Institucion_idInstitucion == inputIdInstitucionBusqueda.value);
             const result = document.getElementById("lista-dependencias");
-            
-            data.forEach(dependencia => {
+            dependenciaSelecc.forEach(dependencia => {
                 let fila = document.createElement("li");
                 fila.innerHTML = `
     
                     ${dependencia.idDependencia}
     
                     ${dependencia.nombre} 
+
+
                     
                     <button id="btn_delete_${dependencia.idDependencia}" onclick="btnEliminarDependencia(${dependencia.idDependencia})">Eliminar</button>
                 `;
