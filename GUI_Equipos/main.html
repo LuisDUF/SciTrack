@@ -28,7 +28,7 @@
 
         input{
             display:block;
-            
+            width:400px;
             border-collapse: collapse;
         }
 
@@ -70,17 +70,17 @@
     <h2>Crear Nuevo Equipo</h2>
     <form id="formCrearEquipo">
         
-        <label>Seleccionar Asesor:</label>
+        <label>Seleccionar Asesor:</label> 
         <select id="selectAsesor" required>
             <option value="none">Seleccione un asesor</option>
         </select>
-
+        <button type="registrarAsesor">Registrar un nuevo asesor</button>
         <button type="submit">Crear Equipo</button>
     </form>
 
     <h2>Unirse a un equipo existente</h2>
     <h3>Buscar Equipos</h3>
-    <input type="text" id="searchInput" placeholder="Buscar equipo..." onkeyup="buscarEquipos()">
+    <input type="text" id="searchInput" placeholder="Buscar equipo (Nombre del lider o del asesor)" onkeyup="buscarEquipos()">
     <table>
         <thead>
             <tr>
