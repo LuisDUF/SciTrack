@@ -20,7 +20,7 @@
             alert("Ingrese el nombre de la institución");
             return;
         }
-
+    
         fetch("https://scitrackapi-production.up.railway.app/api/institucion/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -30,10 +30,11 @@
         .then(data => {
             console.log("Institución registrada:", data);
             alert("Institución registrada exitosamente");
+            
+            listar_instituciones(); // Llamar a la función
+            location.reload(); // Refrescar la página
         })
         .catch(error => console.error("Error:", error));
-
-        
     };
 
     btnEnviarDependencia.onclick = function () {
@@ -143,20 +144,26 @@ function btnEliminarInstitucion(idInstitucion) {
         method: "DELETE",
     })
     .then(response => {
-        
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || "No se pudo eliminar la institución");
+            });
+        }
+        return response.json();
     })
     .then(data => {
         console.log("Institución eliminada:", data);
-        
-        const item = document.getElementById(`item_${idInstitucion}`);
-        
+        alert("Institución eliminada exitosamente");
         window.location.reload();
-        
     })
     .catch(error => {
         console.error("Error al eliminar:", error);
+        alert(error.message.includes("Dependencia") 
+            ? "No se puede eliminar la institución porque tiene dependencias. Elimine primero las dependencias."
+            : "Error al eliminar la institución. Intente nuevamente.");
     });
 }
+
 
 
 function btnEliminarDependencia(idDependencia) {
