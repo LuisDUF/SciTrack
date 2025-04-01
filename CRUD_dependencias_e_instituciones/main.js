@@ -138,24 +138,26 @@ function listar_instituciones(){
 
 function btnEliminarInstitucion(idInstitucion) {
     console.log("Botón 'Eliminar' presionado para la institución con id:", idInstitucion);
-
+    
     fetch(`https://scitrackapi-production.up.railway.app/api/institucion/${idInstitucion}`, {
         method: "DELETE",
     })
-    .then(response => response.json())
+    .then(response => {
+        
+    })
     .then(data => {
         console.log("Institución eliminada:", data);
         
-        // Encontrar y eliminar el <li> que contiene el botón de eliminar
         const item = document.getElementById(`item_${idInstitucion}`);
-        if (item) {
-            item.remove();
-        } else {
-            console.error("No se encontró el elemento a eliminar en el DOM.");
-        }
+        
+        window.location.reload();
+        
     })
-    .catch(error => console.error("Error al eliminar:", error));
+    .catch(error => {
+        console.error("Error al eliminar:", error);
+    });
 }
+
 
 function btnEliminarDependencia(idDependencia) {
     console.log("Botón 'Eliminar' presionado para la dependencia con id:", idDependencia);
@@ -163,18 +165,16 @@ function btnEliminarDependencia(idDependencia) {
     fetch(`https://scitrackapi-production.up.railway.app/api/dependencia/${idDependencia}`, {
         method: "DELETE",
     })
-    .then(response => response.json())
+    .then(response =>{})
     .then(data => {
         console.log("Dependencia eliminada:", data);
         
-        const item = document.getElementById(`item_${idDependencia}`);
-        if (item) {
-            item.remove();
-        } else {
-            console.error("No se encontró el elemento a eliminar en el DOM.");
-        }
+        window.location.reload();
+
     })
     .catch(error => console.error("Error al eliminar:", error));
+
+    
 }
 
 function vaciarLista(idLista) {
