@@ -117,7 +117,7 @@ function buscarEquipos() {
 
 // Función para eliminar equipo
 async function eliminarEquipo(id) {
-    fetch(`https://scitrackapi-production.up.railway.app/api/equipo/${id}`, {
+    fetch(`https://scitrackapi-production.up.railway.app/api/equipo/idEquipo/${id}`, {
         method: "DELETE",
     })
     .then((data) => {
