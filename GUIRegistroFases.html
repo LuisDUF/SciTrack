@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Fases</title>
+</head>
+<body>
+    <h2>Registro de Fases del Concurso</h2>
+    <form action="procesar_registro.php" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" maxlength="45" required><br><br>
+
+        <label for="modalidad">Modalidad:</label>
+        <input type="text" id="modalidad" name="modalidad" maxlength="45" required><br><br>
+
+        <label for="fecha_inicio">Fecha de Inicio:</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" required><br><br>
+
+        <label for="fecha_fin">Fecha de Fin:</label>
+        <input type="date" id="fecha_fin" name="fecha_fin" required><br><br>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" maxlength="45" rows="4" cols="50" required></textarea><br><br>
+
+        <label for="ubicacion">Ubicación:</label>
+        <textarea id="ubicacion" name="ubicacion" maxlength="100" rows="4" cols="50" required></textarea><br><br>
+
+        <button type="submit">Registrar Fase</button>
+    </form>
+</body>
+</html>
