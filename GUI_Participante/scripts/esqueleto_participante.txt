@@ -10,6 +10,3 @@ const PARTICIPANTE = {
     Dependencia_idDependencia:,
 }
 
-IDEA: Equipo 1 internamente se manejará como "Sin equipo"
-
-const elementoSeleccionado = ARREGLO.find(elemento => elemento.atributo == valor);

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/main.js"></script>
+    <script src="main.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Registro de asesores</h1>
+</header>
+<style>
+    input, select
+    {
+        width: 20vw;
+    }
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    {
+        color: red;
+    }
+</style>
+<body>
+  <p>Nombre(s):</p>
+  <input type="text" id="inputNombre" placeholder="Ingrese su nombre o nombres..." />
+  <p>Apellido paterno:</p>
+  <input type="text" id="inputApellidoP" placeholder="Ingrese su apellido paterno..." />
+  <p>Apellido materno:</p>
+  <input type="text" id="inputApellidoM" placeholder="Ingrese su apellido materno..." />
+  <p>Correo electrónico:</p>
+  <input type="text" id="inputEmail" placeholder="Ingrese su correo..." />
+  <p id="txtEmailAlert"></p>
+  <p>Género:</p>
+  <select name="select" id="select"></select>
+  </select>
+
+
+  <p>Teléfono:</p>
+  <input type="number" id="inputPhone" placeholder="..." onkeydown="javascript: return event.keyCode == 69 ? false : true" />
+  
+  
+  <br><br>
+  <button id="btnConfirm">Confirmar</button>
+  <p id="txtConfirmAlert"></p>
+</body>

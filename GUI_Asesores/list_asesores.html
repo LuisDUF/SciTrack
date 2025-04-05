@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/list_asesores.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Buscar asesor</h1>
+</header>
+
+<style>
+
+    div
+    {
+      padding: 2vh;
+      border-style: solid;
+      border-radius: 10px;
+    }
+    ol {
+      list-style: none;
+      padding-left: 0%;
+    }
+    #boton_eliminar:hover{
+      cursor: pointer;
+    }
+    #boton_modificar:hover{
+      cursor: pointer;
+    }
+</style>
+
+<body>
+    <input type="number" placeholder="Id de equipo" id="input_num_equi" min="1">
+    <ol id="resultado_asesor"></ol> 
+    <button id="boton_eliminar" onclick=delete_asesor()>Eliminar</button>
+    <button id="boton_modificar">Modificar</button>
+    <p id="p_equi">Equipos:</p>
+    <ol id="lista_equis"></ol>
+    <button id="boton_eliminar_equipo" onclick=eliminar_equipo(undefined)>Eliminar del equipo</button>
+    
+</body>
