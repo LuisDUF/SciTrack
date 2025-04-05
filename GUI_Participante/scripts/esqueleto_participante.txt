@@ -10,4 +10,3 @@ const PARTICIPANTE = {
     Dependencia_idDependencia:,
 }
 
-IDEA: Equipo 1 internamente se manejará como "Sin equipo"
