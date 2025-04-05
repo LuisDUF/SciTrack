@@ -6,10 +6,21 @@
     <title>Scitrack</title>
 </head>
 <header>
-  <h1>Editar Ubicacion</h1>
+  <h1>Modificar Ubicacion</h1>
 </header>
 
 <style>
+    body
+    {
+      font-family: Verdana, Geneva, Tahoma, sans-serif
+    }
+
+    blo
+    {
+      pointer-events: none;
+      filter: blur(10px) saturate(0.2);
+    }
+
     input, select
     {
         width: 20vw;
@@ -18,55 +29,53 @@
     {
         color: red;
     }
+    .loading
+    {
+      filter: blur(10px);
+      pointer-events: none;
+    
+    }
+    .loading_gif
+    {
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      width: 4vmax;
+      top: 47%;
+      left: 47%;
+    }
 </style>
 
+<loading>
+  <img src="../Resources/loading_scitrack.gif" class="loading_gif" id="loading_gif">
+</loading>
+
 <body>
-  <p>Nombre(s):</p>
-  <input type="text" id="inputNombre" placeholder="Ingrese su nombre o nombres..." />
-
-  <p>Apellido paterno:</p>
-  <input type="text" id="inputApellidoP" placeholder="Ingrese su apellido paterno..." />
-
-  <p>Apellido materno:</p>
-  <input type="text" id="inputApellidoM" placeholder="Ingrese su apellido materno..." />
-
-  <p>Correo electrónico:</p>
-  <input type="text" id="inputEmail" placeholder="Ingrese su correo..." />
-  <p id="txtEmailAlert"></p>
-
-  <p>Contraseña:</p>
-  <input type="password" id="inputPassword" placeholder="..." />
-  <p id="txtPasswordAlert"></p>
-
-  <p>Confirmar contraseña:</p>
-  <input type="password" id="inputConfirmPassword" placeholder="..." />
-  <p id="txtConfirmPasswordAlert"></p>
-
-  <p>Teléfono:</p>
-  <input type="number" id="inputPhone" placeholder="..." onkeydown="javascript: return event.keyCode == 69 ? false : true" />
-  
-  <br><br>
-  <p>Genero:</p>
-  <select id="selectGender">
+  <block_by_loading>
+  <p>Estado:</p>
+  <select id="selectEstado">
     <option value="none">---</option>
   </select>
-
-  <br><br>
-  <p>Seleccione su institución:</p>
-  <select id="selectInstitution">
+  <p>Municipio:</p>
+  <select id="selectMunicipio">
     <option value="none">---</option>
   </select>
+  <p>Colonia:</p>
+  <select id="selectColonia">
+    <option value="none">---</option>
+  </select>
+  <p>Calle:</p>
+  <input type="text" id="inputCalle" placeholder="Ingrese el nombre de la calle..." />
 
-  <section id="dependencySection">
-    <br><br>
-    <p>Seleccione su dependencia:</p>
-    <select id="selectDependency">
-        <option value="none">---</option>
-    </select>
-  </section>
+  <p>Número:</p>
+  <input type="number" id="inputNumero" placeholder="Ingrese el numero exterior..." />
+
+  <p>Código Postal:</p>
+  <input type="number" id="inputCodPos" placeholder="Ingrese el código postal..." />
+
   
   <br><br>
   <button id="btnConfirm">Confirmar</button>
   <p id="txtConfirmAlert"></p>
-
+  </block_by_loading>
 </body>
