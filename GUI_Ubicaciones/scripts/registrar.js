@@ -3,7 +3,7 @@ let COLONIAS = [];
 let MUNICIPIOS = [];
 
 window.onload = function (){
-    document.getElementsByTagName('body')[0].className = "loading"
+    startLoad()
     fetch("https://scitrackapi-production.up.railway.app/api/estado/", {
         method: "GET",
         headers: {
@@ -14,42 +14,21 @@ window.onload = function (){
     .then((data) => {
         ESTADOS = data;
         //////////////////////////////////
-        fetch("https://scitrackapi-production.up.railway.app/api/municipio/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            MUNICIPIOS = data;
-            ///////////////////////////
-            fetch("https://scitrackapi-production.up.railway.app/api/colonia/", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                COLONIAS = data;
-                setUpEstados();
-                document.getElementsByTagName('body')[0].className = "";
-                const button = document.getElementById('btnConfirm');
-                button.onclick = function ()
-                {
-                    confirmRegister();
-                }
-            })
-            .catch((error) => console.error("Error:", error));
-        })
-        .catch((error) => console.error("Error:", error));
+        setUpEstados();
+        endLoad();
+        const button = document.getElementById('btnConfirm');
+        button.onclick = function ()
+        {
+            confirmRegister();
+        }
     })
     .catch((error) => console.error("Error:", error));
 }
 
 function setUpEstados()
 {
+    startLoad()
+
     const selectEstado = document.getElementById('selectEstado');
 
     selectEstado.innerHTML = `<option value="none">---</option>`;
@@ -67,34 +46,70 @@ function setUpEstados()
 
 function setUpMunicipios(idEstado)
 {
+    startLoad()
+
     const selectMunicipio = document.getElementById('selectMunicipio');
+    const selectColonia = document.getElementById('selectColonia');
 
     selectMunicipio.innerHTML = `<option value="none">---</option>`;
-   
-    const filtered = MUNICIPIOS.filter(m=> m.Estado_idEstado == idEstado)
-    
-    filtered.forEach(e => {
-        selectMunicipio.innerHTML += `<option value="${e.idMunicipio}">${e.nombre}</option>`;
-    });
+    selectMunicipio.selectedIndex=0;
 
-    selectMunicipio.onchange = function ()
-    {
-        const idMunicipio = selectMunicipio.value;
-        if (idMunicipio != "none") setUpColonias(idMunicipio);   
-    }
+    selectColonia.innerHTML = `<option value="none">---</option>`;
+    selectColonia.selectedIndex=0;
+   
+    let filtered = [];
+
+    fetch(`https://scitrackapi-production.up.railway.app/api/municipio/${idEstado}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        filtered = data;
+        filtered.forEach(e => {
+            selectMunicipio.innerHTML += `<option value="${e.idMunicipio}">${e.nombre}</option>`;
+        });
+    
+        endLoad();
+    
+        selectMunicipio.onchange = function ()
+        {
+            const idMunicipio = selectMunicipio.value;
+            if (idMunicipio != "none") setUpColonias(idMunicipio);   
+        }
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 function setUpColonias(idMunicipio)
 {
+    startLoad()
+
     const selectColonia = document.getElementById('selectColonia');
 
     selectColonia.innerHTML = `<option value="none">---</option>`;
-   
-    const filtered = COLONIAS.filter(m=> m.Municipio_idMunicipio == idMunicipio)
+    selectColonia.selectedIndex=0;
+
+    let filtered = [];
+
+    fetch(`https://scitrackapi-production.up.railway.app/api/colonia/${idMunicipio}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        filtered = data;
+        filtered.forEach(e => {
+            selectColonia.innerHTML += `<option value="${e.idColonia}">${e.nombre}</option>`;
+        });
     
-    filtered.forEach(e => {
-        selectColonia.innerHTML += `<option value="${e.idMunicipio}">${e.nombre}</option>`;
-    });
+        endLoad();
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 function confirmRegister()
@@ -113,7 +128,7 @@ function confirmRegister()
     verifyArray.every(v =>{
         if (v.value == undefined || v.value == "none" || v.value == "")
         {
-            alert('Faltan datos brothercito');
+            alert('Por favor, rellene todos los campos para registrar la ubicación');
             missingData = true;
             return false;
         }
@@ -131,7 +146,41 @@ function confirmRegister()
             codigoPostal:inputCodPos.value,
             estado:selectEstado.options[selectEstado.selectedIndex].text,
         }
+        fetch("https://scitrackapi-production.up.railway.app/api/ubicacion/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            //Se construye un objeto de participante con los datos que se introducen en la página
+            body: JSON.stringify({
+                colonia:selectColonia.options[selectColonia.selectedIndex].text,
+                calle:inputCalle.value,
+                ciudad:selectMunicipio.options[selectMunicipio.selectedIndex].text,
+                numero:inputNumero.value,
+                codigoPostal:inputCodPos.value,
+                estado:selectEstado.options[selectEstado.selectedIndex].text,
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            alert('Se ha registrado la ubicacion');
+            window.location.reload();
 
+        })
+        .catch((error) => console.error("Error:", error));
         
     }
+}
+
+
+function startLoad()
+{
+    document.getElementsByTagName('block_by_loading')[0].className = "loading";
+    document.getElementById('loading_gif').style.opacity = 1;
+}
+
+function endLoad()
+{
+    document.getElementsByTagName('block_by_loading')[0].className = "";
+    document.getElementById('loading_gif').style.opacity = 0;
 }

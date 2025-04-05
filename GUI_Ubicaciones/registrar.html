@@ -10,7 +10,12 @@
 </header>
 
 <style>
-    .loading
+    body
+    {
+      font-family: Verdana, Geneva, Tahoma, sans-serif
+    }
+
+    blo
     {
       pointer-events: none;
       filter: blur(10px) saturate(0.2);
@@ -24,9 +29,27 @@
     {
         color: red;
     }
+    .loading
+    {
+      filter: blur(10px);
+      pointer-events: none;
+    
+    }
+    .loading_gif
+    {
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      width: 4vmax;
+      top: 47%;
+      left: 47%;
+    }
 </style>
-
+<loading>
+  <img src="../Resources/loading_scitrack.gif" class="loading_gif" id="loading_gif">
+</loading>
 <body>
+  <block_by_loading>
   <p>Estado:</p>
   <select id="selectEstado">
     <option value="none">---</option>
@@ -52,5 +75,5 @@
   <br><br>
   <button id="btnConfirm">Confirmar</button>
   <p id="txtConfirmAlert"></p>
-
+  </block_by_loading>
 </body>
