@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualización de Fases</title>
+    <script src="mostrar.js"></script>
     <style>
         table {
             width: 100%;
@@ -39,39 +40,6 @@
             <!-- Aquí se insertarán las fases -->
         </tbody>
     </table>
-
-    <script>
-        // URL de tu API (ajústala según tu caso)
-        const API_URL = 'https://tu-api.com/fases';
-
-        async function cargarFases() {
-            try {
-                const respuesta = await fetch(API_URL);
-                const fases = await respuesta.json();
-
-                const cuerpoTabla = document.querySelector('#tabla-fases tbody');
-                cuerpoTabla.innerHTML = ''; // Limpiar antes de insertar
-
-                fases.forEach(fase => {
-                    const fila = document.createElement('tr');
-                    fila.innerHTML = `
-                        <td>${fase.nombre}</td>
-                        <td>${fase.modalidad}</td>
-                        <td>${fase.fecha_inicio}</td>
-                        <td>${fase.fecha_fin}</td>
-                        <td>${fase.descripcion}</td>
-                        <td>${fase.ubicacion}</td>
-                    `;
-                    cuerpoTabla.appendChild(fila);
-                });
-            } catch (error) {
-                console.error('Error al cargar las fases:', error);
-            }
-        }
-
-        // Ejecutar al cargar la página
-        window.onload = cargarFases;
-    </script>
 </body>
 </html>
 
