@@ -16,6 +16,7 @@ function listar_fases() {
                 <td>${fase.fechaFin}</td>
                 <td>${fase.descripcion}</td>
                 <td>${fase.Ubicacion_idUbicacion}</td>
+                <td style="border: none;"><button id="btn_delete_${fase.idFase}" onclick="btnEliminarFase(${fase.idFase})">Eliminar</button></td>
             `;
             cuerpoTabla.appendChild(fila);
         });
@@ -24,6 +25,37 @@ function listar_fases() {
     })
     .catch((error) => console.error("Error al cargar las fases:", error));
 }
+
+function btnEliminarFase(idFase) {
+    if (!confirm("¿Estás seguro de que deseas eliminar esta fase?")) {
+        return;
+    }
+
+    console.log("Botón 'Eliminar' presionado para la fase con id:", idFase);
+
+    fetch(`https://scitrackapi-production.up.railway.app/api/fase/${idFase}`, {
+        method: "DELETE",
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("No se pudo eliminar la fase");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fase eliminada:", data);
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error("Error al eliminar:", error);
+        window.location.reload();  
+    });
+    
+
+    
+}
+
+
 
 // Ejecutar al cargar la página
 window.onload = listar_fases;
