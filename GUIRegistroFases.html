@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Registro de Fases del Concurso</h2>
-    <form action="procesar_registro.php" method="post">
+    
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" maxlength="45" required><br><br>
 
@@ -24,9 +24,9 @@
         <textarea id="descripcion" name="descripcion" maxlength="45" rows="4" cols="50" required></textarea><br><br>
 
         <label for="ubicacion">Ubicación:</label>
-        <textarea id="ubicacion" name="ubicacion" maxlength="100" rows="4" cols="50" required></textarea><br><br>
+        <input type="text" id="idUbicacion" name="idUbicacion" required placeholder="idUbicacion"><br><br>
 
         <button type="submit">Registrar Fase</button>
-    </form>
+    
 </body>
 </html>
