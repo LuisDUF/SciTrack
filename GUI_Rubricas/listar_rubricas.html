@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/listar_rubricas.js" id="scriptTag"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Lista de rubricas</h1>
+</header>
+
+<style>
+    
+    div
+    {
+      padding: 2vh;
+      border-style: solid;
+      border-radius: 10px;
+    }
+    ol{
+      
+      list-style: circle;
+    }
+    
+</style>
+
+<button id="crearRubrica" onclick=crearRubrica()>Crear nueva rubrica</button>
+<br>
+<br>
+<div id="crearRubrica_div">
+  <h2>Crear Rúbrica</h2>
+  <label>Descripción:</label>
+  <input type="text" id="inputDescripcion" placeholder="Ingrese la descripcion..." />
+  <label>Area de conocimiento:</label>
+  <select name="areas" id="listaAreas"></select>
+  <h3>Criterios:</h3>
+  <label>Descripción:</label>
+  <input type="text" id="inputDescripcion_criterio" placeholder="Ingrese la descripcion..." />
+  <label>Ponderación:</label>
+  <input type="text" id="inputPonderacion" placeholder="Ingrese la ponderación..." />
+  <button id="agregar_crierio" onclick=agregarCriterio()>Agregar criterio</button>
+  <br><br>
+  <button id="guardarRubrica" onclick=guardarRubrica()>Guardar</button>
+</div>
+
+<body id="mainBody">
+  <br><br>
+  <div id="listRubricas">
+
+  </div>
+
+
+</body>

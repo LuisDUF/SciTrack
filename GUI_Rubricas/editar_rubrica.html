@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/editar_rubrica.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Editar</h1>
+</header>
+
+<style>
+    #inputDescripcion
+    {
+        width: 20vw;
+    }
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    {
+        color: red;
+    }
+    ol{
+      list-style: none;
+      padding-left: 0%;
+    }
+</style>
+
+<body>
+
+  <p>Descripción:</p>
+  <input type="text" id="inputDescripcion" placeholder="Ingrese la descripcion..." />
+  <button id="btnConfirm">Confirmar</button>
+  <p>Criterios</p>
+  <ol id="lista_criterios"></ol>
+  
+  <button id="boton_eliminar" onclick=delete_criterio()>Eliminar</button>
+  <button id="boton_modificar" onclick=modify_criterio() >Modificar</button>
+  
+  <p id="txtConfirmAlert"></p>
+
+  <p id="p_o">Descripción:</p>
+  <input type="text" id="inputDescripcion_criterio" placeholder="Ingrese la descripcion..." />
+  <p id="p_o2">Ponderación:</p>
+  <input type="text" id="inputPonderacion" placeholder="Ingrese la ponderación..." />
+  <button id="btnConfirmar" onclick=modificar_criterio()>Confirmar</button>
+
+
+</body>
