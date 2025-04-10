@@ -23,7 +23,7 @@
 
     input, select
     {
-        width: 20vw;
+        width: 18vw;
     }
     #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
     {
@@ -51,30 +51,19 @@
 </loading>
 <body>
   <block_by_loading>
-  <p>Estado:</p>
-  <select id="selectEstado">
+  <p>Grados de Estudio:</p>
+  <select id="selectGrado">
     <option value="none">---</option>
-  </select>
-  <p>Municipio:</p>
-  <select id="selectMunicipio">
+  </select> <br><br>
+  <input type="text" id="inputGrado" placeholder="..." />
+  <button id="btnAddGrd">Agregar</button> <button id="btnConfirmGrd">Editar</button> <button id="btnConfirmDelGrd">Eliminar</button>
+
+  <p>Areas de Conocimiento:</p>
+  <select id="selectArea">
     <option value="none">---</option>
-  </select>
-  <p>Colonia:</p>
-  <select id="selectColonia">
-    <option value="none">---</option>
-  </select>
-  <p>Calle:</p>
-  <input type="text" id="inputCalle" placeholder="Ingrese el nombre de la calle..." />
+  </select> <br><br>
+  <input type="text" id="inputArea" placeholder="..." />
+  <button id="btnAddAre">Agregar</button> <button id="btnConfirmAre">Editar</button> <button id="btnConfirmDelAre">Eliminar</button>
 
-  <p>Número:</p>
-  <input type="number" id="inputNumero" placeholder="Ingrese el numero exterior..." />
-
-  <p>Código Postal:</p>
-  <input type="number" id="inputCodPos" placeholder="Ingrese el código postal..." />
-
-  
-  <br><br>
-  <button id="btnConfirm">Confirmar</button>
-  <p id="txtConfirmAlert"></p>
   </block_by_loading>
 </body>

@@ -1,10 +1,10 @@
-let ESTADOS = [];
-let COLONIAS = [];
-let MUNICIPIOS = [];
+let AREAS = [];
+let DISCIPLINAS = [];
+let GRADOS = [];
 
 window.onload = function (){
     startLoad()
-    fetch("https://scitrackapi-production.up.railway.app/api/estado/", {
+    fetch("https://scitrackapi-production.up.railway.app/api/areadeconocimientoinv/", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -12,166 +12,436 @@ window.onload = function (){
     })
     .then((response) => response.json())
     .then((data) => {
-        ESTADOS = data;
-        //////////////////////////////////
-        setUpEstados();
-        endLoad();
-        const button = document.getElementById('btnConfirm');
-        button.onclick = function ()
-        {
-            confirmRegister();
-        }
+        AREAS = data;
+        fetch("https://scitrackapi-production.up.railway.app/api/disciplina/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            DISCIPLINAS = data;
+            fetch("https://scitrackapi-production.up.railway.app/api/gradodeestudios/", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                GRADOS = data;
+                //////////////////////////////////
+                //setUpGrados();
+                endLoad();
+                const btnConfirmDelGrd = document.getElementById('btnConfirmDelGrd');
+                const btnConfirmGrd = document.getElementById('btnConfirmGrd');
+                const btnAddGrd = document.getElementById('btnAddGrd');
+
+                const btnConfirmDelAre = document.getElementById('btnConfirmDelAre');
+                const btnConfirmAre = document.getElementById('btnConfirmAre');
+                const btnAddAre = document.getElementById('btnAddAre');
+              
+                const selectGrado = document.getElementById('selectGrado');
+                const selectArea = document.getElementById('selectArea');
+
+                setUpValuesAre();
+                setUpValuesGrd();
+
+                btnConfirmGrd.onclick = function ()
+                {
+                    editGrado();
+                }
+
+                btnConfirmDelGrd.onclick = function ()
+                {
+                    deleteGrado();
+                }
+                btnAddGrd.onclick = function ()
+                {
+                    addGrado();
+                }
+
+                btnConfirmAre.onclick = function ()
+                {
+                    editArea();
+                }
+
+                btnConfirmDelAre.onclick = function ()
+                {
+                    deleteArea();
+                }
+
+                btnAddAre.onclick = function ()
+                {
+                    addArea();
+                }
+
+                selectGrado.onchange = function ()
+                {
+                    setUpGrdInputs();
+                }
+
+                selectArea.onchange = function ()
+                {
+                    setUpAreInputs();
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+        })
+        .catch((error) => console.error("Error:", error));
     })
     .catch((error) => console.error("Error:", error));
 }
 
-function setUpEstados()
+function setUpGrdInputs()
 {
-    startLoad()
+    const btnConfirmDelGrd = document.getElementById('btnConfirmDelGrd');
+    const btnConfirmGrd = document.getElementById('btnConfirmGrd');
+    const btnAddGrd = document.getElementById('btnAddGrd');
+    btnConfirmGrd.style.display = "none";
+    btnConfirmDelGrd.style.display = "none";
 
-    const selectEstado = document.getElementById('selectEstado');
+    const inputGrado = document.getElementById('inputGrado');
+    const selectGrado = document.getElementById('selectGrado');
 
-    selectEstado.innerHTML = `<option value="none">---</option>`;
-   
-    ESTADOS.forEach(e => {
-        selectEstado.innerHTML += `<option value="${e.idEstado}">${e.nombre}</option>`;
-    });
+    if (selectGrado.value == "none")
+        {
+            
+            btnAddGrd.style.display = "inline";
+            btnConfirmGrd.style.display = "none";
+            btnConfirmDelGrd.style.display = "none";
+            inputGrado.value = "";
 
-    selectEstado.onchange = function ()
+        }
+        else
+        {
+
+            btnAddGrd.style.display="none";
+            btnConfirmDelGrd.style.display = "inline";
+            btnConfirmGrd.style.display = "inline";
+            inputGrado.value = selectGrado.options[selectGrado.selectedIndex].text;
+        }
+}
+
+function setUpAreInputs()
+{
+    const btnConfirmDelAre = document.getElementById('btnConfirmDelAre');
+    const btnConfirmAre = document.getElementById('btnConfirmAre');
+    const btnAddAre = document.getElementById('btnAddAre');
+    btnConfirmAre.style.display = "none";
+    btnConfirmDelAre.style.display = "none";
+
+    const inputArea = document.getElementById('inputArea');
+    const selectArea = document.getElementById('selectArea');
+
+    if (selectArea.value == "none")
+        {
+            
+            btnAddAre.style.display = "inline";
+            btnConfirmAre.style.display = "none";
+            btnConfirmDelAre.style.display = "none";
+            inputArea.value = "";
+
+        }
+        else
+        {
+
+            btnAddAre.style.display="none";
+            btnConfirmDelAre.style.display = "inline";
+            btnConfirmAre.style.display = "inline";
+            inputArea.value = selectArea.options[selectArea.selectedIndex].text;
+        }
+}
+function setUpValuesAre()
+{
+    startLoad();
+
+    fetch("https://scitrackapi-production.up.railway.app/api/areadeconocimientoinv/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        AREAS = data;
+        const selectArea = document.getElementById('selectArea');
+
+        selectArea.innerHTML = `<option value="none">---</option>`;
+    
+        AREAS.forEach(e => {
+            selectArea.innerHTML += `<option value="${e.idAreaDeConocimientoInv}">${e.nombre}</option>`;
+        });
+        setUpAreInputs();
+
+        endLoad();
+
+    })
+    .catch((error) => console.error("Error:", error));    
+    
+}
+
+function setUpValuesGrd()
+{
+    startLoad();
+
+    fetch("https://scitrackapi-production.up.railway.app/api/gradodeestudios/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        GRADOS = data;
+        const selectGrado = document.getElementById('selectGrado');
+
+        selectGrado.innerHTML = `<option value="none">---</option>`;
+    
+        GRADOS.forEach(e => {
+            selectGrado.innerHTML += `<option value="${e.idGradoDeEstudios}">${e.nombre}</option>`;
+        });
+        setUpGrdInputs();
+
+        endLoad();
+
+    })
+    .catch((error) => console.error("Error:", error));    
+
+
+    
+}
+
+function editGrado()
+{
+    const input = document.getElementById('inputGrado');
+    const selectGrado = document.getElementById('selectGrado');
+
+    if (input.value.length < 4)
     {
-        const idEstado = selectEstado.value;
-        if (idEstado != "none") setUpMunicipios(idEstado);   
+        alert("El grado debe tener al menos 4 caracteres");
+    }
+    else if (input.value == selectGrado.options[selectGrado.selectedIndex].text)
+    {
+        alert("El nombre del grado debe ser diferente");
+    }
+    else
+    {
+        const grado = selectGrado.value;
+        const text = input.value;
+        startLoad();
+
+        fetch(`https://scitrackapi-production.up.railway.app/api/gradodeestudios/${grado}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            //Se construye un objeto de participante con los datos que se introducen en la página
+            body: JSON.stringify({
+                nombre:text
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            alert('Se ha modificado la información');
+            input.value="";
+            setUpValuesGrd();
+            
+
+        })
+        .catch((error) => console.error("Error:", error));
     }
 }
 
-function setUpMunicipios(idEstado)
+function deleteGrado()
 {
-    startLoad()
+    const input = document.getElementById('inputGrado');
+    const selectGrado = document.getElementById('selectGrado');
 
-    const selectMunicipio = document.getElementById('selectMunicipio');
-    const selectColonia = document.getElementById('selectColonia');
+    {
+        const grado = selectGrado.value;
+        const text = input.value;
+        startLoad();
 
-    selectMunicipio.innerHTML = `<option value="none">---</option>`;
-    selectMunicipio.selectedIndex=0;
+        fetch(`https://scitrackapi-production.up.railway.app/api/gradodeestudios/${grado}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            }
+        })
+        .then((data) => {
+            alert('Se ha borrado la información');
+            input.value="";
+            setUpValuesGrd();
+            
 
-    selectColonia.innerHTML = `<option value="none">---</option>`;
-    selectColonia.selectedIndex=0;
-   
-    let filtered = [];
-
-    fetch(`https://scitrackapi-production.up.railway.app/api/municipio/${idEstado}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        filtered = data;
-        filtered.forEach(e => {
-            selectMunicipio.innerHTML += `<option value="${e.idMunicipio}">${e.nombre}</option>`;
-        });
-    
-        endLoad();
-    
-        selectMunicipio.onchange = function ()
-        {
-            const idMunicipio = selectMunicipio.value;
-            if (idMunicipio != "none") setUpColonias(idMunicipio);   
-        }
-    })
-    .catch((error) => console.error("Error:", error));
+        })
+        .catch((error) => console.error("Error:", error));
+    }
 }
 
-function setUpColonias(idMunicipio)
+function addGrado()
 {
-    startLoad()
-
-    const selectColonia = document.getElementById('selectColonia');
-
-    selectColonia.innerHTML = `<option value="none">---</option>`;
-    selectColonia.selectedIndex=0;
-
-    let filtered = [];
-
-    fetch(`https://scitrackapi-production.up.railway.app/api/colonia/${idMunicipio}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        filtered = data;
-        filtered.forEach(e => {
-            selectColonia.innerHTML += `<option value="${e.idColonia}">${e.nombre}</option>`;
-        });
-    
-        endLoad();
-    })
-    .catch((error) => console.error("Error:", error));
-}
-
-function confirmRegister()
-{
-    const selectMunicipio = document.getElementById('selectMunicipio');
-    const selectEstado = document.getElementById('selectEstado');
-    const selectColonia = document.getElementById('selectColonia');
-    const inputNumero = document.getElementById('inputNumero');
-    const inputCalle = document.getElementById('inputCalle');
-    const inputCodPos = document.getElementById('inputCodPos');
-
-    const verifyArray = [selectColonia,selectEstado,selectMunicipio,inputCalle,inputCodPos,inputNumero];
-
-    let missingData = false;
-
-    verifyArray.every(v =>{
-        if (v.value == undefined || v.value == "none" || v.value == "")
+    const input = document.getElementById('inputGrado');
+    const selectGrado = document.getElementById('selectGrado');
+    let coincidence = false;
+    for (let i = 0; i < selectGrado.options.length; i++)
+    {
+        if (selectGrado.options[i].text == input.value)
         {
-            alert('Por favor, rellene todos los campos para registrar la ubicación');
-            missingData = true;
-            return false;
+            coincidence = true;
         }
-        else return true;
-    });
+    }
 
-    if (missingData) return;
+    if (input.value.length < 4)
+    {
+        alert("El grado debe tener al menos 4 caracteres");
+    }
+    else
+    if (coincidence)
+    {
+        alert("Ya hay un grado registrado con el mismo nombre");
+    }
     else
     {
-        const ubicacion = {
-            colonia:selectColonia.options[selectColonia.selectedIndex].text,
-            calle:inputCalle.value,
-            ciudad:selectMunicipio.options[selectMunicipio.selectedIndex].text,
-            numero:inputNumero.value,
-            codigoPostal:inputCodPos.value,
-            estado:selectEstado.options[selectEstado.selectedIndex].text,
-        }
-        fetch("https://scitrackapi-production.up.railway.app/api/ubicacion/", {
+        const text = input.value;
+        startLoad();
+
+        fetch(`https://scitrackapi-production.up.railway.app/api/gradodeestudios/`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             //Se construye un objeto de participante con los datos que se introducen en la página
             body: JSON.stringify({
-                colonia:selectColonia.options[selectColonia.selectedIndex].text,
-                calle:inputCalle.value,
-                ciudad:selectMunicipio.options[selectMunicipio.selectedIndex].text,
-                numero:inputNumero.value,
-                codigoPostal:inputCodPos.value,
-                estado:selectEstado.options[selectEstado.selectedIndex].text,
+                nombre:text
             }),
         })
         .then((response) => response.json())
         .then((data) => {
-            alert('Se ha registrado la ubicacion');
-            window.location.reload();
-
+            alert('Se ha agregado la información');
+            input.value="";
+            setUpValuesAre();
         })
         .catch((error) => console.error("Error:", error));
-        
     }
 }
 
+function editArea()
+{
+    const input = document.getElementById('inputArea');
+    const selectArea = document.getElementById('selectArea');
+
+    if (input.value.length < 4)
+    {
+        alert("El area debe tener al menos 4 caracteres");
+    }
+    else if (input.value == selectArea.options[selectArea.selectedIndex].text)
+    {
+        alert("El nombre del area debe ser diferente");
+    }
+    else
+    {
+        const area = selectArea.value;
+        const text = input.value;
+        startLoad();
+
+        fetch(`https://scitrackapi-production.up.railway.app/api/areadeconocimientoinv/${area}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            //Se construye un objeto de participante con los datos que se introducen en la página
+            body: JSON.stringify({
+                nombre:text
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            alert('Se ha modificado la información');
+            input.value="";
+            setUpValuesAre();
+            
+
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+}
+
+function deleteArea()
+{
+    const input = document.getElementById('inputArea');
+    const selectArea = document.getElementById('selectArea');
+
+    {
+        const area = selectArea.value;
+        const text = input.value;
+        startLoad();
+
+        fetch(`https://scitrackapi-production.up.railway.app/api/areadeconocimientoinv/${area}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            }
+        })
+        .then((data) => {
+            alert('Se ha borrado la información');
+            input.value="";
+            setUpValuesAre();
+            
+
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+}
+
+function addArea()
+{
+    const input = document.getElementById('inputArea');
+    const selectArea = document.getElementById('selectArea');
+    let coincidence = false;
+    for (let i = 0; i < selectArea.options.length; i++)
+    {
+        if (selectArea.options[i].text == input.value)
+        {
+            coincidence = true;
+        }
+    }
+
+    if (input.value.length < 4)
+    {
+        alert("El area debe tener al menos 4 caracteres");
+    }
+    else
+    if (coincidence)
+    {
+        alert("Ya hay un area registrado con el mismo nombre");
+    }
+    else
+    {
+        const text = input.value;
+        startLoad();
+
+        fetch(`https://scitrackapi-production.up.railway.app/api/areadeconocimientoinv/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            //Se construye un objeto de participante con los datos que se introducen en la página
+            body: JSON.stringify({
+                nombre:text
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            alert('Se ha agregado la información');
+            input.value="";
+            setUpValuesAre();
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+}
 
 function startLoad()
 {
