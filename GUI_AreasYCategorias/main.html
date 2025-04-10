@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>  
+  <script src="scripts/registrar.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scitrack</title>
+  <style>
+    input, textarea {
+      width: 20vw;
+      margin: 5px 0;
+    }
+    .categoria-input {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    .categoria-input label {
+      display: block;
+      margin-top: 5px;
+    }
+    .categoria-input button {
+      margin-top: 5px;
+    }
+    #txtConfirmAlert {
+      color: red;
+    }
+
+    h1 { text-align: center; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .delete {
+      background-color: #d9534f;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .delete:hover {
+      background-color: #c9302c;
+    }
+
+    .edit {
+      background-color: #0078bd;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .edit:hover {
+      background-color: #01578a;
+    }
+
+    /* Estilos de pestañas */
+    .tab {
+      display: flex;
+      margin: 20px 0;
+      gap: 10px;
+    }
+
+    .tab button {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #ddd;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .tab button.active {
+      background-color: #bbb;
+    }
+
+    .tabcontent {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Registro de Áreas de conocimiento</h1>
+  </header>
+
+  <!-- 🔽 Formulario siempre visible -->
+  <section>
+    <p>Nombre del área:</p>
+    <input type="text" id="inputNombre" placeholder="Ingrese el nombre del área..." />
+    <br><br>
+
+    <h3>Inserta las categorías.</h3>
+    <div id="categoriaContainer">
+      <!-- Aquí se agregarán dinámicamente las categorías -->
+    </div>
+
+    <button type="button" id="btnAgregarCategoria">Agregar categoría</button>
+    <br><br>
+
+    <button id="btnConfirm">Confirmar</button>
+    <p id="txtConfirmAlert"></p>
+  </section>
+
+  <!-- 🔽 Pestañas -->
+  <div class="tab">
+    <button class="tablinks active" onclick="openTab(event, 'tabAreas')">Áreas de conocimiento</button>
+    <button class="tablinks" onclick="openTab(event, 'tabCategorias')">Categorías</button>
+  </div>
+
+  <!-- Contenido de pestaña: Áreas -->
+  <div id="tabAreas" class="tabcontent" style="display: block;">
+    <h2>Áreas de Conocimiento Existentes</h2>
+    <table id="areasTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Contenido de pestaña: Categorías -->
+  <div id="tabCategorias" class="tabcontent">
+    <h2>Buscar categorías</h2>
+    <input type="text" id="searchCategoriaInput" placeholder="Buscar categoría..." onkeyup="buscarCategorias()">
+
+    <table id="categoriasTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Área de Conocimiento</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <script>
+    function openTab(evt, tabName) {
+      const tabcontent = document.querySelectorAll('.tabcontent');
+      const tablinks = document.querySelectorAll('.tablinks');
+
+      tabcontent.forEach(el => el.style.display = "none");
+      tablinks.forEach(el => el.classList.remove("active"));
+
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
+    }
+  </script>
+</body>
+</html>
