@@ -70,6 +70,7 @@ window.onload = async function (){
 
 function loadData()
 {
+    /*
     const inputPDF = document.getElementById("inputPDF");
   
     inputPDF.addEventListener("change", function () {
@@ -82,7 +83,7 @@ function loadData()
         inputPDF.value = "";
        
       }
-    });
+    });*/
 
     const inputNombre = document.getElementById('inputNombre');
     const inputApellidoPaterno = document.getElementById('inputApellidoPaterno');
@@ -115,9 +116,8 @@ function loadData()
             selectPais.innerHTML += `<option value="${a.idPais}">${a.nombre}</option>`;
         })
 
-        selectPais.onchange = function changeEstados()
+        function changeEstados()
         {
-            
             
             selectEstado.innerHTML = `<option value="none">---</option>`;
             ESTADOS.forEach(a =>{
@@ -130,7 +130,7 @@ function loadData()
             endLoad();
         }
 
-        selectEstado.onchange = function changeMunicipios()
+        function changeMunicipios()
         {
         
             selectMunicipio.innerHTML = `<option value="none">---</option>`;
@@ -144,6 +144,10 @@ function loadData()
                   
             endLoad();
         }
+
+        selectPais.onchange = function (){changeEstados()}
+
+        selectEstado.onchange = function (){changeMunicipios()}
 
 
         selectDisciplina.innerHTML = `<option value="none">---</option>`;
@@ -184,9 +188,25 @@ function loadData()
         inputConfirmPassword.value = investigador.contrasenia;
         inputEstadoCivil.value = investigador.estadoCivil;
 
-        selectPais.value = investigador.Pais_idPais;
+
+        const currentPais = PAISES.find(f => f.nombre == investigador.nacionalidad);
+        const currentEstado = ESTADOS.find(f => f.nombre == investigador.estado);
+        const currentMunicipio = MUNICIPIOS.find(f => f.nombre == investigador.municipio);
+
+        selectPais.value = currentPais.idPais;
         changeEstados();
-        selectMunicipio.value = investigador.
+        selectEstado.value = currentEstado.idEstado;
+        changeMunicipios();
+        selectMunicipio.value = currentMunicipio.idMunicipio;
+
+        const currentDisciplina = DISCIPLINA.find(f => f.idDisciplina == investigador.Disciplina_idDisciplina);
+        selectDisciplina.value = currentDisciplina.idDisciplina;
+        const currentInstitucion = INSTITUCIONES.find(f => f.idInstitucion == investigador.Institucion_idInstitucion);
+        selectInstitucion.value = currentInstitucion.idInstitucion;
+        const currentGrado = GRADO.find(f => f.idGradoDeEstudios == investigador.GradoDeEstudios_idGradoDeEstudios);
+        selectGrado.value = currentGrado.idGradoDeEstudios;
+        const currentGenero = GENEROS.find(f => f.idGenero == investigador.Genero_idGenero);
+        selectGenero.value = currentGenero.idGenero;
     }
 
 }
@@ -236,11 +256,6 @@ function sendData()
     ];
     let haltOperation = false;
 
-    if (!archivoSeleccionado) {
-        sendTxtAlert('Por favor, selecciona un archivo PDF antes de subir.');
-        haltOperation = true;
-    }
-
     for (let e in inputElements)
     {
         const element = inputElements[e];
@@ -273,6 +288,7 @@ function sendData()
 
     if (!haltOperation)
     {
+        /*
         const tamanioEnKB = (archivoSeleccionado.size / 1024).toFixed(2); // Tamaño en KB, como número (sin "KB")
       
         const formData = new FormData();
@@ -294,9 +310,9 @@ function sendData()
             return response.json();
         })
         .then((data) => {
-            
-            fetch("https://scitrackapi-production.up.railway.app/api/investigador/", {
-                method: "POST",
+    */
+            fetch(`https://scitrackapi-production.up.railway.app/api/investigador/${investigador.idInvestigador}`, {
+                method: "PUT",
                 headers: {
                   "Content-Type": "application/json",
                 },
@@ -316,7 +332,6 @@ function sendData()
                     estado:selectEstado.options[selectEstado.selectedIndex].text,
                     municipio:selectMunicipio.options[selectMunicipio.selectedIndex].text,
                     Disciplina_idDisciplina:selectDisciplina.value,
-                    Archivos_idArchivos:data.idArchivos,
                     Institucion_idInstitucion:selectInstitucion.value,
                     GradoDeEstudios_idGradoDeEstudios:selectGrado.value,
                     Genero_idGenero:selectGenero.value
@@ -324,17 +339,17 @@ function sendData()
             })
             .then((response) => response.json())
             .then((data) => {
-                alert('Se han enviado sus datos correctamente.')
-                window.location.reload();
+                alert('Se han enviado sus datos correctamente.');
+                sessionStorage.setItem('sci:investigador_edit',undefined);
+                window.location = "listar.html";
             })
             .catch((error) => console.error("Error:", error));
+        /*
         })
         .catch((error) => {
             console.error("Error al enviar a la API:", error);
             sendTxtAlert("Hubo un error al subir el archivo, intentelo de nuevo más tarde")
         });
-        /*
-        
         */
     }
 
