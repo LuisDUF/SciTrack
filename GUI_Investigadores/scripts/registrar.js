@@ -135,6 +135,8 @@ function sendData()
     const inputCorreo = document.getElementById('inputCorreo');
     const inputNumbers = document.getElementById('inputNumbers');
     const inputEdad = document.getElementById('inputEdad');
+    const inputEstadoCivil = document.getElementById('inputEstadoCivil');
+
     const selectPais = document.getElementById('selectPais');
     const selectEstado = document.getElementById('selectEstado');
     const selectMunicipio = document.getElementById('selectMunicipio');
@@ -200,7 +202,38 @@ function sendData()
 
     if (!haltOperation)
     {
-        
+        fetch("https://scitrackapi-production.up.railway.app/api/asesor/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nombre:inputNombre.value,
+                apellidoPaterno:inputApellidoPaterno.value,
+                apellidoMaterno:inputApellidoMaterno.value,
+                estadoCivil:inputEstadoCivil.value,
+                correo:inputCorreo.value,
+                contrasenia:inputPassword.value,
+                telefono:inputNumbers.value,
+                edad:inputEdad.value,
+                domicilio:inputDomicilio.value,
+                curp:inputCurp.value,
+                rfc:inputRfc.value,
+                nacionalidad:selectPais.options[selectPais.selectedIndex].text,
+                estado:selectEstado.options[selectEstado.selectedIndex].text,
+                municipio:selectMunicipio.options[selectMunicipio.selectedIndex].text,
+                Disciplina_idDisciplina:selectDisciplina.options[selectDisciplina.selectedIndex].text,
+                Archivos_idArchivos:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                Institucion_idInstitucion:selectInstitucion.options[selectInstitucion.selectedIndex].text,
+                GradoDeEstudios_idGradoDeEstudios:selectGrado.options[selectGrado.selectedIndex].text,
+                Genero_idGenero:selectGenero.options[selectGenero.selectedIndex].text
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          alert('Se han enviado sus datos.')
+        })
+        .catch((error) => console.error("Error:", error));
     }
 
 }
