@@ -4,67 +4,42 @@ let ARCHIVOS = [];
 let DISCIPLINA = [];
 let GRADO = [];
 let GENEROS = [];
+let ESTADOS = [];
 
-window.onload = function () 
-{
-    startLoad();
-    fetch("https://scitrackapi-production.up.railway.app/api/investigador/", {
-        method: "GET",
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        INVES = data;
-        fetch("https://scitrackapi-production.up.railway.app/api/archivos/", {
-            method: "GET",
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            ARCHIVOS = data;
-            fetch("https://scitrackapi-production.up.railway.app/api/gradodeestudios/", {
-                method: "GET",
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                GRADO = data;
-                fetch("https://scitrackapi-production.up.railway.app/api/genero/", {
-                    method: "GET",
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    GENEROS = data;
-                    fetch("https://scitrackapi-production.up.railway.app/api/institucion/", {
-                        method: "GET",
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        INSTITUCIONES = data;
-                        fetch("https://scitrackapi-production.up.railway.app/api/disciplina/", {
-                            method: "GET",
-                        })
-                        .then((response) => response.json())
-                        .then((data) => {
-                            DISCIPLINA = data;    
-                            data.forEach(d => {
-                                console.log(d.nombre);
-                            });
-                            console.log(data);
-                            showInvestigadores();
-                            setUpButtons();
-                            endLoad();
-                        })
-                        .catch((error) => console.error("Error:", error));
-                    })
-                    .catch((error) => console.error("Error:", error));
-                })
-                .catch((error) => console.error("Error:", error));
-            })
-            .catch((error) => console.error("Error:", error));
-        })
-        .catch((error) => console.error("Error:", error));
-    })
-    .catch((error) => console.error("Error:", error));
+window.onload = async function () {
+    try {
+        startLoad();
 
-}
+        const invesResponse = await fetch("https://scitrackapi-production.up.railway.app/api/investigador/");
+        INVES = await invesResponse.json();
+
+        const archivosResponse = await fetch("https://scitrackapi-production.up.railway.app/api/archivos/");
+        ARCHIVOS = await archivosResponse.json();
+
+        const gradoResponse = await fetch("https://scitrackapi-production.up.railway.app/api/gradodeestudios/");
+        GRADO = await gradoResponse.json();
+
+        const generoResponse = await fetch("https://scitrackapi-production.up.railway.app/api/genero/");
+        GENEROS = await generoResponse.json();
+
+        const institucionResponse = await fetch("https://scitrackapi-production.up.railway.app/api/institucion/");
+        INSTITUCIONES = await institucionResponse.json();
+
+        const disciplinaResponse = await fetch("https://scitrackapi-production.up.railway.app/api/disciplina/");
+        DISCIPLINA = await disciplinaResponse.json();
+
+        const estadoResponse = await fetch("https://scitrackapi-production.up.railway.app/api/estadopersona/");
+        ESTADOS = await estadoResponse.json();
+
+        showInvestigadores();
+        setUpButtons();
+        endLoad();
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
+
 
 function setUpButtons()
 {
@@ -117,6 +92,8 @@ function showInvestigadores()
             const cuDisciplina = DISCIPLINA.find(obj => {return obj.idDisciplina == p.Disciplina_idDisciplina});
             const cuGrado = GRADO.find(obj => {return obj.idGradoDeEstudios == p.GradoDeEstudios_idGradoDeEstudios});
             const cuInstitucion = INSTITUCIONES.find(obj => {return obj.idInstitucion == p.Institucion_idInstitucion});
+            const cuArchivo = ARCHIVOS.find(obj => {return obj.idArchivos == p.Archivos_idArchivos});
+            const cuEstado = ESTADOS.find(obj => {return obj.idEstadoPersona == p.EstadoPersona_idEstadoPersona});
 
             investigadoresList.innerHTML = investigadoresList.innerHTML + `
             <details class="studentDiv">
@@ -131,6 +108,8 @@ function showInvestigadores()
                     <p>Edad: ${p.edad}</p>
                     <p>CURP: ${p.curp}</p>
                     <p>RFC: ${p.rfc}</p>
+                    <p>Archivo: </p><button class="boton-con-imagen" onclick="mostrarPdf(${cuArchivo.idArchivos})">${cuArchivo.nombre}</button>
+                    <p>Estado: ${cuEstado.nombre}</p>
                 <h3>Datos Personales</h3>
                     <p>Genero: ${cuGenero.nombre}</p>
                     <p>Estado Civil: ${p.estadoCivil}</p>
@@ -158,4 +137,33 @@ function endLoad()
 {
     document.getElementsByTagName('block_by_loading')[0].className = "";
     document.getElementById('loading_gif').style.opacity = 0;
+}
+
+function mostrarPdf(id) {
+    const archivo = ARCHIVOS.find(a => a.idArchivos === id);
+
+    if (!archivo || !archivo.contenido || !archivo.contenido.data) {
+        alert("El archivo no tiene contenido disponible o está mal formado.");
+        return;
+    }
+
+    // Convertir el array de números a un Uint8Array
+    const byteArray = new Uint8Array(archivo.contenido.data);
+
+    // Crear un BLOB de tipo PDF
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+    // Crear una URL temporal para mostrar el PDF
+    const objectURL = URL.createObjectURL(blob);
+
+    // Abrir el PDF en una nueva pestaña con un iframe
+    const pdfWindow = window.open("");
+    pdfWindow.document.write(`
+        <html>
+            <head><title>Visualizador PDF</title></head>
+            <body style="margin:0">
+                <iframe width="100%" height="100%" src="${objectURL}" frameborder="0"></iframe>
+            </body>
+        </html>
+    `);
 }
