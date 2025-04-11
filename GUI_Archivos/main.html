@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Subir PDF</title>
   <script defer src="scripts/main.js"></script>
+  <style>
+    .notas{
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <h1>Subir archivo PDF</h1>
 
   <p>Selecciona un archivo PDF:</p>
+  <p class="notas">*Nota: El tamaño de los archivos debe ser menor de 66 kilobytes.</p>
   <input type="file" id="inputPDF" accept="application/pdf" />
 
   <h3>Detalles del archivo</h3>
