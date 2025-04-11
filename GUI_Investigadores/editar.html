@@ -6,7 +6,7 @@
     <title>Scitrack</title>
 </head>
 <header>
-  <h1>Modificar Ubicacion</h1>
+  <h1>Editar</h1>
 </header>
 
 <style>
@@ -25,7 +25,7 @@
     {
         width: 20vw;
     }
-    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert, #txtFileAlert
     {
         color: red;
     }
@@ -49,33 +49,93 @@
 <loading>
   <img src="../Resources/loading_scitrack.gif" class="loading_gif" id="loading_gif">
 </loading>
-
 <body>
   <block_by_loading>
+ 
+
+  <p>Nombre:</p>
+  <input type="text" id="inputNombre" placeholder="Ingrese su nombre..." />
+
+  <p>Apellido paterno:</p>
+  <input type="text" id="inputApellidoPaterno" placeholder="Ingrese su apellido paterno..." />
+  
+  <p>Apellido materno:</p>
+  <input type="text" id="inputApellidoMaterno" placeholder="Ingrese su apellido materno..." />
+
+  <p>Correo:</p>
+  <input type="text" id="inputCorreo" placeholder="Ingrese su correo..." />
+
+  <p>Telefono:</p>
+  <input type="number" id="inputNumbers" placeholder="Ingrese su numero de telefono..." />
+
+  <p>Edad:</p>
+  <input type="number" id="inputEdad" placeholder="Ingrese su edad..." />
+
+  <p>Nacionalidad:</p>
+  <select id="selectPais">
+    <option value="none">---</option>
+  </select>
+
   <p>Estado:</p>
   <select id="selectEstado">
     <option value="none">---</option>
   </select>
+
   <p>Municipio:</p>
   <select id="selectMunicipio">
     <option value="none">---</option>
   </select>
-  <p>Colonia:</p>
-  <select id="selectColonia">
-    <option value="none">---</option>
-  </select>
-  <p>Calle:</p>
-  <input type="text" id="inputCalle" placeholder="Ingrese el nombre de la calle..." />
 
-  <p>Número:</p>
-  <input type="number" id="inputNumero" placeholder="Ingrese el numero exterior..." />
+  <p>Domicilio:</p>
+  <input type="text" id="inputDomicilio" placeholder="Ingrese su domicilio..." />
 
-  <p>Código Postal:</p>
-  <input type="number" id="inputCodPos" placeholder="Ingrese el código postal..." />
+  <p>CURP:</p>
+  <input type="text" id="inputCurp" placeholder="Ingrese su CURP..." />
+
+  <p>RFC:</p>
+  <input type="text" id="inputRfc" placeholder="Ingrese su RFC..." />
+
+  <p>Estado Civil:</p>
+  <input type="text" id="inputEstadoCivil" placeholder="Ingrese su estado civil..." />
+
 
   
+
+  <p>Disciplina:</p>
+  <select id="selectDisciplina">
+    <option value="none">---</option>
+  </select>
+
+  <p>Institucion:</p>
+  <select id="selectInstitucion">
+    <option value="none">---</option>
+  </select>
+
+  <p>Grado de Estudios:</p>
+  <select id="selectGrado">
+    <option value="none">---</option>
+  </select>
+
+  <p>Genero:</p>
+  <select id="selectGenero">
+    <option value="none">---</option>
+  </select>
+
+  
+  <p>Contraseña:</p>
+  <input type="password" id="inputPassword" placeholder="..." />
+
+  <p>Confirmar contraseña:</p>
+  <input type="password" id="inputConfirmPassword" placeholder="..." />
+  
+  <p>Archivo:</p>
+  <p id="txtFileAlert">El tamaño máximo del archivo es de 65kb</p>
+  <p id="txtFileAlert">Si usted NO desea cambiar su archivo, NO seleccione uno nuevo.</p>
+  <input type="file" id="inputPDF" accept="application/pdf" />
+
   <br><br>
-  <button id="btnConfirm">Confirmar</button>
   <p id="txtConfirmAlert"></p>
+  <button id="btnConfirm">Confirmar</button>
+
   </block_by_loading>
 </body>

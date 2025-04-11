@@ -9,6 +9,7 @@ let PAISES = [];
 let ESTADOS = [];
 let COLONIAS = [];
 let MUNICIPIOS = [];
+let archivoSeleccionado = null;
 
 const specialCharacters = ["#","$","%","&"];
 const neededNumbers = [0,1,2,3,4,5,6,7,8,9];
@@ -47,10 +48,12 @@ window.onload = async function (){
         const municipioResponse = await fetch("https://scitrackapi-production.up.railway.app/api/municipio/");
         MUNICIPIOS = await municipioResponse.json();
         const btnConfirm = document.getElementById('btnConfirm');
+
         btnConfirm.onclick = function ()
         {
             sendData();
         }
+
 
         loadData();
         endLoad();
@@ -62,6 +65,20 @@ window.onload = async function (){
 
 function loadData()
 {
+    const inputPDF = document.getElementById("inputPDF");
+  
+    inputPDF.addEventListener("change", function () {
+      const archivo = inputPDF.files[0];
+  
+      if (archivo && archivo.type === "application/pdf") {
+        archivoSeleccionado = archivo;
+      } else {
+        alert("Por favor, selecciona un archivo PDF válido.");
+        inputPDF.value = "";
+       
+      }
+    });
+
     const inputNombre = document.getElementById('inputNombre');
     const inputApellidoPaterno = document.getElementById('inputApellidoPaterno');
     const inputApellidoMaterno = document.getElementById('inputApellidoMaterno');
@@ -83,12 +100,44 @@ function loadData()
     const btnConfirm = document.getElementById('btnConfirm');
     const txtConfirmAlert = document.getElementById('txtConfirmAlert');
 
+    
     //Fill selects
     {
         selectPais.innerHTML = `<option value="none">---</option>`;
         PAISES.forEach(a =>{
             selectPais.innerHTML += `<option value="${a.idPais}">${a.nombre}</option>`;
         })
+
+        selectPais.onchange = function ()
+        {
+            
+            
+            selectEstado.innerHTML = `<option value="none">---</option>`;
+            ESTADOS.forEach(a =>{
+                startLoad();
+                if(a.Pais_idPais == selectPais.value)
+                {
+                    selectEstado.innerHTML += `<option value="${a.idEstado}">${a.nombre}</option>`;
+                }
+            });
+            endLoad();
+        }
+
+        selectEstado.onchange = function ()
+        {
+        
+            selectMunicipio.innerHTML = `<option value="none">---</option>`;
+            MUNICIPIOS.forEach(a =>{
+                startLoad();
+                if(a.Estado_idEstado == selectEstado.value)
+                    {
+                        selectMunicipio.innerHTML += `<option value="${a.idMunicipio}">${a.nombre}</option>`;
+                    }
+            });
+                  
+            endLoad();
+        }
+
 
         /*
         selectEstado.innerHTML = `<option value="none">---</option>`;
@@ -114,7 +163,7 @@ function loadData()
 
         selectGrado.innerHTML = `<option value="none">---</option>`;
         GRADO.forEach(a =>{
-            selectGrado.innerHTML += `<option value="${a.idGrado}">${a.nombre}</option>`;
+            selectGrado.innerHTML += `<option value="${a.idGradoDeEstudios}">${a.nombre}</option>`;
         })
 
         selectGenero.innerHTML = `<option value="none">---</option>`;
@@ -172,6 +221,11 @@ function sendData()
     ];
     let haltOperation = false;
 
+    if (!archivoSeleccionado) {
+        sendTxtAlert('Por favor, selecciona un archivo PDF antes de subir.');
+        haltOperation = true;
+    }
+
     for (let e in inputElements)
     {
         const element = inputElements[e];
@@ -200,40 +254,73 @@ function sendData()
         haltOperation = true;
     }
 
+ 
+
     if (!haltOperation)
     {
-        fetch("https://scitrackapi-production.up.railway.app/api/asesor/", {
+        const tamanioEnKB = (archivoSeleccionado.size / 1024).toFixed(2); // Tamaño en KB, como número (sin "KB")
+      
+        const formData = new FormData();
+        formData.append("nombre", archivoSeleccionado.name);  // Nombre del archivo
+        formData.append("tamanio", tamanioEnKB);  // Tamaño como número (en kilobytes)
+        formData.append("fechaIngreso", new Date().toISOString().split("T")[0]);  // Fecha en formato YYYY-MM-DD
+        formData.append("contenido", archivoSeleccionado);  // El archivo binario
+        
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+    
+        fetch("https://scitrackapi-production.up.railway.app/api/archivos/", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                nombre:inputNombre.value,
-                apellidoPaterno:inputApellidoPaterno.value,
-                apellidoMaterno:inputApellidoMaterno.value,
-                estadoCivil:inputEstadoCivil.value,
-                correo:inputCorreo.value,
-                contrasenia:inputPassword.value,
-                telefono:inputNumbers.value,
-                edad:inputEdad.value,
-                domicilio:inputDomicilio.value,
-                curp:inputCurp.value,
-                rfc:inputRfc.value,
-                nacionalidad:selectPais.options[selectPais.selectedIndex].text,
-                estado:selectEstado.options[selectEstado.selectedIndex].text,
-                municipio:selectMunicipio.options[selectMunicipio.selectedIndex].text,
-                Disciplina_idDisciplina:selectDisciplina.options[selectDisciplina.selectedIndex].text,
-                Archivos_idArchivos:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                Institucion_idInstitucion:selectInstitucion.options[selectInstitucion.selectedIndex].text,
-                GradoDeEstudios_idGradoDeEstudios:selectGrado.options[selectGrado.selectedIndex].text,
-                Genero_idGenero:selectGenero.options[selectGenero.selectedIndex].text
-            }),
+            body: formData,
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) throw new Error("Error en la respuesta de la API");
+            return response.json();
+        })
         .then((data) => {
-          alert('Se han enviado sus datos.')
+            
+            fetch("https://scitrackapi-production.up.railway.app/api/investigador/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nombre:inputNombre.value,
+                    apellidoPaterno:inputApellidoPaterno.value,
+                    apellidoMaterno:inputApellidoMaterno.value,
+                    estadoCivil:inputEstadoCivil.value,
+                    correo:inputCorreo.value,
+                    contrasenia:inputPassword.value,
+                    telefono:inputNumbers.value,
+                    edad:inputEdad.value,
+                    domicilio:inputDomicilio.value,
+                    curp:inputCurp.value,
+                    rfc:inputRfc.value,
+                    nacionalidad:selectPais.options[selectPais.selectedIndex].text,
+                    estado:selectEstado.options[selectEstado.selectedIndex].text,
+                    municipio:selectMunicipio.options[selectMunicipio.selectedIndex].text,
+                    Disciplina_idDisciplina:selectDisciplina.value,
+                    Archivos_idArchivos:data.idArchivos,
+                    Institucion_idInstitucion:selectInstitucion.value,
+                    GradoDeEstudios_idGradoDeEstudios:selectGrado.value,
+                    Genero_idGenero:selectGenero.value
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                alert('Se han enviado sus datos correctamente.')
+                window.location.reload();
+            })
+            .catch((error) => console.error("Error:", error));
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => {
+            console.error("Error al enviar a la API:", error);
+            sendTxtAlert("Hubo un error al subir el archivo, intentelo de nuevo más tarde")
+        });
+        /*
+        
+        */
     }
 
 }
@@ -248,6 +335,11 @@ function endLoad()
 {
     document.getElementsByTagName('block_by_loading')[0].className = "";
     document.getElementById('loading_gif').style.opacity = 0;
+}
+
+function sendFile()
+{
+      
 }
 
 async function sendTxtAlert(text)
