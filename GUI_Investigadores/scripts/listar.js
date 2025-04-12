@@ -92,8 +92,13 @@ function showInvestigadores()
             const cuDisciplina = DISCIPLINA.find(obj => {return obj.idDisciplina == p.Disciplina_idDisciplina});
             const cuGrado = GRADO.find(obj => {return obj.idGradoDeEstudios == p.GradoDeEstudios_idGradoDeEstudios});
             const cuInstitucion = INSTITUCIONES.find(obj => {return obj.idInstitucion == p.Institucion_idInstitucion});
-            const cuArchivo = ARCHIVOS.find(obj => {return obj.idArchivos == p.Archivos_idArchivos});
+            const cuArchivos = ARCHIVOS.filter(obj => {return obj.Investigador_idInvestigador == p.idInvestigador});
             const cuEstado = ESTADOS.find(obj => {return obj.idEstadoPersona == p.EstadoPersona_idEstadoPersona});
+            let archivoString = '';
+            
+            cuArchivos.forEach(c => {
+                archivoString += `<button class="boton-con-imagen" onclick="mostrarPdf(${c.idArchivos})">${c.nombre}</button> <br>`
+            });
 
             investigadoresList.innerHTML = investigadoresList.innerHTML + `
             <details class="studentDiv">
@@ -108,7 +113,8 @@ function showInvestigadores()
                     <p>Edad: ${p.edad}</p>
                     <p>CURP: ${p.curp}</p>
                     <p>RFC: ${p.rfc}</p>
-                    <p>Archivo: </p><button class="boton-con-imagen" onclick="mostrarPdf(${cuArchivo.idArchivos})">${cuArchivo.nombre}</button>
+                    <p>Archivos: </p>
+                    ${archivoString}
                     <p>Estado: ${cuEstado.nombre}</p>
                 <h3>Datos Personales</h3>
                     <p>Genero: ${cuGenero.nombre}</p>

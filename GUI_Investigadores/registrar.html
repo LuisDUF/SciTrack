@@ -15,6 +15,22 @@
       font-family: Verdana, Geneva, Tahoma, sans-serif
     }
 
+
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
     blo
     {
       pointer-events: none;
@@ -129,8 +145,23 @@
   <input type="password" id="inputConfirmPassword" placeholder="..." />
   
   <p>Archivo:</p>
-  <p id="txtFileAlert">El tamaño máximo del archivo es de 65kb</p>
   <input type="file" id="inputPDF" accept="application/pdf" />
+  <p id="txtFileAlert"></p>
+  <table id="tablaArchivos">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Tamaño</th>
+        <th>Acción</th> 
+      </tr>
+    </thead>
+    <tbody id="cuerpoTablaArchivos">
+      <tr>
+        <td colspan="4">No se han seleccionado archivos.</td>
+      </tr>
+    </tbody>
+  </table>
 
   <br><br>
   <p id="txtConfirmAlert"></p>
