@@ -5,22 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Subir PDF</title>
   <script defer src="scripts/main.js"></script>
+  <style>
+    .notas{
+      color: red;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
-  <h1>Subir archivo PDF</h1>
+  <h1>Subir archivos PDF</h1>
 
-  <p>Selecciona un archivo PDF:</p>
+  <p>Selecciona uno o más archivos PDF:</p>
+  <p class="notas">*Nota: El tamaño de los archivos debe ser menor de 66 kilobytes.</p>
   <input type="file" id="inputPDF" accept="application/pdf" />
 
-  <h3>Detalles del archivo</h3>
-  <p>Nombre: <span id="nombreArchivo">--</span></p>
-  <p>Tamaño: <span id="tamanoArchivo">--</span></p>
-  <p>Fecha de ingreso: <span id="fechaIngreso">--</span></p>
+  <h3>Archivos seleccionados</h3>
+  <table id="tablaArchivos">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Tamaño</th>
+        <th>Fecha de ingreso</th>
+        <th>Acción</th> 
+      </tr>
+    </thead>
+    <tbody id="cuerpoTablaArchivos">
+      <tr>
+        <td colspan="4">No se han seleccionado archivos.</td>
+      </tr>
+    </tbody>
+  </table>
 
   <br><br>
-  <button id="btnSubir">Subir archivo</button>
+  <button id="btnSubir">Subir archivos</button>
 
-  <!-- Aquí va el mensaje de confirmación o error -->
   <div id="txtConfirmAlert" style="color: red; margin-top: 10px;"></div>
 </body>
 </html>
