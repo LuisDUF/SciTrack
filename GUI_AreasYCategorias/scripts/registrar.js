@@ -1,7 +1,11 @@
 let CATEGORIAS = [];
 let AREAS = [];
+let RUBRICAS = [];
+let CRITERIOS = [];
 
 window.onload = async function () {
+    await cargarRubricas();
+    await cargarCriterios();
     await cargarCategorias();
     await cargarAreas();
     mostrarCategorias();
@@ -100,6 +104,27 @@ async function cargarAreas() {
     })
     .catch(error => console.error("Error al obtener áreas:", error));
 }
+async function cargarRubricas() {
+  await fetch("https://scitrackapi-production.up.railway.app/api/rubrica", {
+    method: "GET",
+  })
+  .then(response => response.json())
+  .then(data => {
+    RUBRICAS = data;
+  })
+  .catch(error => console.error("Error al obtener rúbricas:", error));
+}
+
+async function cargarCriterios() {
+  await fetch("https://scitrackapi-production.up.railway.app/api/criterio", {
+    method: "GET",
+  })
+  .then(response => response.json())
+  .then(data => {
+    CRITERIOS = data;
+  })
+  .catch(error => console.error("Error al obtener rúbricas:", error));
+}
 
 function mostrarCategorias(filtradas = CATEGORIAS) {
     const table = document.getElementById("categoriasTable");
@@ -173,13 +198,25 @@ function modificarCategoria(id, areaId) {
 
 function mostrarAreas() {
   const table = document.getElementById("areasTable").querySelector("tbody");
-  table.innerHTML = ""; // Limpiar contenido previo
+  table.innerHTML = "";
 
   AREAS.forEach(area => {
+    const rubrica = RUBRICAS.find(r => r.AreaDeConocimientoCat_idAreaDeConocimientoCat === area.idAreaDeConocimientoCat);
+    const nombreRubrica = rubrica ? rubrica.descripcion : "No asignada";
+
+    const criteriosDeRubrica = CRITERIOS
+      .filter(c => c.Rubrica_idRubrica === rubrica.idRubrica)
+      .map(c => `<li>${c.descripcion}: ${c.ponderacion}%</li>`)
+      .join("");
+
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${area.idAreaDeConocimientoCat}</td>
       <td>${area.nombre}</td>
+      <td>
+        <strong>${nombreRubrica}</strong>
+        <ul>${criteriosDeRubrica}</ul>
+      </td>
       <td>
         <button class="delete" onclick="eliminarArea(${area.idAreaDeConocimientoCat})">Eliminar</button>
       </td>
@@ -187,6 +224,8 @@ function mostrarAreas() {
     table.appendChild(row);
   });
 }
+
+
 
 async function eliminarArea(id) {
   if (!confirm("¿Estás seguro de eliminar esta área de conocimiento y todas sus categorías?")) return;
