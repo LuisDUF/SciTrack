@@ -46,15 +46,14 @@ window.onload = function(){
             inputNombreDis.value === "" ||
             inputNombreSubdis.value === ""||
             inputIdArea.value === "" ||
-            inputIdDisciplina.value === "" ||
-            inputIdAreaEd.value === ""
+            inputIdDisciplina.value === "" 
         ) {
             alert("Ingrese la información en todos los campos");
             return;
         }
   
         // Enviar datos
-        fetch("https://scitrackapi-production.up.railway.app/api/areaDeConocimiento/"+inputIdDisciplina.value, {
+        fetch("https://scitrackapi-production.up.railway.app/api/disciplina/"+inputIdDisciplina.value, {
             method: "PUT",
             headers: {
             "Content-Type": "application/json",
