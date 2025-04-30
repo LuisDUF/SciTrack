@@ -1,0 +1,70 @@
+window.onload = function () {   
+    //La convocatoria a la cuál se le va a definir fases, temporalmente utilzando un valor fijo
+    const convocatoria = 1;
+    
+    const inputName = document.getElementById("inputNombre");
+    
+    const inputDescripcion = document.getElementById("inputDescripcion");
+   
+    const inputFechaInicio = document.getElementById("inputFechaInicio");
+    
+    const inputFechaFin = document.getElementById("inputFechaFin");
+    
+    const inputMaxIntegrantes = document.getElementById("inputMaxIntegrantes");
+
+    const txtConfirmAlert = document.getElementById('txtConfirmAlert');
+   
+    //Se guardan todos los inputs de texto en un array para facilmente ver los valores de TODOS posteriormente.
+    const inputs = [inputName,inputFechaInicio,inputDescripcion,inputMaxIntegrantes,inputFechaFin];
+    const btnConfirm = document.getElementById("btnConfirm");
+
+    btnConfirm.onclick = function()
+    {
+        let success = true;
+        let estado = "Pendiente";
+        var d = new Date();
+        var fechaM = new Date(inputFechaFin.value);
+        var fechaMen = new Date(inputFechaInicio.value);
+        if(d<fechaM && d>=fechaMen){
+            estado = "Activo";
+        }
+        else if(d>=fechaM){
+            estado = "Finalizado";
+            
+        }
+            
+            
+        inputs.every(i => {
+            if (i.value == "")
+            {
+                
+                txtConfirmAlert.innerHTML = "¡Debe llenar todos los campos correctamente!";
+                success = false;
+                return false;
+            }
+        }); 
+        if (success) txtConfirmAlert.innerHTML = "";            
+            fetch("https://scitrackapi-production.up.railway.app/api/convocatoria/", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                
+                body: JSON.stringify({
+                    nombre:inputName.value,
+                    descripcion:inputDescripcion.value,
+                    fechaInicio:inputFechaInicio.value,
+                    fechaFin:inputFechaFin.value,
+                    max_integrantes:inputMaxIntegrantes.value,
+                    estado:estado,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                console.log(data);
+                alert("Se ha guardado la convocatoria")
+                })
+                .catch((error) => console.error("Error:", error));
+    };
+
+  };
