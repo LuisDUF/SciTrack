@@ -1,2 +1,0 @@
-# SciTrack
-Repositorio proyecto SciTrack
