@@ -4,6 +4,7 @@ window.onload = function () {
   const inputDescripcion = document.getElementById("inputDescripcion");
   const inputIdUbicacion = document.getElementById("inputIdUbicacion");
   const btnConfirm = document.getElementById("btnConfirm");
+  const inputCalificacion = document.getElementById("inputCalificacion");
 
   btnConfirm.onclick = function () {
       const anioIn = document.getElementById('anioIn').value;
@@ -22,9 +23,7 @@ window.onload = function () {
           inputModalidad.value === "" ||
           anioIn === "" || mesIn === "" || diaIn === "" ||
           anioFn === "" || mesFn === "" || diaFn === "" ||
-          inputDescripcion.value === "" ||
-          inputIdUbicacion.value === ""
-      ) {
+          inputDescripcion.value === ""      ) {
           alert("Ingrese la información en todos los campos");
           return;
       }
@@ -41,6 +40,7 @@ window.onload = function () {
               fechaInicio: inputFechaInicio,
               fechaFin: inputFechaFin,
               descripcion: inputDescripcion.value,
+              califcacion_minima: inputCalificacion.value,
               Ubicacion_idUbicacion: inputIdUbicacion.value
           }),
       })
