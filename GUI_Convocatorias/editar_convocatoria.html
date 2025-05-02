@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/editar_convocatoria.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Editar</h1>
+</header>
+
+<style>
+    input, select
+    {
+        width: 20vw;
+    }
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    {
+        color: red;
+    }
+</style>
+
+<body>
+  <p>Nombre:</p>
+  <input type="text" id="inputNombre" placeholder="Ingrese su nombre o nombres..." />
+
+  <p>Descripción:</p>
+  <input type="text" id="inputDescripcion" placeholder="Ingrese la descripcion..." />
+
+  <p>Número máximo de integrantes:</p>
+  <input type="number" id="inputMaxIntegrantes" placeholder="n" />
+
+  <p>Fecha de inicio de la convocatoria:</p>
+  <input type="date" id="inputFechaInicio" placeholder="AAAA-MM-DD" />
+  
+  <p>Fecha de fin de la convocatoria:</p>
+  <input type="date" id="inputFechaFin" placeholder="AAAA-MM-DD" />
+  
+  <br><br>
+
+  <button id="btnConfirm">Confirmar</button>
+  <p id="txtConfirmAlert"></p>
+
+</body>

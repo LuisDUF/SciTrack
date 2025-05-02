@@ -1,5 +1,6 @@
 let phaseCounter = 0;
 const phases = [];
+const conv_to_edit = sessionStorage.getItem('sci:conv_to_edit');
 
 window.onload = function () {
     const inputNombre = document.getElementById("inputNombre");
@@ -10,6 +11,12 @@ window.onload = function () {
     const btnConfirmPhases = document.getElementById('btnConfirmPhases');
     const inputCalificacion = document.getElementById("inputCalificacion");
     const containerPhases = document.getElementById('phasesAdded');
+
+    if (conv_to_edit == undefined)
+    {
+        alert('ERROR: No se ha especificado una convocatoria a editar. Este mensaje nunca se tendría que ver');
+        window.location.href = '../../GUI_Convocatorias/listar_convocatorias.html';
+    }
 
     btnAddPhase.onclick = function () {
         const anioIn = document.getElementById('anioIn').value;
