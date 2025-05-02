@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/registrar.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Registro de Proyectos</h1>
+</header>
+
+<style>
+    input, select
+    {
+        width: 20vw;
+    }
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    {
+        color: red;
+    }
+</style>
+
+<body>
+  <p>Nombre:</p>
+  <input type="text" id="inputNombre" placeholder="Ingrese nombre de proyecto..." />
+
+  <p>Fecha de Registro:</p>
+        
+        <label>Año:</label>
+        <input type="number" id="anioFn" name="anio" min="1900" max="2100">
+
+        <label>Mes:</label>
+        <input type="number" id="mesFn" name="mes" min="1" max="12">
+
+        <label>Día:</label>
+        <input type="number" id="diaFn" name="dia" min="1" max="31"><br><br>
+
+  <p>Promedio:</p>
+  <input type="text" id="inputApellidoM" placeholder="Ingrese el promedio..." />
+
+  <p>Equipo:</p>
+  <input type="text" id="inputEmail" placeholder="Asigne equipo..." />
+  <p id="txtEmailAlert"></p>
+
+  <p>Categoria:</p>
+  <input type="text" id="inputIdCategoria" placeholder="Asigne categoria" />
+  <p id="txtPasswordAlert"></p>
+
+  <p>Investigador:</p>
+  <input type="text" id="inputIdInvestigador" placeholder="Asigne al investigador" />
+  <p id="txtConfirmPasswordAlert"></p>
+
+  <p>Archivos:</p>
+  <input type="text" id="inputIdArchivo" placeholder="Asigne el archivo correspondiente" />
+  
+  <p>Fase:</p>
+  <input type="text" id="inputIdFase" placeholder="Asigne la fase" />
+
+  <p>Estado:</p>
+  <input type="text" id="inputIdEstado" placeholder="Asigne el estado" />
+  
+  <p>Califiacion:</p>
+  <input type="text" id="inputIdCalificacion" placeholder="Asigne la calificacion" />
+
+  <br><br>
+  <button id="btnConfirm">Confirmar</button>
+  <p id="txtConfirmAlert"></p>
+
+</body>
