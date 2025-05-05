@@ -32,7 +32,7 @@ window.onload = function () {
       }
     });
     if (success) txtConfirmAlert.innerHTML = "";
-    fetch("https://scitrackapi-production.up.railway.app/api/convocatoria/", {
+    fetch("http://localhost:3000/api/convocatoria/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

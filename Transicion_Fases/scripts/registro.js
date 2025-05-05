@@ -51,7 +51,7 @@ window.onload = function () {
             <p>Fecha de inicio: ${inputFechaInicio}</p>
             <p>Fecha de cierre: ${inputFechaFin}</p>
             <p>Calificación mínima: ${inputCalificacion.value}</p>
-            <p>Ubicación: ${inputIdUbicacion.value || 'Sin ubicación'}</p>
+            <p>Ubicación: ${inputIdUbicacion.value || '---'}</p>
             <button class="move-up">Subir</button>
             <button class="move-down">Bajar</button>
         `;
@@ -129,9 +129,11 @@ window.onload = function () {
 async function printFiles () {
     let i = 0;
     for (const phase of phases) {
-        if (typeof phase.ubicacion != "number")
+        alert(phase.ubicacion)
+
+        if (phase.ubicacion == "---")
         {
-            fetch("https://scitrackapi-production.up.railway.app/api/fase/", {
+            fetch("http://localhost:3000/api/fase/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -147,18 +149,34 @@ async function printFiles () {
             })
             .then((response) => response.json())
             .then((data) => {
-                i++;
-                if (i == phases.length)
-                {
-                    window.location.reload();
-                    alert('Se han registrado las fases correctamente')
-                }
+                fetch("http://localhost:3000/api/itemconvocatoria_fase/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        Convocatoria_idConvocatoria: conv_to_edit,
+                        Fase_idFase: data.idFase,
+                        orden: i,
+                    }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    i++;
+                    if (i == phases.length)
+                        {
+                            //window.location.reload();
+                            alert('Se han registrado las fases correctamente')
+                        }
+                })
+                .catch((error) => console.error("Error:", error));
+           
             })
             .catch((error) => console.error("Error:", error));
         }
         else
         {
-            fetch("https://scitrackapi-production.up.railway.app/api/fase/", {
+            fetch("http://localhost:3000/api/fase/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -175,12 +193,28 @@ async function printFiles () {
             })
             .then((response) => response.json())
             .then((data) => {
-                i++;
-                if (i == phases.length)
-                {
-                    window.location.reload();
-                    alert('Se han registrado las fases correctamente')
-                }
+                fetch("http://localhost:3000/api/itemconvocatoria_fase/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        Convocatoria_idConvocatoria: conv_to_edit,
+                        Fase_idFase: data.idFase,
+                        orden: i,
+                    }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    i++;
+                    if (i == phases.length)
+                        {
+                            //window.location.reload();
+                            alert('Se han registrado las fases correctamente')
+                        }
+                })
+                .catch((error) => console.error("Error:", error));
+           
             })
             .catch((error) => console.error("Error:", error));
         }

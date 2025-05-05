@@ -13,7 +13,7 @@ let CONVOCATORIAS =
 window.onload = function () 
 {
 
-    fetch("https://scitrackapi-production.up.railway.app/api/convocatoria/", {
+    fetch("http://localhost:3000/api/convocatoria/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -51,7 +51,7 @@ function setUpButtons()
 
 function deleteConvocatoria(id)
 {
-    fetch(`https://scitrackapi-production.up.railway.app/api/convocatoria/${id}`, {
+    fetch(`http://localhost:3000/api/convocatoria/${id}`, {
         method: "DELETE",
     })
     .then((data) => {
@@ -74,7 +74,7 @@ function editConvocatoria(id)
 
     */
     /*
-    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${id}`, {
+    fetch(`http://localhost:3000/api/participante/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -110,6 +110,7 @@ function showConvocatorias()
                 <p>Estado: ${p.estado}</p>
                 <button class="editBtn" id="${p.idConvocatoria}">Editar</button>
                 <button class="deleteBtn" id="${p.idConvocatoria}">Eliminar</button>
+                <button class="phaseBtn" id="phase${p.idConvocatoria}">Definir Fases</button>
             </div>
             `;               
         });
