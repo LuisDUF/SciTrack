@@ -15,6 +15,8 @@ function listar_fases() {
                 <td>${fase.fechaInicio}</td>
                 <td>${fase.fechaFin}</td>
                 <td>${fase.descripcion}</td>
+                <td>${fase.calificacion_minima}</td>
+
                 <td>${fase.Ubicacion_idUbicacion}</td>
                 <td style="border: none;"><button id="btn_delete_${fase.idFase}" onclick="btnEliminarFase(${fase.idFase})">Eliminar</button></td>
             `;
