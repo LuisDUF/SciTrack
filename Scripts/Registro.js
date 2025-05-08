@@ -12,9 +12,10 @@ window.onload = function () {
   
 
   btnConfirm.onclick = function () {
-      const anio = document.getElementById('anio').value;
-      const mes = document.getElementById('mes').value.padStart(2, '0');
-      const dia = document.getElementById('dia').value.padStart(2, '0');
+      let fecha = new Date();
+      const anio = fecha.getDate();
+      const mes = fecha.getMonth()+1;
+      const dia = fecha.getFullYear();
       const inputFecha = `${anio}-${mes}-${dia}`;
 
       
