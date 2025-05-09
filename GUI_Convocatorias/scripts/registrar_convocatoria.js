@@ -65,7 +65,7 @@ window.onload = function () {
                 if (confirm("Se ha registrado la convocatoria. ¿Desea definir las fases en este momento?") == true) 
                 {
                     sessionStorage.setItem('sci:conv_to_edit',id);
-                    window.location.href='../Transicion_Fases/GUIRegistroFases.html';
+                    window.location.href='../GUI_Fases/GUIRegistroFases.html';
                 } else 
                 {
                     sessionStorage.setItem('sci:conv_to_edit',undefined);
