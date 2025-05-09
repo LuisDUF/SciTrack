@@ -1,0 +1,12 @@
+const PARTICIPANTE = {
+    idParticipante:,
+    nombre:,
+    apellidoPaterno:,
+    apellidoMaterno:,
+    correo:,
+    contraseña:,
+    telefono:,
+    Equipo_idEquipo:1,
+    Dependencia_idDependencia:,
+}
+

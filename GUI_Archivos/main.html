@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subir PDF</title>
+  <script defer src="scripts/main.js"></script>
+  <style>
+    .notas{
+      color: red;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Subir archivos PDF</h1>
+
+  <p>Selecciona uno o más archivos PDF:</p>
+  <p class="notas">*Nota: El tamaño de los archivos debe ser menor de 66 kilobytes.</p>
+  <input type="file" id="inputPDF" accept="application/pdf" />
+
+  <h3>Archivos seleccionados</h3>
+  <table id="tablaArchivos">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Tamaño</th>
+        <th>Fecha de ingreso</th>
+        <th>Acción</th> 
+      </tr>
+    </thead>
+    <tbody id="cuerpoTablaArchivos">
+      <tr>
+        <td colspan="4">No se han seleccionado archivos.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br><br>
+  <button id="btnSubir">Subir archivos</button>
+
+  <div id="txtConfirmAlert" style="color: red; margin-top: 10px;"></div>
+</body>
+</html>

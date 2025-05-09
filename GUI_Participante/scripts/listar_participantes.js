@@ -2,7 +2,7 @@
 //import { TEAMS,PROJECTS,CONTESTS } from "./database_connection"
 
 
-let CONVOCATORIAS =
+let PARTICIPANTS =
 [
    
 ]
@@ -13,9 +13,7 @@ let CONVOCATORIAS =
 window.onload = function () 
 {
 
-
-    fetch("http://localhost:3000/api/convocatoria/", {
-
+    fetch("https://scitrackapi-production.up.railway.app/api/participante/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -25,8 +23,8 @@ window.onload = function ()
             console.log(d.nombre);
         });
         console.log(data);
-        CONVOCATORIAS = data;
-        showConvocatorias();
+        PARTICIPANTS = data;
+        showParticipants();
         setUpButtons();
     })
     .catch((error) => console.error("Error:", error));
@@ -38,38 +36,35 @@ function setUpButtons()
     const deleteButtons = document.getElementsByClassName('deleteBtn');
     for (let btn of deleteButtons) {
         btn.onclick = function (){
-            deleteConvocatoria(btn.id);
+            deleteParticipant(btn.id);
         }
     };
 
     const editButtons = document.getElementsByClassName('editBtn');
     for (let btn of editButtons) {
         btn.onclick = function (){
-         
-            editConvocatoria(btn.id);
+            editParticipant(btn.id);
         }
     }
 }
 
-function deleteConvocatoria(id)
+function deleteParticipant(id)
 {
-
-    fetch(`http://localhost:3000/api/convocatoria/${id}`, {
-
+    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${id}`, {
         method: "DELETE",
     })
     .then((data) => {
-        alert('La convocatoria ha sido eliminada');
+        alert('El participante ha sido eliminado');
         console.log("Data was deleted!");
         window.location.reload();
     })
     .catch((error) => console.error("Error:", error));
 }
 
-function editConvocatoria(id)
+function editParticipant(id)
 {
-    sessionStorage.setItem('sci:convocatoria_to_edit',id);
-    window.location = "editar_convocatoria.html";
+    sessionStorage.setItem('sci:participant_to_edit',id);
+    window.location = "editar_participante.html";
 
     /*
     const elemento = ARREGLO.filter(e => {
@@ -78,8 +73,7 @@ function editConvocatoria(id)
 
     */
     /*
-
-    fetch(`http://localhost:3000/api/participante/${id}`, {
+    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -97,27 +91,21 @@ function editConvocatoria(id)
     */
 }
 
-function showConvocatorias()
+function showParticipants()
 {
    
-    const listaConvocatorias = document.getElementById('listConvocatorias');
+    const participantsList = document.getElementById('listParticipants');
 
 
-    listaConvocatorias.innerHTML="";
+    participantsList.innerHTML="";
     if (true)
     {
-        CONVOCATORIAS.forEach(p => {
-            
-            
-            listaConvocatorias.innerHTML = listaConvocatorias.innerHTML + `
+        PARTICIPANTS.forEach(p => {
+            participantsList.innerHTML = participantsList.innerHTML + `
             <div class="studentDiv">
-                <p>Nombre: ${p.nombre}</p>
-                <p>Estado: ${p.estado}</p>
-                <button class="editBtn" id="${p.idConvocatoria}">Editar</button>
-                <button class="deleteBtn" id="${p.idConvocatoria}">Eliminar</button>
-
-                <button class="phaseBtn" id="phase${p.idConvocatoria}">Definir Fases</button>
-
+                <p>Nombre: ${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}</p>
+                <button class="editBtn" id="${p.idParticipante}">Editar</button>
+                <button class="deleteBtn" id="${p.idParticipante}">Eliminar</button>
             </div>
             `;               
         });

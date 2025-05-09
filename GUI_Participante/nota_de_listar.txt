@@ -1,0 +1,1 @@
+listar participantes filter será como se manejarán los participantes una vez que en un sprint se necesiten dichas tablas, y por lo tanto se implementen.

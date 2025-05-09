@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head> 
+        <script src="scripts/modify_categorias.js"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Scitrack - Editar Categoría</title>
+    </head>
+    <header>
+        <h1>Editar Categoría</h1>
+    </header>
+    
+    <style>
+        input, select {
+            width: 20vw;
+        }
+        #txtNombreAlert, #txtDescripcionAlert, #txtConfirmAlert {
+            color: red;
+        }
+    </style>
+    
+    <body>
+        <p>Nombre de la categoría:</p>
+        <input type="text" id="inputNombre" placeholder="Ingrese el nombre de la categoría..." />
+        <p id="txtNombreAlert"></p>
+    
+        <p>Descripción:</p>
+        <input type="text" id="inputDescripcion" placeholder="Ingrese la descripción..." />
+        <p id="txtDescripcionAlert"></p>
+    
+        <br><br>
+        <button id="btnConfirm">Confirmar</button>
+        <button id="btnEliminar">Eliminar</button>
+        <button onclick="regresar()" class="cancelar">Cancelar</button>
+        <p id="txtConfirmAlert"></p>
+    </body>
+</html>

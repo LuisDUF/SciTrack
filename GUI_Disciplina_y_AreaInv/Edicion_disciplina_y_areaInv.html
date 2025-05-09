@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script src="Scripts/Edicion_Area_y_Disciplina.js"></script>
+  <meta charset="UTF-8">
+  <title>Dos Columnas</title>
+  <style>
+    .contenedor {
+      display: flex;
+    }
+    .columna {
+      flex: 1; /* Ocupan el mismo ancho */
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .columna.izquierda {
+      background-color: #f0f0f0;
+    }
+    .columna.derecha {
+      background-color: #d0e0f0;
+    }
+
+    table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor">
+    <div class="columna izquierda">
+        <h2>Edicion de Area de Conocimiento</h2>
+    
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="inputNombreArea" name="nombre" maxlength="45" required>
+        <label for="nombre">Id:</label>
+        <input type="text" id="inputIdAreaEd" name="nombre">
+        <br><br>
+
+        <button id="btnConfirmArea" type="submit">Efectuar cambio en Area</button>
+        <h2>Areas de Conocimiento</h2>
+        <table id="tabla-Areas">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se insertarán las fases -->
+        </tbody>
+        </table>
+
+
+    </div>
+    <div class="columna derecha">
+      <h2>Edicion de Disciplina</h2>
+      <label for="nombre">Id:</label>
+      <input type="text" id="inputIdDisciplina" name="nombre"><br><br>  
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="inputNombreDis" name="nombre" maxlength="45" required><br><br>
+      <label for="nombre">Nombre de la Subdisciplina:</label>
+      <input type="text" id="inputNombreSubdis" name="nombre" maxlength="45" required><br><br>
+      <label for="nombre">Area de Conocimiento:</label>
+      <input type="text" id="inputIdArea" name="nombre" maxlength="45" placeholder="id Area de Conocimiento" required><br><br>
+
+      <button id="btnConfirmDis" type="submit">Efectuar cambio en la disciplina</button>
+
+      <h2>Disciplinas</h2>
+        <table id="tabla-Disciplinas">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Subdisciplina</th>
+                <th>Area de Conocimiento</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se insertarán las fases -->
+        </tbody>
+        </table>
+
+    </div>
+  </div>
+
+</body>
+</html>

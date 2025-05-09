@@ -1,5 +1,7 @@
 function listar_fases() {
+
     fetch("http://localhost:3000/api/fase/", {
+
         method: "GET",
     })
     .then((response) => response.json())
@@ -36,6 +38,7 @@ function btnEliminarFase(idFase) {
     console.log("Botón 'Eliminar' presionado para la fase con id:", idFase);
 
     fetch(`http://localhost:3000/api/fase/${idFase}`, {
+
         method: "DELETE",
     })
     .then(response => {

@@ -60,6 +60,7 @@ window.onload = function () {
                 .then((response) => response.json())
                 .then((data) => {
                 console.log(data);
+
                 const id = data.idConvocatoria;
                 if (confirm("Se ha registrado la convocatoria. ¿Desea definir las fases en este momento?") == true) 
                 {
@@ -70,6 +71,7 @@ window.onload = function () {
                     sessionStorage.setItem('sci:conv_to_edit',undefined);
                     window.location.hred='listar_convocatorias.html';
                 }
+
                 })
                 .catch((error) => console.error("Error:", error));
     };

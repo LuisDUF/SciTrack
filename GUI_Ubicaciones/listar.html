@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<head> 
+    <script src="scripts/listar.js" id="scriptTag"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Ubicaciones</h1>
+</header>
+
+<style>
+    body
+    {
+      font-family: Verdana, Geneva, Tahoma, sans-serif
+    }
+
+    blo
+    {
+      pointer-events: none;
+      filter: blur(10px) saturate(0.2);
+    }
+
+    input, select
+    {
+        width: 20vw;
+    }
+    div
+    {
+      padding: 2vh;
+      border-style: solid;
+      border-radius: 10px;
+    }
+    .loading
+    {
+      filter: blur(10px);
+      pointer-events: none;
+    
+    }
+    .loading_gif
+    {
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      width: 4vmax;
+      top: 47%;
+      left: 47%;
+    }
+</style>
+
+<loading>
+  <img src="../Resources/loading_scitrack.gif" class="loading_gif" id="loading_gif">
+</loading>
+
+<body id="mainBody">
+  <block_by_loading>
+
+  <br><br>
+  <div id="listUbicaciones">
+
+  </div>
+  </block_by_loading>
+
+</body>

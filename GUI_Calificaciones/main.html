@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Evaluación de Proyecto</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+
+    th, td {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    td:first-child {
+      text-align: left;
+    }
+
+    label {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    input[type="radio"]:checked + label {
+      outline: 2px solid #4CAF50;
+      border-radius: 5px;
+    }
+    .emoji {
+  cursor: pointer;
+  font-size: 1.5em;
+  padding: 0 5px;
+  transition: transform 0.2s;
+}
+.emoji:hover {
+  transform: scale(1.2);
+}
+.selected {
+  background-color: #d0f0d0;
+  border-radius: 5px;
+}
+
+  </style>
+</head>
+<body>
+  <h2>Evaluación de Proyecto</h2>
+
+  <!-- Tabla de Criterios para Evaluación -->
+  <h3 id="tituloCriterios">Criterios de Evaluación del Proyecto</h3>
+
+  
+  <table id="criteriosTable">
+    <thead>
+      <tr>
+        <th>Criterio</th>
+        <th>Muy malo</th>
+        <th>Malo</th>
+        <th>Regular</th>
+        <th>Bueno</th>
+        <th>Excelente</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button id="btnResetSeleccion">Restablecer selección</button>
+
+  <h2 id="tituloCriteriosInput">Evaluación con inputs</h2>
+<table id="criteriosTableInput" border="1">
+  <thead>
+    <tr>
+      <th>Descripción del Criterio</th>
+      <th>Calificación (0 a 100)</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+
+  <!-- Botón para enviar la evaluación -->
+  <button id="btnEnviarEvaluacion">Guardar Evaluación</button>
+  
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>
