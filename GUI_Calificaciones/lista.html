@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Historial Promedio</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    input[type="text"] {
+      width: 300px;
+      padding: 6px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .btnEliminar {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .btnEliminar:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Calificaciones</h1>
+  <input type="text" id="searchInput" placeholder="Buscar por ID de Proyecto o Fase" onkeyup="buscarHistorial()"/>
+  <br><br>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Proyecto</th>
+        <th>Promedio</th>
+        <th>Fase</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+  </table>
+
+  <script src="scripts/lista.js"></script>
+</body>
+</html>
