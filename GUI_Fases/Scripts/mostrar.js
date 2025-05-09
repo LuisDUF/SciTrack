@@ -1,5 +1,7 @@
 function listar_fases() {
-    fetch("https://scitrackapi-production.up.railway.app/api/fase/", {
+
+    fetch("http://localhost:3000/api/fase/", {
+
         method: "GET",
     })
     .then((response) => response.json())
@@ -35,7 +37,8 @@ function btnEliminarFase(idFase) {
 
     console.log("Botón 'Eliminar' presionado para la fase con id:", idFase);
 
-    fetch(`https://scitrackapi-production.up.railway.app/api/fase/${idFase}`, {
+    fetch(`http://localhost:3000/api/fase/${idFase}`, {
+
         method: "DELETE",
     })
     .then(response => {

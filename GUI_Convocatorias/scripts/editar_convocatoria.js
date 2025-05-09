@@ -36,7 +36,9 @@ window.onload = function () {
 
 
    
-        fetch("https://scitrackapi-production.up.railway.app/api/convocatoria/"+pToEdit,{
+
+        fetch("http://localhost:3000/api/convocatoria/"+pToEdit,{
+
           method: "GET",
         })
           .then((response) => response.json())
@@ -89,7 +91,9 @@ window.onload = function () {
         {
             
 
-            fetch("https://scitrackapi-production.up.railway.app/api/convocatoria/"+pToEdit, {
+
+            fetch("http://localhost:3000/api/convocatoria/"+pToEdit, {
+
                 method: "PUT",
                 headers: {
                 "Content-Type": "application/json",

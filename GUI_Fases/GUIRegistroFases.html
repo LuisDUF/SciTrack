@@ -1,50 +1,97 @@
 <!DOCTYPE html>
 <html lang="en-CA">
-<head>
+  <head>
     <script src="Scripts/registro.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Fases</title>
-</head>
-<body>
-    <h2>Registro de Fases del Concurso</h2>
-    
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="inputNombre" name="nombre" maxlength="45" required><br><br>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asignar Fases</title>
+  </head>
+  <style>
+    div {
+        margin-bottom: 3vh;
+        padding: 1vmax;
+        border-style: solid;
+        border-radius: 8px;
+        border-color: black;
+    }
+  </style>
+  <body>
+    <div id="addPhase">
+      <h2>Agregar Fases</h2>
 
-        <label for="modalidad">Modalidad:</label>
-        <input type="text" id="inputModalidad" name="modalidad" maxlength="45" required><br><br>
+      <label for="nombre">Nombre:</label>
+      <input
+        type="text"
+        id="inputNombre"
+        name="nombre"
+        maxlength="45"
+        required
+      /><br /><br />
 
-        <label for="modalidad">Calificación mínima:</label>
-        <input type="number" id="inputCalificacion" name="calificacion" maxlength="45" required><br><br>
+      <label for="modalidad">Modalidad:</label>
+      <input
+        type="text"
+        id="inputModalidad"
+        name="modalidad"
+        maxlength="45"
+        required
+      /><br /><br />
 
-        <label for="fechaInicio">Fecha de Inicio:</label>
-        <label>Año:</label>
-        <input type="number" id="anioIn" name="anio" min="1900" max="2100">
+      <label for="modalidad">Calificación mínima:</label>
+      <input
+        type="number"
+        id="inputCalificacion"
+        name="calificacion"
+        maxlength="45"
+        required
+      /><br /><br />
 
-        <label>Mes:</label>
-        <input type="number" id="mesIn" name="mes" min="1" max="12">
+      <label for="fechaInicio">Fecha de Inicio:</label>
+      <label>Año:</label>
+      <input type="number" id="anioIn" name="anio" min="1900" max="2100" />
 
-        <label>Día:</label>
-        <input type="number" id="diaIn" name="dia" min="1" max="31"><br><br>
+      <label>Mes:</label>
+      <input type="number" id="mesIn" name="mes" min="1" max="12" />
 
-        <label for="fechaFin">Fecha de Fin:</label>
-        <label>&nbsp;&nbsp;&nbsp;&nbsp;Año:</label>
-        <input type="number" id="anioFn" name="anio" min="1900" max="2100">
+      <label>Día:</label>
+      <input type="number" id="diaIn" name="dia" min="1" max="31" /><br /><br />
 
-        <label>Mes:</label>
-        <input type="number" id="mesFn" name="mes" min="1" max="12">
+      <label for="fechaFin">Fecha de Fin:</label>
+      <label>&nbsp;&nbsp;&nbsp;&nbsp;Año:</label>
+      <input type="number" id="anioFn" name="anio" min="1900" max="2100" />
 
-        <label>Día:</label>
-        <input type="number" id="diaFn" name="dia" min="1" max="31"><br><br>
+      <label>Mes:</label>
+      <input type="number" id="mesFn" name="mes" min="1" max="12" />
 
-        <label for="descripcion">Descripción:</label>
-        <textarea id="inputDescripcion" name="inputDescripcion" maxlength="45"  rows="4" cols="50" required></textarea><br><br>
+      <label>Día:</label>
+      <input type="number" id="diaFn" name="dia" min="1" max="31" /><br /><br />
 
-        <label for="ubicacion">Ubicación:</label>
-        <input type="text" id="inputIdUbicacion" name="idUbicacion" required placeholder="idUbicacion"><br><br>
+      <label for="descripcion">Descripción:</label>
+      <textarea
+        id="inputDescripcion"
+        name="inputDescripcion"
+        maxlength="164"
+        rows="4"
+        cols="50"
+        required
+      ></textarea
+      ><br /><br />
 
-        <button id="btnConfirm" type="submit">Registrar Fase</button>
-    
-</body>
+      <label for="ubicacion">Ubicación:</label>
+      <input
+        type="text"
+        id="inputIdUbicacion"
+        name="idUbicacion"
+        required
+        placeholder="idUbicacion"
+      /><br /><br />
+
+      <button id="btnAddPhase" >Agregar fase</button>
+    </div>
+
+    <div id="phasesAdded">
+        
+    </div>
+    <button id="btnConfirmPhases">Confirmar fases</button>
+  </body>
 </html>

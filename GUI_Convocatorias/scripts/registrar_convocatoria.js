@@ -42,7 +42,7 @@ window.onload = function () {
             }
         }); 
         if (success) txtConfirmAlert.innerHTML = "";            
-            fetch("https://scitrackapi-production.up.railway.app/api/convocatoria/", {
+            fetch("http://localhost:3000/api/convocatoria/", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json",
@@ -60,7 +60,18 @@ window.onload = function () {
                 .then((response) => response.json())
                 .then((data) => {
                 console.log(data);
-                alert("Se ha guardado la convocatoria")
+
+                const id = data.idConvocatoria;
+                if (confirm("Se ha registrado la convocatoria. ¿Desea definir las fases en este momento?") == true) 
+                {
+                    sessionStorage.setItem('sci:conv_to_edit',id);
+                    window.location.href='../Transicion_Fases/GUIRegistroFases.html';
+                } else 
+                {
+                    sessionStorage.setItem('sci:conv_to_edit',undefined);
+                    window.location.hred='listar_convocatorias.html';
+                }
+
                 })
                 .catch((error) => console.error("Error:", error));
     };
