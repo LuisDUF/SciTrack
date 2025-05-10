@@ -1,5 +1,5 @@
 window.onload=function(){
-    listar_fases
+    listar_proyectos()
 
     const inputIdProyecto = document.getElementById("inputIdProyecto");
     const inputNombre = document.getElementById("inputNombre");
@@ -13,6 +13,7 @@ window.onload=function(){
   const inputIdCalificacion = document.getElementById("inputIdCalificacion");
   const btnConfirm = document.getElementById("btnConfirm");
 
+  let proyecto;
 
   btnConfirm.onclick = function () {
     const anio = document.getElementById('anio').value;
@@ -68,7 +69,7 @@ window.onload=function(){
 }
 
 
-function listar_fases() {
+function listar_proyectos() {
     fetch("https://scitrackapi-production.up.railway.app/api/proyecto/", {
         method: "GET",
     })
@@ -91,6 +92,7 @@ function listar_fases() {
                 <td>${proyecto.EstadosProyecto_idEstadosProyecto}</td>
                 <td>${proyecto.Calificacion_idCalificacion}</td>
                 
+
             `;
             cuerpoTabla.appendChild(fila);
         });
