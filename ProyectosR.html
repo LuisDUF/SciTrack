@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <head> 
+    <!-- CSS de Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- JS de jQuery y Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="scripts/Registro.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +14,7 @@
 </head>
 <header>
   <h1>Registro de Proyectos</h1>
-  <h4>Id manejada: 2</h4>
+  <h4>Id manejada: 4</h4>
 </header>
 
 <style>
@@ -42,9 +49,12 @@
   <input type="text" id="inputNombre" placeholder="Ingrese nombre de proyecto..." />
 
   <p>Categoria:</p>
-  <input type="text" id="inputIdCategoria" placeholder="Asigne categoria" />
   
   
+  <select id="comboCategorias" style="width: 300px;"></select>
+
+
+
   <p>Archivos:</p>
   <input type="file" id="archivo" />
   
