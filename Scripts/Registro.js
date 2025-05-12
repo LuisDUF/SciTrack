@@ -1,6 +1,7 @@
 window.onload = function () {
   
-  const idDinamica = 4; //Este es el parametro a cambiar en base al inicio de sesion
+  const idDinamica = 3; //Este es el parametro a cambiar en base al inicio de sesion
+  const idDinamicaEquipos = 2; //Esta es la idEquipo del Usuario
 
   const inputNombre = document.getElementById("inputNombre");
   const inputPromedio = document.getElementById("inputPromedio");
@@ -22,6 +23,8 @@ window.onload = function () {
   
   ]
 
+  let convocatoriasCargadas = [];
+  let itemsCargados = [];
   let participantesCargados = [];
   let equiposCargados = [];
   let categoriasCargadas = [];
@@ -29,12 +32,15 @@ window.onload = function () {
   let fasesCargadas = [];
   let proyectosCargados = [];
 
+  obtener_convocatorias()
+  obtener_items()
   obtener_investigadores()
   obtener_categorias()
   obtener_participantes()
   obtener_fases()
   obtener_equipos()
-  obtener_proyectos()
+  cargar_proyectos()
+  mostrar_proyectos_filtrados()
   
   
 
@@ -71,23 +77,47 @@ window.onload = function () {
     })
     .then((response) => response.json())
     .then((data) => {
-        // Limpiar el arreglo previo
+        // Limpiar el arreglo y el combo
         equiposCargados = [];
 
-        // Llenar el arreglo con los proyectos obtenidos
+        const combo = document.getElementById("comboEquipos");
+        combo.innerHTML = "";
+
+        // Opción por defecto
+        const opcionDefault = document.createElement("option");
+        opcionDefault.text = "Seleccione un equipo";
+        opcionDefault.disabled = true;
+        opcionDefault.selected = true;
+        combo.appendChild(opcionDefault);
+
+        // Filtrar y cargar solo el equipo que coincide con idDinamica
         data.forEach(equipo => {
-            equiposCargados.push({
-                idEquipo: equipo.idEquipo,
-                liderIdLider: equipo.Participante_idLider,
-                asesor: equipo.Asesor_idAsesor
-            });
+            if (equipo.idEquipo === idDinamicaEquipos) {
+                const obj = {
+                    idEquipo: equipo.idEquipo,
+                    liderIdLider: equipo.Participante_idLider,
+                    asesor: equipo.Asesor_idAsesor
+                };
+                equiposCargados.push(obj);
+
+                const opcion = document.createElement("option");
+                opcion.value = obj.idEquipo;
+                opcion.text = `Equipo ${obj.idEquipo}`;
+                combo.appendChild(opcion);
+            }
         });
 
-        console.log("Equipos cargados en el arreglo:", equiposCargados);
+        // Inicializar Select2
+        $('#comboEquipos').select2({
+            placeholder: "Seleccione un equipo",
+            width: '100%'
+        });
+
+        console.log("Equipos filtrados y cargados:", equiposCargados);
     })
     .catch((error) => console.error("Error al cargar los equipos:", error));
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function asignacion_Equipo(idABuscar) {
     for (let i = 0; i < equiposCargados.length; i++) {
         if (equiposCargados[i].idEquipo === idABuscar) {
@@ -240,66 +270,129 @@ function asignacion_fase(idABuscar){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_convocatorias(){
-    
+function obtener_items(){
+    fetch("http://localhost:3000/api/itemconvocatoria_fase/", {
+        method: "GET",
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        // Limpiar el arreglo
+        itemsCargados = [];
+
+        data.forEach(itemconvocatoria_Fase => {
+            itemsCargados.push({
+                idConvocatoria: itemconvocatoria_Fase.Convocatoria_idConvocatoria,
+                idFase: itemconvocatoria_Fase.Fase_idFase,
+            });
+        });
+
+        console.log("Items cargados en el arreglo:", itemsCargados);
+    })
+    .catch((error) => console.error("Error al cargar los items:", error));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_proyectos() {
+function obtener_convocatorias() {
+    fetch("http://localhost:3000/api/convocatoria/", {
+        method: "GET",
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        // Limpiar el arreglo y el combo
+        convocatoriasCargadas = [];
+
+        const combo = document.getElementById("comboConvocatorias");
+        combo.innerHTML = ""; // Limpiar opciones previas
+
+        // Agregar opción por defecto
+        const opcionDefault = document.createElement("option");
+        opcionDefault.text = "Seleccione la convocatoria";
+        opcionDefault.disabled = true;
+        opcionDefault.selected = true;
+        combo.appendChild(opcionDefault);
+
+        // Llenar arreglo y opciones del select
+        data.forEach(convocatoria => {
+            const obj = {
+                idConvocatoria: convocatoria.idConvocatoria,
+                nombre: convocatoria.nombre,
+                estado: convocatoria.estado,
+            };
+            convocatoriasCargadas.push(obj);
+
+            const opcion = document.createElement("option");
+            opcion.value = obj.idConvocatoria;
+            opcion.text = obj.nombre;
+            combo.appendChild(opcion);
+        });
+
+        // Reinicializar Select2
+        $('#comboConvocatorias').select2({
+            placeholder: "Seleccione una convocatoria",
+            width: '100%'
+        });
+
+        console.log("Convocatorias cargadas en el arreglo:", convocatoriasCargadas);
+    })
+    .catch((error) => console.error("Error al cargar los items:", error));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function cargar_proyectos() {
     fetch("https://scitrackapi-production.up.railway.app/api/proyecto/", {
         method: "GET",
     })
     .then((response) => response.json())
     .then((data) => {
-        // Obtener el ID de la categoría seleccionada
-        
+        proyectosCargados = data.map(proyecto => ({
+            idProyecto: proyecto.idProyecto,
+            nombre: proyecto.nombre,
+            fechaRegistro: proyecto.fechaRegistro,
+            promedio: proyecto.promedio,
+            Equipo_idEquipo: proyecto.Equipo_idEquipo,
+            Categoria_idCategoria: proyecto.Categoria_idCategoria,
+            Investigador_idInvestigador: proyecto.Investigador_idInvestigador,
+            Archivos_idArchivos: proyecto.Archivos_idArchivos,
+            Fase_IdFase: proyecto.Fase_idFase,
+            EstadosProyecto_idEstadosProyecto: proyecto.EstadosProyecto_idEstadosProyecto,
+            Calificacion_idCalificacion: proyecto.Calificacion_idCalificacion
+        }));
 
-        // Limpiar el arreglo y la tabla
-        proyectosCargados = [];
-        const cuerpoTabla = document.querySelector("#tabla-proyectos tbody");
-        cuerpoTabla.innerHTML = "";
-
-        data.forEach(proyecto => {
-            // Solo incluir si cumple con la condición
-            if (proyecto.Categoria_idCategoria == idCategoriaSeleccionada) {
-                const nuevoProyecto = {
-                    idProyecto: proyecto.idProyecto,
-                    nombre: proyecto.nombre,
-                    fechaRegistro: proyecto.fechaRegistro,
-                    promedio: proyecto.promedio,
-                    Equipo_idEquipo: proyecto.Equipo_idEquipo,
-                    Categoria_idCategoria: proyecto.Categoria_idCategoria,
-                    Investigador_idInvestigador: proyecto.Investigador_idInvestigador,
-                    Archivos_idArchivos: proyecto.Archivos_idArchivos,
-                    Fase_IdFase: proyecto.Fase_idFase,
-                    EstadosProyecto_idEstadosProyecto: proyecto.EstadosProyecto_idEstadosProyecto,
-                    Calificacion_idCalificacion: proyecto.Calificacion_idCalificacion
-                };
-                proyectosCargados.push(nuevoProyecto);
-
-                const fila = document.createElement("tr");
-                fila.innerHTML = `
-                    <td>${nuevoProyecto.idProyecto}</td>
-                    <td>${nuevoProyecto.nombre}</td>
-                    <td>${nuevoProyecto.fechaRegistro}</td>
-                    <td>${nuevoProyecto.promedio}</td>
-                    <td>${asignacion_Equipo(nuevoProyecto.Equipo_idEquipo)}</td>
-                    <td>${asignacion_categoria(nuevoProyecto.Categoria_idCategoria)}</td>
-                    <td>${asignacion_investigador(nuevoProyecto.Investigador_idInvestigador)}</td>
-                    <td>${nuevoProyecto.Archivos_idArchivos}</td>
-                    <td>${asignacion_fase(nuevoProyecto.Fase_IdFase)}</td>
-                    <td>${asignacion_estado(nuevoProyecto.EstadosProyecto_idEstadosProyecto)}</td>
-                    <td>${nuevoProyecto.Calificacion_idCalificacion}</td>
-                `;
-                cuerpoTabla.appendChild(fila);
-            }
-        });
-
-        console.log("Proyectos cargados en el arreglo:", proyectosCargados);
+        console.log("Proyectos cargados desde la API:", proyectosCargados);
     })
     .catch((error) => console.error("Error al cargar los proyectos:", error));
 }
 
+function mostrar_proyectos_filtrados() {
+    const cuerpoTabla = document.querySelector("#tabla-proyectos tbody");
+    cuerpoTabla.innerHTML = "";
+
+    const proyectosFiltrados = proyectosCargados.filter(p => 
+        p.Investigador_idInvestigador == idDinamica
+    );
+
+    proyectosFiltrados.forEach(p => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${p.idProyecto}</td>
+            <td>${p.nombre}</td>
+            <td>${p.fechaRegistro}</td>
+            <td>${p.promedio}</td>
+            <td>${asignacion_Equipo(p.Equipo_idEquipo)}</td>
+            <td>${asignacion_categoria(p.Categoria_idCategoria)}</td>
+            <td>${asignacion_investigador(p.Investigador_idInvestigador)}</td>
+            <td>${p.Archivos_idArchivos}</td>
+            <td>${asignacion_fase(p.Fase_IdFase)}</td>
+            <td>${asignacion_estado(p.EstadosProyecto_idEstadosProyecto)}</td>
+            <td>${p.Calificacion_idCalificacion}</td>
+        `;
+        cuerpoTabla.appendChild(fila);
+    });
+
+    console.log("Proyectos filtrados por idDinamica:", idDinamica, proyectosFiltrados);
+}
+
+//Pendiente//
 
 
 
@@ -315,16 +408,16 @@ function obtener_proyectos() {
 
       // Validar campos
       if (
-          inputNombre.value === "" ||
-          inputPromedio.value === "" ||
-          anio === "" || mes === "" || dia === "" ||
-          inputIdEquipo.value === "" ||
-          inputIdCategoria.value === ""||
+          inputNombre.value === "" ||//
+          inputPromedio.value === "" ||//
+          anio === "" || mes === "" || dia === "" ||//
+          inputIdEquipo.value === "" ||//
+          inputIdCategoria.value === ""||//
           inputIdInvestigador.value === ""||
           inputIdArchivo.value === ""||
-          inputIdFase.value === ""||
-          inputIdEstado.value === ""||
-          inputIdCalificacion.value === ""
+          inputIdFase.value === ""||//Se obtendra de la convocatoria escogida directamente
+          inputIdEstado.value === ""||//Por defecto 1
+          inputIdCalificacion.value === ""//null por defecto
                 ) {
           alert("Ingrese la información en todos los campos");
           return;
@@ -344,7 +437,7 @@ function obtener_proyectos() {
               Ivestigador_idInvestigador: inputIdInvestigador,
               Archivos_idArchivos: inputIdArchivo,
               EstadosProyecto_idEstadosProyecto: 1,
-              Calificacion_idCalificacion: inputIdCalificacion
+              Calificacion_idCalificacion: null
           }),
       })
       .then((response) => response.json())
