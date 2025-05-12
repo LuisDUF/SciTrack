@@ -408,12 +408,12 @@ function mostrar_proyectos_filtrados() {
 
       // Validar campos
       if (
-          inputNombre.value === "" ||//
-          inputPromedio.value === "" ||//
-          anio === "" || mes === "" || dia === "" ||//
-          inputIdEquipo.value === "" ||//
-          inputIdCategoria.value === ""||//
-          inputIdInvestigador.value === ""||
+          inputNombre.value === "" ||//Se captura
+          inputPromedio.value === "" ||//Se captura
+          anio === "" || mes === "" || dia === "" ||//Se genera solo
+          inputIdEquipo.value === "" ||//Se escoge del idDinamicaEquipo
+          inputIdCategoria.value === ""||//Se escoge de combobox
+          inputIdInvestigador.value === ""||//Se escoge aleatoriamente con que sea del area de conocimiento y diferente institucion
           inputIdArchivo.value === ""||
           inputIdFase.value === ""||//Se obtendra de la convocatoria escogida directamente
           inputIdEstado.value === ""||//Por defecto 1
