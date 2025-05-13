@@ -1,17 +1,15 @@
-window.onload = function () {
+window.onload = async function () {
   
   const idDinamica = 3; //Este es el parametro a cambiar en base al inicio de sesion
-  const idDinamicaEquipos = 2; //Esta es la idEquipo del Usuario
+  const idDinamicaEquipos = 4; //Esta es la idEquipo del Usuario
 
   const inputNombre = document.getElementById("inputNombre");
-  const inputPromedio = document.getElementById("inputPromedio");
-  const inputIdEquipo = document.getElementById("inputIdEquipo");
-  const inputIdCategoria = document.getElementById("inputIdCategoria");
-  const inputIdInvestigador = document.getElementById("inputIdInvestigador");
-  const inputIdArchivo = document.getElementById("inputIdArchivo");
-  const inputIdFase = document.getElementById("inputIdFase");
-  const inputIdEstado = document.getElementById("inputIdEstado");
-  const inputIdCalificacion = document.getElementById("inputIdCalificacion");
+  
+  const selectEquipos = document.getElementById("comboEquipos");
+  const selectCategorias = document.getElementById("comboCategorias");
+  const selectConvocatorias = document.getElementById("comboConvocatorias");
+  const inputArchivo = document.getElementById("inputPDF");
+
   const btnConfirm = document.getElementById("btnConfirm");
 
   const ESTADOS = [
@@ -23,6 +21,7 @@ window.onload = function () {
   
   ]
 
+  let idsCargados = [];
   let convocatoriasCargadas = [];
   let itemsCargados = [];
   let participantesCargados = [];
@@ -32,16 +31,18 @@ window.onload = function () {
   let fasesCargadas = [];
   let proyectosCargados = [];
 
-  obtener_convocatorias()
-  obtener_items()
-  obtener_investigadores()
-  obtener_categorias()
-  obtener_participantes()
-  obtener_fases()
-  obtener_equipos()
-  cargar_proyectos()
-  mostrar_proyectos_filtrados()
+  await obtenerIdArchivo()
+  await obtener_convocatorias()
+  await obtener_items()
+  await obtener_investigadores()
+  await obtener_categorias()
+  await obtener_participantes()
+  await obtener_fases()
+  await obtener_equipos()
+  await cargar_proyectos()
+
   
+  setTimeout(mostrar_proyectos_filtrados(),2000)
   
 
 
@@ -109,8 +110,7 @@ window.onload = function () {
 
         // Inicializar Select2
         $('#comboEquipos').select2({
-            placeholder: "Seleccione un equipo",
-            width: '100%'
+            placeholder: "Seleccione un equipo"
         });
 
         console.log("Equipos filtrados y cargados:", equiposCargados);
@@ -279,10 +279,10 @@ function obtener_items(){
         // Limpiar el arreglo
         itemsCargados = [];
 
-        data.forEach(itemconvocatoria_Fase => {
+        data.forEach(itemConvocatoria_Fase => {
             itemsCargados.push({
-                idConvocatoria: itemconvocatoria_Fase.Convocatoria_idConvocatoria,
-                idFase: itemconvocatoria_Fase.Fase_idFase,
+                idConvocatoria: itemConvocatoria_Fase.Convocatoria_idConvocatoria,
+                idFase: itemConvocatoria_Fase.Fase_idFase,
             });
         });
 
@@ -328,8 +328,8 @@ function obtener_convocatorias() {
 
         // Reinicializar Select2
         $('#comboConvocatorias').select2({
-            placeholder: "Seleccione una convocatoria",
-            width: '100%'
+            placeholder: "Seleccione una convocatoria"
+            
         });
 
         console.log("Convocatorias cargadas en el arreglo:", convocatoriasCargadas);
@@ -363,12 +363,45 @@ function cargar_proyectos() {
     .catch((error) => console.error("Error al cargar los proyectos:", error));
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function obtenerIdArchivo(){
+    fetch("http://localhost:3000/api/archivos/", {
+        method: "GET",
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        // Limpiar el arreglo
+        idsCargados = [];
+
+        data.forEach(archivos => {
+            idsCargados.push({
+                idArchivo: archivos.idArchivos,
+                
+            });
+        });
+
+        console.log("IdsItems cargados en el arreglo:", idsCargados);
+    })
+    .catch((error) => console.error("Error al cargar los items:", error));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function obtener_Fase(idABuscar){
+    for(i=0;i<itemsCargados.length;i++){
+        if(idABuscar===itemsCargados[i].idConvocatoria){
+            return itemsCargados[i].idFase
+        }
+    }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function mostrar_proyectos_filtrados() {
     const cuerpoTabla = document.querySelector("#tabla-proyectos tbody");
     cuerpoTabla.innerHTML = "";
 
     const proyectosFiltrados = proyectosCargados.filter(p => 
-        p.Investigador_idInvestigador == idDinamica
+        p.Equipo_idEquipo == idDinamicaEquipos
     );
 
     proyectosFiltrados.forEach(p => {
@@ -391,37 +424,60 @@ function mostrar_proyectos_filtrados() {
 
     console.log("Proyectos filtrados por idDinamica:", idDinamica, proyectosFiltrados);
 }
-
 //Pendiente//
 
 
 
 
-  btnConfirm.onclick = function () {
+  btnConfirm.onclick = async function () {
       let fecha = new Date();
       const anio = fecha.getDate();
       const mes = fecha.getMonth()+1;
       const dia = fecha.getFullYear();
-      const inputFecha = `${anio}-${mes}-${dia}`;
+      const inputFecha = `${dia}-${mes}-${anio}`;
 
       
 
       // Validar campos
       if (
           inputNombre.value === "" ||//Se captura
-          inputPromedio.value === "" ||//Se captura
           anio === "" || mes === "" || dia === "" ||//Se genera solo
-          inputIdEquipo.value === "" ||//Se escoge del idDinamicaEquipo
-          inputIdCategoria.value === ""||//Se escoge de combobox
-          inputIdInvestigador.value === ""||//Se escoge aleatoriamente con que sea del area de conocimiento y diferente institucion
-          inputIdArchivo.value === ""||
-          inputIdFase.value === ""||//Se obtendra de la convocatoria escogida directamente
-          inputIdEstado.value === ""||//Por defecto 1
-          inputIdCalificacion.value === ""//null por defecto
+          selectEquipos.value === "" ||//Se escoge del idDinamicaEquipo
+          selectCategorias.value === ""||//Se escoge de combobox
+          selectConvocatorias.value === ""||//Se escoge de combobox
+          inputArchivo.files.length === 0
                 ) {
           alert("Ingrese la información en todos los campos");
           return;
       }
+      //enviar archivo
+  const archivo = inputArchivo.files[0]; // solo un archivo
+
+  const tamanioEnKB = (archivo.size / 1024).toFixed(2);
+  const formData = new FormData();
+
+  formData.append("nombre", archivo.name);
+  formData.append("tamanio", tamanioEnKB);
+  formData.append("fechaIngreso", new Date().toISOString().split("T")[0]);
+  formData.append("contenido", archivo);
+
+  try {
+    const response = await fetch("https://scitrackapi-production.up.railway.app/api/archivos/", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error(`Error al subir: ${archivo.name}`);
+    const data = await response.json();
+    console.log("Archivo subido:", data);
+
+    alert("El archivo se ha subido correctamente.");
+    window.location.reload();
+  } catch (error) {
+    console.error("Error:", error);
+    txtConfirmAlert.textContent = `Error al subir: ${archivo.name}`;
+  }
+
 
       // Enviar datos
       fetch("https://scitrackapi-production.up.railway.app/api/proyecto/", {
@@ -430,21 +486,22 @@ function mostrar_proyectos_filtrados() {
               "Content-Type": "application/json",
           },
           body: JSON.stringify({
-              nombre: inputNombre.value,
-              fechaRegistro: inputFecha,
-              Equipo_idEquipo: inputIdEquipo,
-              Categoria_idCategoria: inputIdCategoria,
-              Ivestigador_idInvestigador: inputIdInvestigador,
-              Archivos_idArchivos: inputIdArchivo,
-              EstadosProyecto_idEstadosProyecto: 1,
-              Calificacion_idCalificacion: null
+              nombre: inputNombre.value, // Capturado por el usuario //
+              fechaRegistro: inputFecha, // Se captura automaticamente //
+              promedio: 0,
+              Equipo_idEquipo: selectEquipos.value, // Se obtiene de la comboBox del equipo en el que este y escoja el usuario //
+              Categoria_idCategoria: selectCategorias.value, // Se captura del comboBox //
+              Archivos_idArchivos: Math.max(idsCargados)+1, //Se obtiene a partir del id mas alto//
+              Fase_idfase: obtener_Fase(selectConvocatorias.value), //Se obtiene de la convocatoria
+              EstadosProyecto_idEstadosProyecto: 1,//Por defecto siempre es 1 al crearse
+              
           }),
       })
       .then((response) => response.json())
       .then((data) => {
           console.log(data);
-          alert('Se ha registrado la fase.');
-          window.location.reload();
+          alert('Se ha registrado el proyecto.');
+          //window.location.reload();
       })
       .catch((error) => console.error("Error:", error));
   };
