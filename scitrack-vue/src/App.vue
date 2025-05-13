@@ -2,27 +2,20 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color=#062A78
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+      <div class="d-flex justify-center py-2 px-3 my-2 hidden-sm-and-down">
 
         <v-img
           alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
+          class="mt-1 hidden-sm-and-down"
           contain
           min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+          src="./assets/SCITRACK-logo-white.png"
           width="100"
         />
+
       </div>
 
       <v-spacer></v-spacer>
@@ -36,25 +29,12 @@
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
-
     <v-main>
-      <HelloWorld/>
+      <SideBarBase/>
     </v-main>
   </v-app>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld';
-
-export default {
-  name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
-  data: () => ({
-    //
-  }),
-};
+<script setup>
+import SideBarBase from '@/components/SideBarBase.vue';
 </script>
