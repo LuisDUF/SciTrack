@@ -1,15 +1,18 @@
 <template>
-  <v-navigation-drawer color="#2C58B5" dark>
+  <v-navigation-drawer color="#2C58B5" dark  permanent>
     
     <div class="d-flex justify-center py-0 px-0 mb-2 hidden-sm-and-down">
 
       <v-container>
 
-        <v-row>
-          <v-col cols="12" style="background-color: #062A78;">
-            <v-img src="../assets/SCITRACK-logo-white.png" alt="SCITRACK Logo" class="my-5" contain width="100%" />
+        <v-row class="">
+          <v-col cols="12" style="background-color: #062A78;" class="hidden-xs-only" >
+            <v-img src="../assets/SCITRACK-logo-white.png" style="min-height: 5vh;" alt="SCITRACK Logo" class="" contain width="100%" />
           </v-col>
-          <v-col cols="12" style="background-color: #18439E;">
+          <v-col cols="12" style="background-color: #062A78;" class="hidden-sm-and-up" >
+            <v-img src="../assets/SCITRACK-icon.png" style="min-height: 5vh;" alt="SCITRACK Icon" class="" contain width="100%" />
+          </v-col>
+          <v-col cols="12" style="background-color: #18439E;" class="hidden-xs-only">
             <v-img src="../assets/ICTI-logo-white.png" alt="ICTI Logo" contain width="100%" />
           </v-col>
 
