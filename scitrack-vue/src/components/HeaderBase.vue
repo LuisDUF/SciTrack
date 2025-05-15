@@ -12,14 +12,14 @@
 
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" v-if="headerSettings.notificationStatus" class="mx-5"
+          <v-icon v-bind="attrs" v-on="on" v-if="options.notificationStatus" class="mx-5"
             >mdi-bell-badge</v-icon
           >
           <v-icon v-bind="attrs" v-on="on" v-else class="mx-5">mdi-bell</v-icon>
         </template>
         <v-list>
           <v-list-item>
-            <v-list-item-title v-if="headerSettings.notificationStatus"><b>Atención: </b>Tienes nuevas notificaciones, <br>revisa tu correo electrónico</v-list-item-title>
+            <v-list-item-title v-if="options.notificationStatus"><b>Atención: </b>Tienes nuevas notificaciones, <br>revisa tu correo electrónico</v-list-item-title>
             <v-list-item-title v-else>No hay notificaciones nuevas</v-list-item-title>
 
           </v-list-item>
@@ -46,9 +46,9 @@
 
       <h4 class="text-subtitle-1 mx-5">
         <span class="font-weight-bold mx-0 my-0 py-0 px-0">{{
-          headerSettings.userName
+          options.userName
         }}</span
-        ><br />{{ headerSettings.userRole }}
+        ><br />{{ options.userRole }}
       </h4>
       <v-img
         src="../assets/default-user-pfp.png"
@@ -64,20 +64,12 @@
 
 <script>
 export default {
-  data() {
-    return {
-      userSettings: [
-        { title: 'Mi cuenta' },
-        { title: 'Cerrar sesión' }
-      ],
-
-
-      headerSettings: {
-        userName: "Renato Medina",
-        userRole: "Administrador",
-        notificationStatus: false,
-      },
-    };
+  name: "HeaderBase",
+  props: {
+    options: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
