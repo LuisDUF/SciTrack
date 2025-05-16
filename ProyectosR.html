@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<head> 
+    <!-- CSS de Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- JS de jQuery y Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="scripts/Registro.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scitrack</title>
+</head>
+<header>
+  <h1>Registro de Proyectos</h1>
+  <h4>Id manejada: 4</h4>
+</header>
+
+<style>
+    input, select
+    {
+        width: 20vw;
+    }
+    #txtConfirmAlert, #txtConfirmPasswordAlert, #txtPasswordAlert, #txtEmailAlert
+    {
+        color: red;
+    }
+
+    table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+</style>
+
+<body>
+  <p>Nombre:</p>
+  <input type="text" id="inputNombre" placeholder="Ingrese nombre de proyecto..." />
+
+  <p>Convocatoria:</p>
+  
+  <select id="comboConvocatorias" style="width: 300px;"></select>
+
+  <p>Equipo:</p>
+  
+  <select id="comboEquipos" style="width: 300px;"></select>
+
+  <p>Categoria:</p>
+  
+  <select id="comboCategorias" style="width: 300px;"></select>
+
+
+  <p>Selecciona un archivo PDF:</p>
+  <p class="notas">*Nota: El tamaño del archivo debe ser menor de 66 kilobytes.</p>
+  <input type="file" id="inputPDF" accept="application/pdf" />
+  
+  <br><br>
+  <button id="btnConfirm">Confirmar</button>
+  <p id="txtConfirmAlert"></p>
+
+
+  <table id="tabla-proyectos">
+    <thead>
+        <tr>
+            <th>IdProyecto</th>
+            <th>Nombre</th>
+            <th>Fecha de registro</th>
+            <th>Promedio</th>
+            <th>Equipo</th>
+            <th>Categoria</th>
+            <th>Investigador</th>
+            <th>Archivos</th>
+            <th>Fase</th>
+            <th>Estado de proyecto</th>
+            <th>Calificacion</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Aquí se insertarán las fases -->
+    </tbody>
+</table>
+
+</body>
