@@ -11,6 +11,7 @@ window.onload = async function () {
   const inputArchivo = document.getElementById("inputPDF");
 
   const btnConfirm = document.getElementById("btnConfirm");
+  const btnMostrarArchivo = document.getElementById("btnConfirm");
 
   const ESTADOS = [
     {numero: 1 ,estado:'Pendiente'},
@@ -42,13 +43,13 @@ window.onload = async function () {
   await cargar_proyectos()
 
   
-  setTimeout(mostrar_proyectos_filtrados(),2000)
+  await mostrar_proyectos_filtrados()
   
 
 
   //listar_proyectos()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  function obtener_participantes() {
+  async function obtener_participantes() {
     fetch("https://scitrackapi-production.up.railway.app/api/participante/", {
         method: "GET",
     })
@@ -72,7 +73,7 @@ window.onload = async function () {
     .catch((error) => console.error("Error al cargar los equipos:", error));
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  function obtener_equipos() {
+  async function obtener_equipos() {
     fetch("https://scitrackapi-production.up.railway.app/api/equipo/", {
         method: "GET",
     })
@@ -148,7 +149,7 @@ function asignacion_estado(idABuscar){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_categorias() {
+async function obtener_categorias() {
     fetch("https://scitrackapi-production.up.railway.app/api/categoria/", {
         method: "GET",
     })
@@ -205,7 +206,7 @@ function asignacion_categoria(idABuscar){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_investigadores() {
+async function obtener_investigadores() {
     fetch("https://scitrackapi-production.up.railway.app/api/investigador/", {
         method: "GET",
     })
@@ -238,7 +239,7 @@ function asignacion_investigador(idABuscar){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_fases() {
+async function obtener_fases() {
     fetch("https://scitrackapi-production.up.railway.app/api/fase/", {
         method: "GET",
     })
@@ -270,7 +271,7 @@ function asignacion_fase(idABuscar){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_items(){
+async function obtener_items(){
     fetch("http://localhost:3000/api/itemconvocatoria_fase/", {
         method: "GET",
     })
@@ -292,7 +293,7 @@ function obtener_items(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtener_convocatorias() {
+async function obtener_convocatorias() {
     fetch("http://localhost:3000/api/convocatoria/", {
         method: "GET",
     })
@@ -338,8 +339,8 @@ function obtener_convocatorias() {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function cargar_proyectos() {
-    fetch("https://scitrackapi-production.up.railway.app/api/proyecto/", {
+async function cargar_proyectos() {
+    return fetch("https://scitrackapi-production.up.railway.app/api/proyecto/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -363,8 +364,9 @@ function cargar_proyectos() {
     .catch((error) => console.error("Error al cargar los proyectos:", error));
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function obtenerIdArchivo(){
+async function obtenerIdArchivo(){
     fetch("http://localhost:3000/api/archivos/", {
         method: "GET",
     })
@@ -396,7 +398,7 @@ function obtener_Fase(idABuscar){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function mostrar_proyectos_filtrados() {
+async function mostrar_proyectos_filtrados() {
     const cuerpoTabla = document.querySelector("#tabla-proyectos tbody");
     cuerpoTabla.innerHTML = "";
 
@@ -414,7 +416,11 @@ function mostrar_proyectos_filtrados() {
             <td>${asignacion_Equipo(p.Equipo_idEquipo)}</td>
             <td>${asignacion_categoria(p.Categoria_idCategoria)}</td>
             <td>${asignacion_investigador(p.Investigador_idInvestigador)}</td>
-            <td>${p.Archivos_idArchivos}</td>
+            <td>
+                <button class="btnArchivo" data-id="${p.Archivos_idArchivos}">
+                    Archivo ${p.Archivos_idArchivos}
+                </button>
+                </td>
             <td>${asignacion_fase(p.Fase_IdFase)}</td>
             <td>${asignacion_estado(p.EstadosProyecto_idEstadosProyecto)}</td>
             <td>${p.Calificacion_idCalificacion}</td>
@@ -425,9 +431,43 @@ function mostrar_proyectos_filtrados() {
     console.log("Proyectos filtrados por idDinamica:", idDinamica, proyectosFiltrados);
 }
 //Pendiente//
+// Delegar evento a los botones de archivo en la tabla
+document.querySelector("#tabla-proyectos tbody").addEventListener("click", async function (event) {
+    if (event.target.classList.contains("btnArchivo")) {
+        const idArchivo = event.target.getAttribute("data-id");
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/archivos/${idArchivo}`, {
+                method: "GET",
+            });
+
+            if (!response.ok) throw new Error("No se pudo obtener el archivo");
+
+            const blob = await response.blob();
+
+            // Crear una URL temporal para el archivo
+            const url = window.URL.createObjectURL(blob);
+
+            // Crear un enlace oculto para descargar el archivo
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `archivo_${idArchivo}.pdf`; // Puedes cambiar el nombre del archivo aquí
+            document.body.appendChild(a);
+            a.click(); // Simula el clic para descargar
+            document.body.removeChild(a);
+
+            // Liberar la URL creada
+            window.URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error("Error al descargar el archivo:", error);
+            alert("No se pudo descargar el archivo.");
+        }
+    }
+});
 
 
-
+  
 
   btnConfirm.onclick = async function () {
       let fecha = new Date();
@@ -505,5 +545,7 @@ function mostrar_proyectos_filtrados() {
       })
       .catch((error) => console.error("Error:", error));
   };
+
+  
 };
 
