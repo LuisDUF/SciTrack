@@ -52,32 +52,32 @@
     </div>
   </v-container>
 
-<v-container 
-  class="pa-0" 
-  style="max-width: 100%; margin: auto;"
+<v-container
+  class="full-page-center"
+  fluid
+  style="gap: 0; width: 100vw;"
 >
-  <v-row no-gutters class="justify-center">
-    <v-col cols="12" md="11" lg="10">
-      <v-row class="align-center">
-        <v-col cols="12" md="6" class="pa-3">  <!-- Padding reducido -->
-          <v-card flat>
-            <p style="font-weight: bold; font-size: 1.3rem;">JUSTO A TU MEDIDA</p>
-            <p style="font-size: 1.3rem; text-align: justify;">
-              Diseñado para simplificar la gestión de concursos en instituciones de nivel medio superior y superior, SciTrack te ayuda a organizar cada detalle mientras garantizas el cumplimiento de los lineamientos y estándares académicos.
-            </p>
-          <ul style="font-size: 1.3rem; line-height: 1.8; padding-left: 1.5rem; margin: 0;">
-          <li style="margin-bottom: 0;">Plataforma intuitiva y fácil de usar.</li>
-          <li style="margin-bottom: 0;">Seguridad de datos con encriptación avanzada.</li>
-          <li style="margin-bottom: 0;">Soporte y asistencia 24/7.</li>
-          <li style="margin-bottom: 0;">Implementación rápida y sin complicaciones.</li>
+  <v-row no-gutters class="align-center justify-center" style="width: 100%;">
+    <v-col cols="5" class="pe-12">
+      <v-card flat tile>
+        <p style="font-weight: bold; font-size: 1.4vw;">JUSTO A TU MEDIDA</p>
+        <p style="font-size: 1.4vw; text-align: justify; width: 100%;">
+          Diseñado para simplificar la gestión de concursos en instituciones de nivel medio superior y superior, SciTrack te ayuda a organizar cada detalle mientras garantizas el cumplimiento de los lineamientos y estándares académicos.
+        </p>
+        <ul style="font-size: 1.4vw;">
+          <li>Plataforma intuitiva y fácil de usar.</li>
+          <li>Seguridad de datos con encriptación avanzada.</li>
+          <li>Soporte y asistencia 24/7.</li>
+          <li>Implementación rápida y sin complicaciones.</li>
           <li>Actualizaciones periódicas con nuevas funcionalidades.</li>
-          </ul>
-          </v-card>
-        </v-col>
-        <v-col cols="12" md="6" class="pa-0">
-          <img src="../señora.png" style="width: 100%;">
-        </v-col>
-      </v-row>
+        </ul>
+      </v-card>
+    </v-col>
+   
+    <v-col cols="6">
+      <v-card flat tile>
+        <img src="../señora.png" alt="" style="width: 100%;">
+      </v-card>
     </v-col>
   </v-row>
 </v-container>
