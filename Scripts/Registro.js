@@ -50,7 +50,7 @@ window.onload = async function () {
   //listar_proyectos()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   async function obtener_participantes() {
-    fetch("https://scitrackapi-production.up.railway.app/api/participante/", {
+    fetch("http://localhost:3000/api/participante/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -74,7 +74,7 @@ window.onload = async function () {
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   async function obtener_equipos() {
-    fetch("https://scitrackapi-production.up.railway.app/api/equipo/", {
+    fetch("http://localhost:3000/api/equipo/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -150,7 +150,7 @@ function asignacion_estado(idABuscar){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function obtener_categorias() {
-    fetch("https://scitrackapi-production.up.railway.app/api/categoria/", {
+    fetch("http://localhost:3000/api/categoria/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -207,7 +207,7 @@ function asignacion_categoria(idABuscar){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function obtener_investigadores() {
-    fetch("https://scitrackapi-production.up.railway.app/api/investigador/", {
+    fetch("http://localhost:3000/api/investigador/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -240,7 +240,7 @@ function asignacion_investigador(idABuscar){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function obtener_fases() {
-    fetch("https://scitrackapi-production.up.railway.app/api/fase/", {
+    fetch("http://localhost:3000/api/fase/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -340,7 +340,7 @@ async function obtener_convocatorias() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function cargar_proyectos() {
-    return fetch("https://scitrackapi-production.up.railway.app/api/proyecto/", {
+    return fetch("http://localhost:3000/api/proyecto/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -430,7 +430,7 @@ async function mostrar_proyectos_filtrados() {
 
     console.log("Proyectos filtrados por idDinamica:", idDinamica, proyectosFiltrados);
 }
-//Pendiente//
+
 // Delegar evento a los botones de archivo en la tabla
 document.querySelector("#tabla-proyectos tbody").addEventListener("click", async function (event) {
     if (event.target.classList.contains("btnArchivo")) {
