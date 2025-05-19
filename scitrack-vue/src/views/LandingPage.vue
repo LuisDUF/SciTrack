@@ -81,6 +81,44 @@
     </v-col>
   </v-row>
 </v-container>
+
+
+    <v-footer
+      color = #062A78
+      v-bind="localAttrs"
+      class="pa-0 d-flex align-center justify-center"
+      style="position: absolute; width: 100%; color: #062A78;"
+      
+
+    >
+      
+<v-card-text class="white--text d-flex" style="width: fit-content;">
+  <v-img
+    alt="Vuetify Name"
+    class="shrink mt-1 hidden-sm-and-down mr-2" 
+    contain
+    min-width="100"
+    src="../SCITRACK.png"
+    width="100"
+  /> 
+  <p class="pa-0 ma-0 pt-1" style="width: auto;"> - {{ new Date().getFullYear() }}</p>
+</v-card-text>
+
+<v-card-text class="white--text" style="width: fit-content;">
+<button>
+  <v-img
+    alt="Vuetify Name"
+    class="shrink mt-1 hidden-sm-and-down mr-2" 
+    contain
+    min-width="50"
+    src="../mail.png"
+    width="50"
+  /> 
+</button>
+</v-card-text>
+      
+    
+    </v-footer>
       
   </v-container>
 </template>

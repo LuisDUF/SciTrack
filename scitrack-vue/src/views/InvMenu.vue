@@ -1,5 +1,6 @@
 <template>
   <v-main>
+    <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
     <div class="d-flex">
       <SideBarBase :options="sideBarSettings" style="min-height: 100vh" />
       <div class="flex-grow-1" style="background-color: #c4cef2">
@@ -25,6 +26,9 @@
 import HeaderBase from "@/components/HeaderBase.vue";
 import SideBarBase from "@/components/SideBarBase.vue";
 
+import api from '@/services/api';
+
+
 export default {
   name: "App",
   components: {
@@ -33,41 +37,66 @@ export default {
   },
   data() {
     return {
-      headerSettings: {},
-      sideBarSettings: [], // Initialized empty; we'll populate it in `created`
+      headerSettings: {
+        userName: "Cargando...", // Valor inicial
+        userRole: "Investigador",
+        notificationStatus: false,
+      },
+      sideBarSettings: [], // Menú básico inicial
+      loading: false,
+      investigador: null
     };
   },
+
+  async mounted() {
+    this.loading = true;
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('No autenticado');
+      
+      const response = await api.get('/auth/me');
+      this.investigador = response.data;
+      
+      // Actualiza dinámicamente los settings
+      this.updateSettings();
+      
+    } catch (error) {
+      console.error('Error:', error);
+      this.$router.push('/login');
+    } finally {
+      this.loading = false;
+    }
+  },
+
   methods: {
     navigateTo(path) {
       if (this.$route.path !== path) {
         this.$router.push(path);
       }
     },
-  },
-  created() {
-    this.headerSettings = {
-      userName: "Alonzo Hdalgo",
-      userRole: "Investigador",
-      notificationStatus: false,
-    };
-    this.sideBarSettings = [
-      {
-        message: "Inicio",
-        id: "btnInicio",
-        icon: "mdi-home",
-        onClick: () => {
-          this.navigateTo("/invmenu"); // default child
+    
+    updateSettings() {
+      this.headerSettings = {
+        userName: this.investigador?.nombre || "Usuario", // Safe navigation
+        userRole: "Investigador",
+        notificationStatus: false,
+      };
+      
+      this.sideBarSettings = [
+        {
+          message: "Inicio",
+          id: "btnInicio",
+          icon: "mdi-home",
+          onClick: () => this.navigateTo("/invmenu"),
         },
-      },
-      {
-        message: "Proyectos",
-        id: "btnProyectosInv",
-        icon: "mdi-lightbulb-outline",
-        onClick: () => {
-          this.navigateTo("/invmenu/proyectos");
-        },
-      }
-    ];
-  },
+        {
+          message: "Proyectos",
+          id: "btnProyectosInv",
+          icon: "mdi-lightbulb-outline",
+          onClick: () => this.navigateTo("/invmenu/proyectos"),
+        }
+      ];
+    }
+  }
 };
 </script>
