@@ -11,8 +11,8 @@
           style="background-color: #c4cef2; margin: 0; padding: 0"
         >
           <div
-            class="actual-content px-4 py-4 rounded"
-            style="background-color: aliceblue"
+            class="actual-content"
+            style="background-color: #C4CEF2"
           >
             <router-view />
           </div>
@@ -25,8 +25,6 @@
 <script>
 import HeaderBase from "@/components/HeaderBase.vue";
 import SideBarBase from "@/components/SideBarBase.vue";
-
-import api from '@/services/api';
 
 
 export default {
@@ -44,38 +42,20 @@ export default {
       },
       sideBarSettings: [], // Menú básico inicial
       loading: false,
-      investigador: null
+      investigador: JSON.parse(localStorage.getItem('userData')) || null
     };
   },
-
-  async mounted() {
-    this.loading = true;
-    try {
-      const token = localStorage.getItem('authToken');
-      if (!token) throw new Error('No autenticado');
-      
-      const response = await api.get('/auth/me');
-      this.investigador = response.data;
-      
-      // Actualiza dinámicamente los settings
-      this.updateSettings();
-      
-    } catch (error) {
-      console.error('Error:', error);
-      this.$router.push('/login');
-    } finally {
-      this.loading = false;
-    }
-  },
-
   methods: {
     navigateTo(path) {
       if (this.$route.path !== path) {
         this.$router.push(path);
       }
-    },
-    
-    updateSettings() {
+    }
+  }, created() {
+      if (!this.investigador) {
+        // Redirige si no hay datos
+        this.$router.push('/login');
+      }
       this.headerSettings = {
         userName: this.investigador?.nombre || "Usuario", // Safe navigation
         userRole: "Investigador",
@@ -97,6 +77,5 @@ export default {
         }
       ];
     }
-  }
 };
 </script>

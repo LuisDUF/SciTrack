@@ -5,7 +5,7 @@
         <div class="flex-grow-1" style="background-color: #C4CEF2;">
           <HeaderBase :options="headerSettings" />
           <div id="content" class="py-3 px-3" style="background-color: #C4CEF2; margin: 0; padding: 0;">
-            <div class="actual-content px-4 py-4 rounded" style="background-color: aliceblue;">
+            <div class="actual-content px-4 py-4 rounded" style="background-color: #C4CEF2">
               <router-view />
             </div>
           </div>
@@ -26,8 +26,14 @@ export default {
   },
   data() {
     return {
-      headerSettings: {},
-      sideBarSettings: [], // Initialized empty; we'll populate it in `created`
+      headerSettings: {
+        userName: "Cargando...", // Valor inicial
+        userRole: "Participante",
+        notificationStatus: false,
+      },
+      sideBarSettings: [], // Menú básico inicial
+      loading: false,
+      participante: JSON.parse(localStorage.getItem('userData')) || null
     };
   },
   methods: {
@@ -38,8 +44,12 @@ export default {
     },
   },
   created() {
+      if (!this.participante) {
+        // Redirige si no hay datos
+        this.$router.push('/login');
+      }
     this.headerSettings = {
-      userName: "Sebastian Liza",
+      userName: this.participante?.nombre || "Usuario",
       userRole: "Participante",
       notificationStatus: false,
     };
