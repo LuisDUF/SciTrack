@@ -19,34 +19,34 @@ window.onload = async function (){
     try {
         startLoad();
 
-        const invesResponse = await fetch("https://scitrackapi-production.up.railway.app/api/investigador/");
+        const invesResponse = await fetch("http://localhost:3000/api/investigador/");
         INVES = await invesResponse.json();
 
-        const archivosResponse = await fetch("https://scitrackapi-production.up.railway.app/api/archivos/");
+        const archivosResponse = await fetch("http://localhost:3000/api/archivos/");
         ARCHIVOS = await archivosResponse.json();
 
-        const gradoResponse = await fetch("https://scitrackapi-production.up.railway.app/api/gradodeestudios/");
+        const gradoResponse = await fetch("http://localhost:3000/api/gradodeestudios/");
         GRADO = await gradoResponse.json();
 
-        const generoResponse = await fetch("https://scitrackapi-production.up.railway.app/api/genero/");
+        const generoResponse = await fetch("http://localhost:3000/api/genero/");
         GENEROS = await generoResponse.json();
 
-        const institucionResponse = await fetch("https://scitrackapi-production.up.railway.app/api/institucion/");
+        const institucionResponse = await fetch("http://localhost:3000/api/institucion/");
         INSTITUCIONES = await institucionResponse.json();
 
-        const disciplinaResponse = await fetch("https://scitrackapi-production.up.railway.app/api/disciplina/");
+        const disciplinaResponse = await fetch("http://localhost:3000/api/disciplina/");
         DISCIPLINA = await disciplinaResponse.json();
 
-        const estadoPResponse = await fetch("https://scitrackapi-production.up.railway.app/api/estadopersona/");
+        const estadoPResponse = await fetch("http://localhost:3000/api/estadopersona/");
         ESTADOSP = await estadoPResponse.json();
 
-        const estadoResponse = await fetch("https://scitrackapi-production.up.railway.app/api/estado/");
+        const estadoResponse = await fetch("http://localhost:3000/api/estado/");
         ESTADOS = await estadoResponse.json();
 
-        const paisResponse = await fetch("https://scitrackapi-production.up.railway.app/api/pais/");
+        const paisResponse = await fetch("http://localhost:3000/api/pais/");
         PAISES = await paisResponse.json();
 
-        const municipioResponse = await fetch("https://scitrackapi-production.up.railway.app/api/municipio/");
+        const municipioResponse = await fetch("http://localhost:3000/api/municipio/");
         MUNICIPIOS = await municipioResponse.json();
         const btnConfirm = document.getElementById('btnConfirm');
 
@@ -154,7 +154,7 @@ function setUpFileUpload()
       formData.append("contenido", archivo);
 
       try {
-        const response = await fetch("https://scitrackapi-production.up.railway.app/api/archivos/", {
+        const response = await fetch("http://localhost:3000/api/archivos/", {
           method: "POST",
           body: formData,
         });
@@ -367,7 +367,7 @@ async function sendData()
     
        
             
-            fetch("https://scitrackapi-production.up.railway.app/api/investigador/", {
+            fetch("http://localhost:3000/api/investigador/", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -419,7 +419,7 @@ async function uploadFiles(archivos,idInvestigador) {
         formData.append("contenido", archivo);
 
         try {
-            const response = await fetch("https://scitrackapi-production.up.railway.app/api/archivos/", {
+            const response = await fetch("http://localhost:3000/api/archivos/", {
                 method: "POST",
                 body: formData, 
             });

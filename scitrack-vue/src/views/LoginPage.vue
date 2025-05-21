@@ -63,7 +63,7 @@
   >
     Iniciar Sesión
   </v-btn>
-            <v-btn id="btnSing"  class="" style="margin: 0; margin-top: 2vw; width: 100%; font-size: 0.9vw; color: aliceblue; background-color: #062A78;">Registro</v-btn>
+            <v-btn @click="registro" v-if="showLoginButton" class="" style="margin: 0; margin-top: 2vw; width: 100%; font-size: 0.9vw; color: aliceblue; background-color: #062A78;">  {{ loginButtonText }}</v-btn>
 
               </v-col>
             </v-row>
@@ -118,7 +118,18 @@ export default {
     showErrorDialog: false,
     errorMessage: ''
     }
-  },
+  },computed: {
+  loginButtonText() {
+    switch(this.userType) {
+      case '1': return 'Registro';
+      case '2': return 'Postularse al PIIM';
+      case '3': return '';
+      default: return 'Iniciar Sesión';
+    }
+  },  showLoginButton() {
+    return this.userType !== '3'; // Mostrar solo si NO es admin (case 3)
+  }
+},
   methods: {
     showError(message) {
     this.errorMessage = message;
@@ -175,6 +186,17 @@ export default {
     },
     goToInvest() {
       this.$router.push({ name: "InvMenu" });
+    },registro(){
+            switch(this.userType) {
+            case '1':
+              this.$router.push({ name: 'RegisterParticipante' });
+              break;
+            case '2':
+              this.$router.push({ name: 'RegisterInv' });
+              break;
+            default:
+              this.$router.push('/');
+          }
     }
   }
 };
