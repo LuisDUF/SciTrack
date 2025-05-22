@@ -189,7 +189,7 @@ export default {
     },registro(){
             switch(this.userType) {
             case '1':
-              this.$router.push({ name: 'RegisterParticipante' });
+              this.$router.push({ name: 'RegisterPart' });
               break;
             case '2':
               this.$router.push({ name: 'RegisterInv' });

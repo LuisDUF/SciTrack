@@ -13,6 +13,7 @@ import EquiposProyectosUser from "../views/ProyectosEquiposUser.vue";
 import HomeUser from "../views/HomePageUser.vue";
 import HomeInv from "../views/HomePageInv.vue";
 import RegisterInv from "../views/RegisterInv.vue";
+import RegisterPart from "../views/RegisterPart.vue";
 
 
 import Reportes from "../views/ReportesPage.vue";
@@ -41,6 +42,11 @@ export default new Router({
       path: "/registerInv",
       name: "RegisterInv",
       component: RegisterInv,
+    },
+        {
+      path: "/registerPart",
+      name: "RegisterPart",
+      component: RegisterPart,
     },
     {
       path: "/invmenu",
