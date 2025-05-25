@@ -13,7 +13,7 @@ window.onload = async function () {
     }*/
 
     // Obtener admins de la API (suponiendo que haya un endpoint)
-    await fetch("https://scitrackapi-production.up.railway.app/api/archivos/", {
+    await fetch("http://localhost:3000/api/archivos/", {
         method: "GET",
       })
         .then(response => response.json())
@@ -90,7 +90,7 @@ function buscarArchivo() {
 
 // Función para eliminar admins
 async function eliminarArchivo(id) {
-    fetch(`https://scitrackapi-production.up.railway.app/api/archivos/${id}`, {
+    fetch(`http:localhost:3000/api/archivos/${id}`, {
         method: "DELETE",
     })
     .then((data) => {
