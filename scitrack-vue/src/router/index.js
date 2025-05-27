@@ -14,6 +14,7 @@ import HomeUser from "../views/HomePageUser.vue";
 import HomeInv from "../views/HomePageInv.vue";
 import RegisterInv from "../views/RegisterInv.vue";
 import RegisterPart from "../views/RegisterPart.vue";
+import RegisterAdmin from "../views/RegisterAdmin.vue";
 
 
 import Reportes from "../views/ReportesPage.vue";
@@ -113,6 +114,11 @@ export default new Router({
           path: "raws",
           name: "Raws",
           component: Raws,
+        },
+         {
+          path: "registerAdmin",
+          name: "RegisterAdmin",
+          component: RegisterAdmin,
         },
       ],
     },

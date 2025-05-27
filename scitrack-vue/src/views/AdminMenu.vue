@@ -74,6 +74,14 @@ export default {
         },
       },
       {
+        message: "Aministradores",
+        id: "btnAdministradores",
+        icon: "mdi-file-document-multiple-outline",
+        onClick: () => {
+          this.navigateTo("/adminmenu/registerAdmin");
+        },
+      },
+      {
         message: "Rúbricas",
         id: "btnRubricas",
         icon: "mdi-file-sign",
