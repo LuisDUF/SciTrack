@@ -84,6 +84,17 @@
                 {{ submitError }}
               </v-alert>
 
+              <v-alert
+                v-if="submitSuccess"
+                type="success"
+                dense
+                class="mb-4 mt-3"
+              >
+              
+                {{ submitSuccess }}
+                <br>
+              </v-alert>
+
               <v-btn
                 color="primary"
                 block
@@ -126,6 +137,7 @@ export default {
     passwordErrors: [],
     confirmPasswordErrors: [],
     submitError: '',
+    submitSuccess: '',
     loading: false,
   }),
   methods: {
@@ -168,6 +180,7 @@ export default {
     },
     async submitForm() {
       this.submitError = '';
+      this.submitSuccess = '';
       
       // Validate form
       const isFormValid = this.$refs.form.validate();
@@ -179,6 +192,18 @@ export default {
         this.submitError = "Por favor complete todos los campos correctamente";
         return;
       }
+
+            const response = await fetch("http://localhost:3000/api/administrador/correo/"+this.administrador.correo,{
+          method: "GET"
+        });
+        const data = await response.json();
+        if(data.message!="NO"){
+          this.emailErrors = ["Correo ya registrado"];
+          this.submitError = "Correo ya registrado";
+          return;
+        }else{
+      this.emailErrors = [];
+      this.submitError = '';
       
       this.loading = true;
       
@@ -191,14 +216,12 @@ export default {
           body: JSON.stringify(this.administrador),
         });
         
-        const data = await response.json();
-        console.log(data);
+        await response.json();
+        if(response.ok)
+        this.submitSuccess = 'Registro exitoso';
 
         this.$refs.form.reset();
         this.confirmPassword = '';
-        setTimeout(() => {
-          this.confirmAlert = 'Registro exitoso';
-        }, 1700);
         this.confirmAlert = '';
       } catch (error) {
         console.error("Error:", error);
@@ -206,6 +229,7 @@ export default {
       } finally {
         this.loading = false;
       }
+    }
     },
   },
 };

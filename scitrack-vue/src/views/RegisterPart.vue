@@ -132,6 +132,17 @@
                 <br>
               </v-alert>
 
+              <v-alert
+                v-if="submitSuccess"
+                type="success"
+                dense
+                class="mb-4 mt-3"
+              >
+              
+                {{ submitSuccess }}
+                <br>
+              </v-alert>
+
               <v-btn
                 color="#062A78"
                 style="color: aliceblue;"
@@ -183,6 +194,7 @@ export default {
     passwordErrors: [],
     confirmPasswordErrors: [],
     submitError: '',
+    submitSuccess: '',
     loading: false,
   }),
   mounted() {
@@ -225,11 +237,11 @@ export default {
         this.participant.Dependencia_idDependencia = null;
       }
     },
-    validateEmail() {
+    async validateEmail() {
       if (!this.participant.correo.includes("@") || !this.participant.correo.split('@')[1].includes('.')) {
         this.emailErrors = ["Ingrese un correo electrónico válido"];
         return false;
-      } else {
+      } else{
         this.emailErrors = [];
         return true;
       }
@@ -263,13 +275,14 @@ export default {
       return array.some(e => stringToSearch.includes(e));
     },
     async submitForm() {
+      this.submitSuccess = '';
       this.submitError = '';
-      
+     
       // Validate form
       const isEmailValid = this.validateEmail();
       const isPasswordValid = this.validatePassword();
       const isConfirmPasswordValid = this.validateConfirmPassword();
-      
+     
       if (!this.$refs.form.validate() || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
         this.submitError = "Por favor complete todos los campos correctamente";
         return;
@@ -279,6 +292,19 @@ export default {
         this.submitError = "Debe seleccionar una dependencia";
         return;
       }
+    
+      const response = await fetch("http://localhost:3000/api/participante/correo/"+this.participant.correo,{
+          method: "GET"
+        });
+        const data = await response.json();
+        if(data.message!="NO"){
+          this.emailErrors = ["Correo ya registrado"];
+          this.submitError = "Correo ya registrado";
+          return;
+        }else{
+      this.emailErrors = [];
+      this.submitError = '';
+        
       
       this.loading = true;
       
@@ -290,10 +316,11 @@ export default {
           },
           body: JSON.stringify(this.participant),
         });
-        
-        const data = await response.json();
-        if(!data)
-        alert('Se han enviado sus datos.');
+      
+        await response.json();
+
+        if(response.ok)
+        this.submitSuccess = 'Registro exitoso';
         this.$refs.form.reset();
         this.confirmPassword = '';
         this.showDependencySelect = false;
@@ -303,6 +330,7 @@ export default {
       } finally {
         this.loading = false;
       }
+    }
     },
   },
 };

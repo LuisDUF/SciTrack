@@ -46,7 +46,18 @@
               >
                 {{ confirmAlert }}
               </v-alert>
+                                      <v-alert
+                v-if="submitSuccess"
+                type="success"
+                dense
+                class="mb-4 mt-3"
+              >
+              
+                {{ submitSuccess }}
+                <br>
+              </v-alert>
         <v-card style="overflow-y: auto; height: 20vw;" color="#c4cef2">
+
 
           
           <v-card-text>
@@ -361,6 +372,7 @@ export default {
       v => /^[A-ZÑ&]{4}\d{6}[A-ZÑ&]{3}$/.test(v) || 'Formato inválido. Debe ser: AAAA123456BBB'
     ],   menu: false,
       confirmAlert: '',
+      submitSuccess:'',
       fileError: '',
       archivos: [],
       archivosSeleccionados: [],
@@ -549,6 +561,17 @@ export default {
         return;
       }
 
+        const response = await fetch("http://localhost:3000/api/investigador/correo/"+this.form.correo,{
+          method: "GET"
+        });
+        const data = await response.json();
+        if(data.message!="NO"){
+          this.confirmAlert = "Correo ya registrado";
+          return;
+        }else{
+      this.confirmAlert = '';
+      this.submitSuccess = '';
+
       try {
         this.startLoad();
         
@@ -556,7 +579,7 @@ export default {
         const paisText = this.paises.find(p => p.idPais === this.form.pais)?.nombre || '';
         const estadoText = this.estados.find(e => e.idEstado === this.form.estado)?.nombre || '';
         const municipioText = this.municipios.find(m => m.idMunicipio === this.form.municipio)?.nombre || '';
-
+        this.submitSuccess = '';
         // Register researcher
         const response = await fetch("http://localhost:3000/api/investigador/", {
           method: "POST",
@@ -591,7 +614,8 @@ export default {
         // Upload files
         await this.uploadFiles(idInvestigador);
 
-        alert('Se han enviado sus datos correctamente.');
+        
+        this.submitSuccess = 'Datos registrados con éxito';
         this.$refs.form.reset();
         this.archivosSeleccionados = [];
       } catch (error) {
@@ -600,6 +624,7 @@ export default {
       } finally {
         this.endLoad();
       }
+    }
     },
     async uploadFiles(idInvestigador) {
       for (const item of this.archivosSeleccionados) {
