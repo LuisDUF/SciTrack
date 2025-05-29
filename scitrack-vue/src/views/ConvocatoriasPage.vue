@@ -1,640 +1,920 @@
 <template>
   <div>
     <h2>Convocatorias</h2>
+    
     <extra>
-      <v-dialog v-model="dialog" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="error darken-2"
-            >mdi-alert</v-icon
-          >
-          <p class="font-weight-bold text-h4">¡Alerta!</p>
-          <p class="text-h6 font-weight-regular">
-            ¿Está seguro que desea eliminar esta convocatoria?
-          </p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="dialog = false"
-              >Cancelar</v-btn
+      <information-dialogs>
+        <v-dialog v-model="dialog" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="error darken-2"
+              >mdi-alert</v-icon
             >
-            <v-btn
-              color="white"
-              style="background-color: #b1caff"
-              text
-              @click="confirmDelete"
-              >Aceptar</v-btn
+            <p class="font-weight-bold text-h4">¡Alerta!</p>
+            <p class="text-h6 font-weight-regular">
+              ¿Está seguro que desea eliminar esta convocatoria?
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="dialog = false"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="white"
+                style="background-color: #b1caff"
+                text
+                @click="confirmDelete"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="alertEdit" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="error darken-2"
+              >mdi-alert</v-icon
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model="alertEdit" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="error darken-2"
-            >mdi-alert</v-icon
-          >
-          <p class="font-weight-bold text-h4">¡Alerta!</p>
-          <p class="text-h6 font-weight-regular">
-            ¿Está seguro que desea editar esta convocatoria?
-          </p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="alertEdit = false"
-              >Cancelar</v-btn
+            <p class="font-weight-bold text-h4">¡Alerta!</p>
+            <p class="text-h6 font-weight-regular">
+              ¿Está seguro que desea editar esta convocatoria?
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="alertEdit = false"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="white"
+                style="background-color: #b1caff"
+                text
+                @click="saveEditConv()"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="alertCreate" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="error darken-2"
+              >mdi-alert</v-icon
             >
-            <v-btn
-              color="white"
-              style="background-color: #b1caff"
-              text
-              @click="saveEditConv()"
-              >Aceptar</v-btn
+            <p class="font-weight-bold text-h4">¡Alerta!</p>
+            <p class="text-h6 font-weight-regular">
+              ¿Es correcta la información que desea subir?
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="alertCreate = false"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="white"
+                style="background-color: #b1caff"
+                text
+                @click="saveNewConv()"
+                >Confirmar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="deleteFileAlert" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="error darken-2"
+              >mdi-alert</v-icon
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog v-model="deleteFileAlert" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="error darken-2"
-            >mdi-alert</v-icon
-          >
-          <p class="font-weight-bold text-h4">¡Alerta!</p>
-          <p class="text-h6 font-weight-regular">
-            ¿Está seguro que desea eliminar este archivo?
-          </p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="deleteFileAlert = false"
-              >Cancelar</v-btn
+            <p class="font-weight-bold text-h4">¡Alerta!</p>
+            <p class="text-h6 font-weight-regular">
+              ¿Está seguro que desea eliminar este archivo?
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="deleteFileAlert = false"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="white"
+                style="background-color: #b1caff"
+                text
+                @click="deleteFileContinue()"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
+          v-model="loading"
+          max-width="400"
+          persistent
+          no-click-animation
+        >
+          <v-card class="text-center pa-5">
+            <br /><v-progress-circular
+              :size="100"
+              :width="7"
+              color="blue"
+              indeterminate
+            ></v-progress-circular
+            ><br />
+            <p class="font-weight-bold text-h4 mt-5">Procesando...</p>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="loadingDone" :persistent="true" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="green lighten-2"
+              >mdi-check-circle</v-icon
             >
-            <v-btn
-              color="white"
-              style="background-color: #b1caff"
-              text
-              @click="deleteFileContinue()"
-              >Aceptar</v-btn
+            <p class="font-weight-bold text-h4 mt-5">
+              Se ha procesado su información
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="afterSuccesfulDelete()"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="wrongFile" :persistent="false" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="red"
+              >mdi-close-circle</v-icon
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+            <p class="font-weight-bold text-h4 mt-5">
+              Necesita subir un archivo válido
+            </p>
+          </v-card>
+        </v-dialog>
 
-      <v-dialog v-model="loading" max-width="400" persistent no-click-animation>
-        <v-card class="text-center pa-5">
-          <br /><v-progress-circular
-            :size="100"
-            :width="7"
-            color="blue"
-            indeterminate
-          ></v-progress-circular
-          ><br />
-          <p class="font-weight-bold text-h4 mt-5">Procesando...</p>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog v-model="loadingDone" :persistent="true" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="green lighten-2"
-            >mdi-check-circle</v-icon
-          >
-          <p class="font-weight-bold text-h4 mt-5">
-            Se ha procesado su información
-          </p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="afterSuccesfulDelete()"
-              >Aceptar</v-btn
+        <v-dialog v-model="genericAlert" :persistent="false" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="red"
+              >mdi-close-circle</v-icon
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+            <p class="font-weight-bold text-h4 mt-5">
+              {{ genericAlertText }}
+            </p>
+          </v-card>
+        </v-dialog>
 
-      <v-dialog v-model="wrongFile" :persistent="false" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="red"
-            >mdi-close-circle</v-icon
-          >
-          <p class="font-weight-bold text-h4 mt-5">
-            Necesita subir un archivo válido
-          </p>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog v-model="errorDialog" :persistent="true" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="red"
-            >mdi-close-circle</v-icon
-          >
-          <p class="font-weight-bold text-h4 mt-5">
-            Ocurrió un problema. Por favor, intentelo de nuevo más tarde
-          </p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="afterSuccesfulDelete()"
-              >Aceptar</v-btn
+        <v-dialog v-model="errorDialog" :persistent="true" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="red"
+              >mdi-close-circle</v-icon
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+            <p class="font-weight-bold text-h4 mt-5">
+              Ocurrió un problema. Por favor, intentelo de nuevo más tarde
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="afterSuccesfulDelete()"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-      <v-dialog
-        v-model="editConv"
-        max-width="1200"
-        persistent
-        no-click-animation
-        :style="{ width: 'auto' }"
-      >
-        <v-card class="pa-5">
-          <v-container>
-            <v-row>
-              <v-col cols="11">
-                <p class="font-weight-bold text-h4">Editar Convocatoria</p>
-              </v-col>
-              <v-col cols="1">
-                <v-btn
-                  color="red"
-                  :ripple="false"
-                  icon
-                  @click="editConv = false"
-                  style="position: absolute; top: 8px; right: 8px; z-index: 10"
-                  ><v-icon>mdi-close-circle</v-icon></v-btn
-                >
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-container
-            fluid
-            style="background-color: #bfd6ff"
-            class="very-rounded py-5 px-5 mt-4"
-          >
-            <v-row>
-              <v-col cols="12" :md="pdfUrl ? 6 : 12">
-                <v-card
-                  class="pa-4"
-                  outlined
-                  elevation="1"
-                  style="background-color: #ffffff; border-radius: 10px"
-                >
-                  <v-card-text>
-                    <p class="text-h6 font-weight-bold">NOMBRE:</p>
-                    <v-text-field
-                      type="text"
-                      class=""
-                      v-model="currentConv.nombre"
-                      placeholder="Ingrese su nombre o nombres..."
-                    ></v-text-field>
+        <v-dialog v-model="alreadyDeleted" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="grey darken-2"
+              >mdi-trash-can</v-icon
+            >
+            <p class="text-h6 font-weight-regular">
+              Este elemento ya se encuentra inactivo
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="alreadyDeleted = false"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-                    <p class="text-h6 font-weight-bold">DESCRIPCIÓN:</p>
-                    <v-text-field
-                      type="text"
-                      class=""
-                      v-model="currentConv.descripcion"
-                      placeholder="Ingrese la descripcion..."
-                    ></v-text-field>
+        <v-dialog v-model="succesfulDelete" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="error darken-2"
+              >mdi-trash-can</v-icon
+            >
+            <p class="text-h6 font-weight-regular">
+              Se ha borrado exitosamente
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="afterSuccesfulDelete()"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </information-dialogs>
 
-                    <p class="text-h6 font-weight-bold">
-                      NÚMERO MÁXIMO DE INTEGRANTES:
-                    </p>
-                    <v-text-field
-                      type="number"
-                      class=""
-                      v-model="currentConv.max_integrantes"
-                      placeholder="..."
-                    ></v-text-field>
+      <util-dialogs>
+        <v-dialog
+          v-model="editConv"
+          max-width="1200"
+          persistent
+          no-click-animation
+          :style="{ width: 'auto' }"
+        >
+          <v-card class="pa-5">
+            <v-container>
+              <v-row>
+                <v-col cols="11">
+                  <p class="font-weight-bold text-h4">Editar Convocatoria</p>
+                </v-col>
+                <v-col cols="1">
+                  <v-btn
+                    color="red"
+                    :ripple="false"
+                    icon
+                    @click="editConv = false"
+                    style="
+                      position: absolute;
+                      top: 8px;
+                      right: 8px;
+                      z-index: 10;
+                    "
+                    ><v-icon>mdi-close-circle</v-icon></v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container
+              fluid
+              style="background-color: #bfd6ff"
+              class="very-rounded py-5 px-5 mt-4"
+            >
+              <v-row>
+                <v-col cols="12" :md="pdfUrl ? 6 : 12">
+                  <v-card
+                    class="pa-4 iframe-responsive-2"
+                    outlined
+                    elevation="1"
+                    style="background-color: #ffffff; border-radius: 10px"
+                  >
+                    <v-card-text>
+                      <p class="text-h6 font-weight-bold">NOMBRE:</p>
+                      <v-text-field
+                        type="text"
+                        class=""
+                        v-model="currentConv.nombre"
+                        placeholder="Ingrese su nombre o nombres..."
+                      ></v-text-field>
 
-                    <p class="text-h6 font-weight-bold">
-                      FECHA DE INICIO DE LA CONVOCATORIA:
-                    </p>
-                    <v-text-field
-                      type="date"
-                      class=""
-                      placeholder="AAAA-MM-DD"
-                      v-model="currentConv.fechaInicioRaw"
-                    ></v-text-field>
+                      <p class="text-h6 font-weight-bold">DESCRIPCIÓN:</p>
+                      <v-text-field
+                        type="text"
+                        class=""
+                        v-model="currentConv.descripcion"
+                        placeholder="Ingrese la descripcion..."
+                      ></v-text-field>
 
-                    <p class="text-h6 font-weight-bold">
-                      FECHA DE CIERRE DE LA CONVOCATORIA:
-                    </p>
-                    <v-text-field
-                      type="date"
-                      class=""
-                      placeholder="AAAA-MM-DD"
-                      v-model="currentConv.fechaFinRaw"
-                    ></v-text-field>
+                      <p class="text-h6 font-weight-bold">
+                        NÚMERO MÁXIMO DE INTEGRANTES:
+                      </p>
+                      <v-text-field
+                        type="number"
+                        class=""
+                        v-model="currentConv.max_integrantes"
+                        placeholder="..."
+                      ></v-text-field>
 
-                    <div v-if="pdfUrl">
-                      <p class="text-h6 font-weight-regular">
-                        <b>DOCUMENTO:</b>
+                      <p class="text-h6 font-weight-bold">
+                        FECHA DE INICIO DE LA CONVOCATORIA:
+                      </p>
+                      <v-menu
+                        ref="menuInicioConv"
+                        v-model="menuInicioConv"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="currentConv.fechaInicioRaw"
+                            label="Fecha de Inicio"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="currentConv.fechaInicioRaw"
+                          @input="menuInicioConv = false"
+                        ></v-date-picker>
+                      </v-menu>
+
+                      <p class="text-h6 font-weight-bold">
+                        FECHA DE CIERRE DE LA CONVOCATORIA:
                       </p>
 
-                      <v-row class="d-flex align-center">
-                        <v-col cols="6">
-                          <div class="d-flex">
-                            <v-btn
-                              class="flex-grow-1 text-truncate"
-                              color="white"
-                              style="background-color: #6596ff; max-width: 100%"
-                              text
-                              @click="
-                                openFileInNewTab(
-                                  currentConv.Archivos_idArchivos
-                                )
-                              "
-                            >
-                              {{ pdfName }}
-                            </v-btn>
-                            <v-btn
-                              color="white"
-                              style="background-color: red; margin-left: 8px"
-                              text
-                              @click="deleteFileAlert = true"
-                            >
-                              <v-icon>mdi-trash-can</v-icon>
-                            </v-btn>
-                          </div>
-                        </v-col>
-                      </v-row>
-                    </div>
-                    <v-file-input
-                      v-model="pdfFileUpload"
-                      label="Sube un archivo PDF (máximo 50kb)"
-                      accept=".pdf"
-                      prepend-icon="mdi-file-pdf-box"
-                      show-size
-                      :error="isInvalidFile"
-                      :color="isInvalidFile ? 'red' : 'primary'"
-                      small-chips
-                      truncate-length="50"
-                      @change="onFileSelected"
-                      v-else
-                    ></v-file-input>
-                    <br />
-                    <v-btn
-                      class="flex-grow-1 text-truncate"
-                      color="white"
-                      style="
-                        background-image: linear-gradient(
-                          to right,
-                          #2583d0,
-                          #0d5181
-                        );
-                        max-width: 100%;
-                      "
-                      text
-                      @click="alertEdit = true"
-                    >
-                      Confirmar
-                    </v-btn>
-                  </v-card-text>
-                </v-card>
-              </v-col>
+                      <v-menu
+                        ref="menuFinConv"
+                        v-model="menuFinConv"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="currentConv.fechaFinRaw"
+                            label="Fecha de Fin"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="currentConv.fechaFinRaw"
+                          @input="menuFinConv = false"
+                        ></v-date-picker>
+                      </v-menu>
 
-              <v-col cols="12" md="6" class="hidden-xs-only">
-                <div>
-                  <iframe
-                    :src="pdfUrl"
-                    class="iframe-responsive very-rounded"
-                    style="width: 100%"
-                    v-if="pdfUrl"
-                  ></iframe>
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
-      </v-dialog>
+                      <div v-if="pdfUrl">
+                        <p class="text-h6 font-weight-regular">
+                          <b>DOCUMENTO:</b>
+                        </p>
 
-      <v-dialog
-    v-model="editPhases"
-    max-width="1200"
-    persistent
-    no-click-animation
-    :style="{ width: 'auto' }"
-  >
-    <v-card class="pa-5">
-      <v-container>
-        <v-row>
-          <v-col cols="11">
-            <p class="font-weight-bold text-h4">Gestionar Fases</p>
-          </v-col>
-          <v-col cols="1">
-            <v-btn
-              color="red"
-              :ripple="false"
-              icon
-              @click="editPhases = false"
-              style="position: absolute; top: 8px; right: 8px; z-index: 10"
-            >
-              <v-icon>mdi-close-circle</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container
-        fluid
-        style="background-color: #bfd6ff"
-        class="very-rounded py-5 px-5 mt-4"
-      >
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-card
-              class="pa-4"
-              outlined
-              elevation="1"
-              style="background-color: #ffffff; border-radius: 10px"
-            >
-              <v-card-text>
-                <!-- Phase Input Fields -->
-                <v-text-field
-                  v-model="phaseForm.nombre"
-                  label="Nombre"
-                  maxlength="45"
-                  required
-                ></v-text-field>
-
-                <v-text-field
-                  v-model="phaseForm.modalidad"
-                  label="Modalidad"
-                  maxlength="45"
-                  required
-                ></v-text-field>
-
-                <v-text-field
-                  v-model="phaseForm.calificacion"
-                  label="Calificación mínima"
-                  type="number"
-                  required
-                ></v-text-field>
-
-                <v-menu
-                  ref="menuInicio"
-                  v-model="menuInicio"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="phaseForm.fechaInicio"
-                      label="Fecha de Inicio"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="phaseForm.fechaInicio"
-                    @input="menuInicio = false"
-                  ></v-date-picker>
-                </v-menu>
-
-                <v-menu
-                  ref="menuFin"
-                  v-model="menuFin"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="phaseForm.fechaFin"
-                      label="Fecha de Fin"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="phaseForm.fechaFin"
-                    @input="menuFin = false"
-                  ></v-date-picker>
-                </v-menu>
-
-                <v-textarea
-                  v-model="phaseForm.descripcion"
-                  label="Descripción"
-                  maxlength="164"
-                  rows="4"
-                  required
-                ></v-textarea>
-
-                <v-text-field
-                  v-model="phaseForm.ubicacion"
-                  label="Ubicación (idUbicacion)"
-                  placeholder="idUbicacion"
-                ></v-text-field>
-
-                <v-btn color="primary" @click="addPhase">Agregar fase</v-btn>
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card
-              class="pa-4"
-              outlined
-              elevation="1"
-              style="background-color: #ffffff; border-radius: 10px"
-            >
-              <v-card-text>
-                <div v-for="(phase, index) in phases" :key="index" class="mb-4">
-                  <v-card outlined>
-                    <v-card-title class="justify-space-between">
-                      <span>{{ phase.nombre }}</span>
-                      <div>
-                        <v-btn icon @click="movePhaseUp(index)" :disabled="index === 0">
-                          <v-icon>mdi-arrow-up</v-icon>
-                        </v-btn>
-                        <v-btn icon @click="movePhaseDown(index)" :disabled="index === phases.length - 1">
-                          <v-icon>mdi-arrow-down</v-icon>
-                        </v-btn>
+                        <v-row class="d-flex align-center">
+                          <v-col cols="6">
+                            <div class="d-flex">
+                              <v-btn
+                                class="flex-grow-1 text-truncate"
+                                color="white"
+                                style="
+                                  background-color: #6596ff;
+                                  max-width: 100%;
+                                "
+                                text
+                                @click="
+                                  openFileInNewTab(
+                                    currentConv.Archivos_idArchivos
+                                  )
+                                "
+                              >
+                                {{ pdfName }}
+                              </v-btn>
+                              <v-btn
+                                color="white"
+                                style="background-color: red; margin-left: 8px"
+                                text
+                                @click="deleteFileAlert = true"
+                              >
+                                <v-icon>mdi-trash-can</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-col>
+                        </v-row>
                       </div>
-                    </v-card-title>
-                    <v-card-text>
-                      <p><strong>Descripción:</strong> {{ phase.descripcion }}</p>
-                      <p><strong>Modalidad:</strong> {{ phase.modalidad }}</p>
-                      <p><strong>Fecha de inicio:</strong> {{ phase.fechaInicio }}</p>
-                      <p><strong>Fecha de cierre:</strong> {{ phase.fechaFin }}</p>
-                      <p><strong>Calificación mínima:</strong> {{ phase.calificacion }}</p>
-                      <p><strong>Ubicación:</strong> {{ phase.ubicacion || '---' }}</p>
+                      <v-file-input
+                        v-model="pdfFileUpload"
+                        label="Sube un archivo PDF (máximo 50kb)"
+                        accept=".pdf"
+                        prepend-icon="mdi-file-pdf-box"
+                        show-size
+                        :error="isInvalidFile"
+                        :color="isInvalidFile ? 'red' : 'primary'"
+                        small-chips
+                        truncate-length="50"
+                        @change="onFileSelected"
+                        v-else
+                      ></v-file-input>
+                      <br />
+                      <v-btn
+                        class="flex-grow-1 text-truncate"
+                        color="white"
+                        style="background-color: #2583d0; max-width: 100%"
+                        text
+                        @click="alertEdit = true"
+                      >
+                        Confirmar
+                      </v-btn>
                     </v-card-text>
                   </v-card>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+                </v-col>
 
-        <v-row>
-          <v-col cols="12">
-            <v-btn
-              class="flex-grow-1 text-truncate"
-              color="white"
-              style="
-                background-image: linear-gradient(
-                  to right,
-                  #2583d0,
-                  #0d5181
-                );
-                max-width: 100%;
-              "
-              text
-              @click="confirmPhases"
+                <v-col cols="12" md="6" class="hidden-xs-only">
+                  <div>
+                    <iframe
+                      :src="pdfUrl"
+                      class="iframe-responsive-2 very-rounded"
+                      style="width: 100%"
+                      v-if="pdfUrl"
+                    ></iframe>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog
+          v-model="saveConv"
+          max-width="1200"
+          persistent
+          no-click-animation
+          :style="{ width: 'auto' }"
+        >
+          <v-card class="pa-5">
+            <v-container>
+              <v-row>
+                <v-col cols="11">
+                  <p class="font-weight-bold text-h4">Crear Convocatoria</p>
+                </v-col>
+                <v-col cols="1">
+                  <v-btn
+                    color="red"
+                    :ripple="false"
+                    icon
+                    @click="saveConv = false"
+                    style="
+                      position: absolute;
+                      top: 8px;
+                      right: 8px;
+                      z-index: 10;
+                    "
+                    ><v-icon>mdi-close-circle</v-icon></v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container
+              fluid
+              style="background-color: #bfd6ff"
+              class="very-rounded py-5 px-5 mt-4"
             >
-              Confirmar
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
-  </v-dialog>
+              <v-row>
+                <v-col cols="12" :md="pdfUrl ? 6 : 12">
+                  <v-card
+                    class="pa-4 iframe-responsive-2"
+                    outlined
+                    elevation="1"
+                    style="background-color: #ffffff; border-radius: 10px"
+                  >
+                    <v-card-text>
+                      <p class="text-h6 font-weight-bold">NOMBRE:</p>
+                      <v-text-field
+                        type="text"
+                        class=""
+                        v-model="newConv.nombre"
+                        placeholder="Ingrese el nombre de la convocatoria..."
+                      ></v-text-field>
 
-      <v-dialog
-        v-model="showConv"
-        max-width="1200"
-        persistent
-        no-click-animation
-        :style="{ width: 'auto' }"
-      >
-        <v-card class="pa-5">
-          <v-container>
-            <v-row>
-              <v-col cols="11">
-                <p class="font-weight-bold text-h4">
-                  Información de la Convocatoria
-                </p>
-              </v-col>
-              <v-col cols="1">
-                <v-btn
-                  color="red"
-                  :ripple="false"
-                  icon
-                  @click="showConv = false"
-                  style="position: absolute; top: 8px; right: 8px; z-index: 10"
-                  ><v-icon>mdi-close-circle</v-icon></v-btn
-                >
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-container
-            fluid
-            style="background-color: #bfd6ff"
-            class="very-rounded py-5 px-5 mt-4"
-          >
-            <v-row>
-              <v-col cols="12" :md="pdfUrl ? 4 : 12">
-                <v-card
-                  class="pa-4"
-                  outlined
-                  elevation="1"
-                  style="background-color: #ffffff; border-radius: 10px"
-                >
-                  <v-card-text>
-                    <p class="text-h6 font-weight-regular">
-                      <b>NOMBRE:</b> {{ currentConv.nombre }}
-                    </p>
-                    <p class="text-h6 font-weight-regular">
-                      <b>DESCRIPCION:</b> {{ currentConv.descripcion }}
-                    </p>
-                    <p class="text-h6 font-weight-regular">
-                      <b>ESTADO:</b> {{ currentConv.estado }}
-                    </p>
-                    <p class="text-h6 font-weight-regular">
-                      <strong>FECHA DE INICIO:</strong>
-                      {{ currentConv.fechaInicio }}
-                    </p>
-                    <p class="text-h6 font-weight-regular">
-                      <strong>FECHA DE CIERRE:</strong>
-                      {{ currentConv.fechaFin }}
-                    </p>
-                    <div v-if="pdfUrl">
+                      <p class="text-h6 font-weight-bold">DESCRIPCIÓN:</p>
+                      <v-text-field
+                        type="text"
+                        class=""
+                        v-model="newConv.descripcion"
+                        placeholder="Ingrese la descripcion..."
+                      ></v-text-field>
+
+                      <p class="text-h6 font-weight-bold">
+                        NÚMERO MÁXIMO DE INTEGRANTES:
+                      </p>
+                      <v-text-field
+                        type="number"
+                        class=""
+                        v-model="newConv.max_integrantes"
+                        placeholder="..."
+                      ></v-text-field>
+
+                      <p class="text-h6 font-weight-bold">
+                        FECHA DE INICIO DE LA CONVOCATORIA:
+                      </p>
+                      <v-menu
+                        ref="menuInicioConv"
+                        v-model="menuInicioConv"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="newConv.fechaInicioRaw"
+                            label="Fecha de Inicio"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="newConv.fechaInicioRaw"
+                          @input="menuInicioConv = false"
+                        ></v-date-picker>
+                      </v-menu>
+
+                      <p class="text-h6 font-weight-bold">
+                        FECHA DE CIERRE DE LA CONVOCATORIA:
+                      </p>
+
+                      <v-menu
+                        ref="menuFinConv"
+                        v-model="menuFinConv"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="newConv.fechaFinRaw"
+                            label="Fecha de Fin"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="newConv.fechaFinRaw"
+                          @input="menuFinConv = false"
+                        ></v-date-picker>
+                      </v-menu>
                       <p class="text-h6 font-weight-regular">
                         <b>DOCUMENTO:</b>
                       </p>
+
+                      <v-file-input
+                        v-model="pdfFileUpload"
+                        label="Sube un archivo PDF (máximo 50kb)"
+                        accept=".pdf"
+                        prepend-icon="mdi-file-pdf-box"
+                        show-size
+                        :error="isInvalidFile"
+                        :color="isInvalidFile ? 'red' : 'primary'"
+                        small-chips
+                        truncate-length="50"
+                        @change="onFileSelected"
+                      ></v-file-input>
+                      <br />
                       <v-btn
+                        class="flex-grow-1 text-truncate"
                         color="white"
-                        style="background-color: #6596ff; overflow: hidden"
+                        style="background-color: #2583d0; max-width: 100%"
                         text
-                        @click="
-                          openFileInNewTab(currentConv.Archivos_idArchivos)
-                        "
-                        >{{ pdfName }}</v-btn
+                        @click="alertCreate = true"
                       >
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-col>
+                        Confirmar
+                      </v-btn>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-dialog>
 
-              <v-col cols="12" md="8" class="hidden-xs-only">
-                <div>
-                  <iframe
-                    :src="pdfUrl"
-                    class="iframe-responsive very-rounded"
-                    style="width: 100%"
-                    v-if="pdfUrl"
-                  ></iframe>
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog v-model="alreadyDeleted" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="grey darken-2"
-            >mdi-trash-can</v-icon
-          >
-          <p class="text-h6 font-weight-regular">
-            Este elemento ya se encuentra inactivo
-          </p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="alreadyDeleted = false"
-              >Aceptar</v-btn
+        <v-dialog
+          v-model="editPhases"
+          max-width="1200"
+          persistent
+          no-click-animation
+          :style="{ width: 'auto' }"
+        >
+          <v-card class="pa-5">
+            <v-container>
+              <v-row>
+                <v-col cols="11">
+                  <p class="font-weight-bold text-h4">Gestionar Fases</p>
+                </v-col>
+                <v-col cols="1">
+                  <v-btn
+                    color="red"
+                    :ripple="false"
+                    icon
+                    @click="editPhases = false"
+                    style="
+                      position: absolute;
+                      top: 8px;
+                      right: 8px;
+                      z-index: 10;
+                    "
+                  >
+                    <v-icon>mdi-close-circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container
+              fluid
+              style="background-color: #bfd6ff"
+              class="very-rounded py-5 px-5 mt-4"
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-card
+                    class="pa-4"
+                    outlined
+                    elevation="1"
+                    style="background-color: #ffffff; border-radius: 10px"
+                  >
+                    <v-card-text class="iframe-responsive">
+                      <v-text-field
+                        v-model="phaseForm.nombre"
+                        label="Nombre"
+                        maxlength="45"
+                        required
+                      ></v-text-field>
 
-      <v-dialog v-model="succesfulDelete" max-width="400">
-        <v-card class="text-center pa-5">
-          <v-icon class="text-h1 text-center mt-4" color="error darken-2"
-            >mdi-trash-can</v-icon
-          >
-          <p class="text-h6 font-weight-regular">Se ha borrado exitosamente</p>
-          <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="white"
-              style="background-color: #6596ff"
-              text
-              @click="afterSuccesfulDelete()"
-              >Aceptar</v-btn
+                      <v-text-field
+                        v-model="phaseForm.modalidad"
+                        label="Modalidad"
+                        maxlength="45"
+                        required
+                      ></v-text-field>
+
+                      <v-text-field
+                        v-model="phaseForm.calificacion_minima"
+                        label="Calificación mínima"
+                        type="number"
+                        required
+                      ></v-text-field>
+
+                      <v-menu
+                        ref="menuInicio"
+                        v-model="menuInicio"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="phaseForm.fechaInicio"
+                            label="Fecha de Inicio"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="phaseForm.fechaInicio"
+                          @input="menuInicio = false"
+                        ></v-date-picker>
+                      </v-menu>
+
+                      <v-menu
+                        ref="menuFin"
+                        v-model="menuFin"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="phaseForm.fechaFin"
+                            label="Fecha de Fin"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="phaseForm.fechaFin"
+                          @input="menuFin = false"
+                        ></v-date-picker>
+                      </v-menu>
+
+                      <v-textarea
+                        v-model="phaseForm.descripcion"
+                        label="Descripción"
+                        maxlength="164"
+                        rows="4"
+                        required
+                      ></v-textarea>
+
+                      <v-text-field
+                        v-model="phaseForm.ubicacion"
+                        label="Ubicación (idUbicacion)"
+                        placeholder="idUbicacion"
+                      ></v-text-field>
+
+                      <v-btn color="primary" @click="addPhase"
+                        >Agregar fase</v-btn
+                      >
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="6" v-if="phases.length > 0">
+                  <v-card
+                    class="pa-4"
+                    outlined
+                    elevation="1"
+                    style="background-color: #ffffff; border-radius: 10px"
+                  >
+                    <v-card-text
+                      style="max-height: 100%; overflow-y: auto"
+                      class="iframe-responsive"
+                    >
+                      <div
+                        v-for="(phase, index) in phases"
+                        :key="index"
+                        class="mb-4"
+                      >
+                        <v-card outlined>
+                          <v-card-title class="justify-space-between">
+                            <span>{{ phase.nombre }}</span>
+                            <div>
+                              <v-btn
+                                icon
+                                @click="movePhaseUp(index)"
+                                :disabled="index === 0"
+                              >
+                                <v-icon>mdi-arrow-up</v-icon>
+                              </v-btn>
+                              <v-btn
+                                icon
+                                @click="movePhaseDown(index)"
+                                :disabled="index === phases.length - 1"
+                              >
+                                <v-icon>mdi-arrow-down</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-card-title>
+                          <v-card-text>
+                            <p>
+                              <strong>Descripción:</strong>
+                              {{ phase.descripcion }}
+                            </p>
+                            <p>
+                              <strong>Modalidad:</strong> {{ phase.modalidad }}
+                            </p>
+                            <p>
+                              <strong>Fecha de inicio:</strong>
+                              {{ weirdDateToNormalDate(phase.fechaInicio) }}
+                            </p>
+                            <p>
+                              <strong>Fecha de cierre:</strong>
+                              {{ weirdDateToNormalDate(phase.fechaFin) }}
+                            </p>
+                            <p>
+                              <strong>Calificación mínima:</strong>
+                              {{
+                                phase.calificacion_minima || "Sin especificar"
+                              }}
+                            </p>
+                            <p>
+                              <strong>Ubicación:</strong>
+                              {{ phase.ubicacion || "Sin especificar" }}
+                            </p>
+                          </v-card-text>
+                        </v-card>
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col cols="12">
+                  <v-btn
+                    class="flex-grow-1 text-truncate"
+                    color="white"
+                    style="background-color: #2583d0; max-width: 100%"
+                    text
+                    @click="confirmPhases"
+                  >
+                    Confirmar
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog
+          v-model="showConv"
+          max-width="1200"
+          persistent
+          no-click-animation
+          :style="{ width: 'auto' }"
+        >
+          <v-card class="pa-5">
+            <v-container>
+              <v-row>
+                <v-col cols="11">
+                  <p class="font-weight-bold text-h4">
+                    Información de la Convocatoria
+                  </p>
+                </v-col>
+                <v-col cols="1">
+                  <v-btn
+                    color="red"
+                    :ripple="false"
+                    icon
+                    @click="showConv = false"
+                    style="
+                      position: absolute;
+                      top: 8px;
+                      right: 8px;
+                      z-index: 10;
+                    "
+                    ><v-icon>mdi-close-circle</v-icon></v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container
+              fluid
+              style="background-color: #bfd6ff"
+              class="very-rounded py-5 px-5 mt-4"
             >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+              <v-row>
+                <v-col cols="12" :md="pdfUrl ? 4 : 12">
+                  <v-card
+                    class="pa-4"
+                    outlined
+                    elevation="1"
+                    style="background-color: #ffffff; border-radius: 10px"
+                  >
+                    <v-card-text>
+                      <p class="text-h6 font-weight-regular">
+                        <b>NOMBRE:</b> {{ currentConv.nombre }}
+                      </p>
+                      <p class="text-h6 font-weight-regular">
+                        <b>DESCRIPCION:</b> {{ currentConv.descripcion }}
+                      </p>
+                      <p class="text-h6 font-weight-regular">
+                        <b>ESTADO:</b> {{ currentConv.estado }}
+                      </p>
+                      <p class="text-h6 font-weight-regular">
+                        <strong>FECHA DE INICIO:</strong>
+                        {{ currentConv.fechaInicio }}
+                      </p>
+                      <p class="text-h6 font-weight-regular">
+                        <strong>FECHA DE CIERRE:</strong>
+                        {{ currentConv.fechaFin }}
+                      </p>
+                      <div v-if="pdfUrl">
+                        <p class="text-h6 font-weight-regular">
+                          <b>DOCUMENTO:</b>
+                        </p>
+                        <v-btn
+                          color="white"
+                          style="background-color: #6596ff; overflow: hidden"
+                          text
+                          @click="
+                            openFileInNewTab(currentConv.Archivos_idArchivos)
+                          "
+                          >{{ pdfName }}</v-btn
+                        >
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="8" class="hidden-xs-only">
+                  <div>
+                    <iframe
+                      :src="pdfUrl"
+                      class="iframe-responsive-2 very-rounded"
+                      style="width: 100%"
+                      v-if="pdfUrl"
+                    ></iframe>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-dialog>
+      </util-dialogs>
     </extra>
 
+    <v-btn @click="saveConv = true">Crear Convocatoria</v-btn>
     <template>
       <v-container
         fluid
@@ -739,6 +1019,10 @@ export default {
   name: "ProjectCardList",
   data() {
     return {
+      saveConv: false,
+
+      genericAlert: false,
+      genericAlertText: "",
       wrongFile: false,
       dialog: false,
       errorDialog: false,
@@ -750,7 +1034,6 @@ export default {
       showConv: false,
       editConv: false,
       phasesConv: false,
-      newConv: false,
       hola: "s",
       loading: false,
       loadingDone: false,
@@ -758,71 +1041,82 @@ export default {
       selectedConvocatoriaId: null,
       previousFile: null,
       currentConv: {},
+      newConv: {},
+      alertCreate: false,
       ARCHIVO: null,
+      FASES: null,
+      ITEMFASE: null,
       pdfUrl: null,
       pdfName: "",
       editPhases: false,
       isInvalidFile: false,
       projectCards: [],
       phaseForm: {
-        nombre: '',
-        modalidad: '',
+        idFase: null,
+        nombre: "",
+        modalidad: "",
         calificacion: null,
-        fechaInicio: '',
-        fechaFin: '',
-        descripcion: '',
-        ubicacion: ''
+        fechaInicio: "",
+        fechaFin: "",
+        descripcion: "",
+        ubicacion: "",
       },
+      menuInicioConv: false,
+      menuFinConv: false,
       menuInicio: false,
       menuFin: false,
       phases: [],
-      conv_to_edit: 1 
     };
   },
 
   methods: {
     addPhase() {
       const {
+        idFase,
         nombre,
         modalidad,
-        calificacion,
+        calificacion_minima,
         fechaInicio,
         fechaFin,
         descripcion,
-        ubicacion
+        ubicacion,
       } = this.phaseForm;
 
       if (
-        !nombre ||
-        !modalidad ||
-        !calificacion ||
-        !fechaInicio ||
-        !fechaFin ||
-        !descripcion
+        nombre === "" ||
+        modalidad === "" ||
+        calificacion_minima == "" ||
+        fechaInicio === "" ||
+        fechaFin === "" ||
+        descripcion === ""
       ) {
-        alert("Ingrese la información en todos los campos");
+        this.genericAlertText = "Debe llenar todos los campos";
+        this.genericAlert = true;
+        console.log(JSON.stringify(this.phaseForm));
+        console.log();
         return;
       }
 
       this.phases.push({
+        idFase,
         nombre,
         modalidad,
-        calificacion,
+        calificacion_minima,
         fechaInicio,
         fechaFin,
         descripcion,
-        ubicacion: ubicacion || '---'
+        ubicacion: ubicacion || "---",
       });
 
-      // Reset form
       this.phaseForm = {
-        nombre: '',
-        modalidad: '',
-        calificacion: null,
-        fechaInicio: '',
-        fechaFin: '',
-        descripcion: '',
-        ubicacion: ''
+        idFase: null,
+        nombre: "",
+        modalidad: "",
+        calificacion_minima: null,
+        fechaInicio: "",
+        fechaFin: "",
+        descripcion: "",
+        ubicacion: "",
       };
     },
     movePhaseUp(index) {
@@ -840,49 +1134,79 @@ export default {
       }
     },
     async confirmPhases() {
+      this.loading = true;
+      console.log(JSON.stringify(this.phases));
+
       for (let i = 0; i < this.phases.length; i++) {
         const phase = this.phases[i];
+        console.log("Vamos a ver ", i, " es la ", phase.nombre);
+
         const phaseData = {
           nombre: phase.nombre,
           modalidad: phase.modalidad,
           fechaInicio: phase.fechaInicio,
           fechaFin: phase.fechaFin,
           descripcion: phase.descripcion,
-          calificacion_minima: phase.calificacion
+          calificacion_minima: phase.calificacion_minima,
         };
 
-        if (phase.ubicacion !== '---') {
+        if (phase.ubicacion !== "---") {
           phaseData.Ubicacion_idUbicacion = phase.ubicacion;
         }
 
-        try {
-          const response = await fetch("http://localhost:3000/api/fase/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(phaseData)
-          });
+        if (phase.idFase == null) {
+          try {
+            const response = await fetch("http://localhost:3000/api/fase/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(phaseData),
+            });
 
-          const data = await response.json();
+            const data = await response.json();
 
-          await fetch("http://localhost:3000/api/itemconvocatoria_fase/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              Convocatoria_idConvocatoria: this.conv_to_edit,
-              Fase_idFase: data.idFase,
-              orden: i
-            })
-          });
-        } catch (error) {
-          console.error("Error:", error);
+            await fetch("http://localhost:3000/api/itemconvocatoria_fase/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                Convocatoria_idConvocatoria: this.currentConv.id,
+                Fase_idFase: data.idFase,
+                orden: i,
+              }),
+            });
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        } else {
+          try {
+            const targetItem = this.ITEMFASE?.filter(
+              (a) => a.Fase_idFase === phase.idFase
+            );
+            console.log("ptm", JSON.stringify(targetItem));
+            await fetch(
+              `http://localhost:3000/api/itemconvocatoria_fase/${targetItem[0].iditemConvocatoria_Fase}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  Convocatoria_idConvocatoria: this.currentConv.id,
+                  Fase_idFase: phase.idFase,
+                  orden: i,
+                }),
+              }
+            );
+          } catch (error) {
+            console.error("Error:", error);
+          }
         }
       }
-
-      alert('Se han registrado las fases correctamente');
+      this.loading = false;
+      this.loadingDone = true;
       this.editPhases = false;
     },
     deleteFileContinue() {
@@ -944,6 +1268,20 @@ export default {
     openPhases(card) {
       this.editPhases = true;
       this.currentConv = card;
+      const targetPhases = [];
+      this.ITEMFASE.sort((a, b) => a.orden - b.orden);
+      console.log("Should be ordered?", JSON.stringify(this.ITEMFASE));
+      const phasesToSearchFor = this.ITEMFASE?.filter(
+        (a) => a.Convocatoria_idConvocatoria === card.id
+      );
+      phasesToSearchFor.forEach((f) => {
+        const currPhase = this.FASES?.filter((a) => a.idFase === f.Fase_idFase);
+        if (currPhase != undefined && currPhase != null) {
+          targetPhases.push(currPhase[0]);
+        }
+      });
+      this.phases = targetPhases;
+      console.log("Lo que hay", JSON.stringify(this.phases));
     },
     confirmDelete() {
       if (this.selectedConvocatoriaId !== null) {
@@ -1032,14 +1370,6 @@ export default {
         }
       }
 
-      const parseDate = (input) => {
-        if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
-        const [day, month, year] = input.split("-");
-        return `${year}-${month}-${day}`;
-      };
-
-      this.currentConv.fechaInicio = parseDate(this.currentConv.fechaInicioRaw);
-      this.currentConv.fechaFin = parseDate(this.currentConv.fechaFin);
 
       try {
         const response = await fetch(
@@ -1052,8 +1382,8 @@ export default {
             body: JSON.stringify({
               nombre: this.currentConv.nombre,
               descripcion: this.currentConv.descripcion,
-              fechaInicio: this.currentConv.fechaInicio,
-              fechaFin: this.currentConv.fechaFin,
+              fechaInicio: this.currentConv.fechaInicioRaw,
+              fechaFin: this.currentConv.fechaFinRaw,
               max_integrantes: this.currentConv.max_integrantes,
               Archivos_idArchivos: this.currentConv.Archivos_idArchivos,
             }),
@@ -1090,6 +1420,73 @@ export default {
         }
       }
     },
+
+    async saveNewConv() {
+      this.alertCreate = false;
+      this.loading = true;
+      console.log("hoa", this.pdfUrl, " but then ", this.pdfFileUpload);
+
+      if (this.pdfUrl == null) {
+        try {
+          const archivo = this.pdfFileUpload;
+          const tamanioEnKB = (archivo.size / 1024).toFixed(2);
+          const formData = new FormData();
+
+          formData.append("nombre", archivo.name);
+          formData.append("tamanio", tamanioEnKB);
+          formData.append(
+            "fechaIngreso",
+            new Date().toISOString().split("T")[0]
+          );
+          formData.append("contenido", archivo);
+
+          const response = await fetch("http://localhost:3000/api/archivos/", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+          console.log("Archivo subido:", data.idArchivos);
+          this.newConv.Archivos_idArchivos = data.idArchivos;
+        } catch (error) {
+          console.error("Error:", error);
+          this.errorDialog = true;
+          this.loading = false;
+          return;
+        }
+      }
+      console.log('AGH',this.newConv.Archivos_idArchivos)
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/convocatoria/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nombre: this.newConv.nombre,
+              descripcion: this.newConv.descripcion,
+              fechaInicio: this.newConv.fechaInicioRaw,
+              fechaFin: this.newConv.fechaFinRaw,
+              estado:'Pendiente',
+              max_integrantes: this.newConv.max_integrantes,
+              Archivos_idArchivos: this.newConv.Archivos_idArchivos,
+            }),
+          }
+        );
+
+        const result = await response.json();
+        console.log(result);
+
+        this.loading = false;
+        this.loadingDone = true;
+      } catch (error) {
+        console.error("Error:", error);
+        this.loading = false;
+        this.errorDialog = true;
+      }
+    },
   },
   mounted() {
     this.loading = true;
@@ -1098,8 +1495,12 @@ export default {
       fetch("http://localhost:3000/api/convocatoria/").then((res) =>
         res.json()
       ),
+      fetch("http://localhost:3000/api/fase/").then((res) => res.json()),
+      fetch("http://localhost:3000/api/itemconvocatoria_fase/").then((res) =>
+        res.json()
+      ),
     ])
-      .then(([archivosData, convocatoriaData]) => {
+      .then(([archivosData, convocatoriaData, faseData, itemFaseData]) => {
         this.loading = false;
 
         this.ARCHIVO = archivosData;
@@ -1116,6 +1517,10 @@ export default {
           fechaFin: this.weirdDateToNormalDate(item.fechaFin),
           Archivos_idArchivos: item.Archivos_idArchivos,
         }));
+
+        this.FASES = faseData;
+
+        this.ITEMFASE = itemFaseData;
       })
       .catch((error) => {
         console.error("Error al obtener datos:", error);
@@ -1136,6 +1541,16 @@ export default {
 @media (max-width: 960px) {
   .iframe-responsive {
     height: 60vh;
+  }
+}
+
+.iframe-responsive-2 {
+  height: 70vh;
+}
+
+@media (max-width: 960px) {
+  .iframe-responsive-2 {
+    height: 70vh;
   }
 }
 
