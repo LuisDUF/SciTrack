@@ -16,8 +16,8 @@
 
         <!-- Vista de listado de rúbricas -->
         <div v-if="!modoCrearRúbrica">
-          <h1 class="text-h4 mb-6">SCTTRACK</h1>
-          <p class="text-subtitle-1 mb-8">Instituto de Ciencia, tecnología e Innovación</p>
+          <h1 class="text-h4 mb-6">SCITRACK</h1>
+          
 
           <h2 class="text-h5 mb-4">Rúbricas</h2>
           <v-divider class="mb-6"></v-divider>
