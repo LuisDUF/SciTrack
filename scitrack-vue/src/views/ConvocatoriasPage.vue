@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Convocatorias</h2>
-    
+
     <extra>
       <information-dialogs>
         <v-dialog v-model="dialog" max-width="400">
@@ -276,7 +276,7 @@
                     elevation="1"
                     style="background-color: #ffffff; border-radius: 10px"
                   >
-                    <v-card-text>
+                    <v-card-text style="max-height: 100%; overflow-y: auto">
                       <p class="text-h6 font-weight-bold">NOMBRE:</p>
                       <v-text-field
                         type="text"
@@ -415,7 +415,7 @@
                         text
                         @click="alertEdit = true"
                       >
-                        Confirmar
+                        Confirmar Cambios
                       </v-btn>
                     </v-card-text>
                   </v-card>
@@ -477,7 +477,12 @@
                     class="pa-4 iframe-responsive-2"
                     outlined
                     elevation="1"
-                    style="background-color: #ffffff; border-radius: 10px"
+                    style="
+                      background-color: #ffffff;
+                      border-radius: 10px;
+                      max-height: 100%;
+                      overflow-y: auto;
+                    "
                   >
                     <v-card-text>
                       <p class="text-h6 font-weight-bold">NOMBRE:</p>
@@ -638,7 +643,10 @@
                     elevation="1"
                     style="background-color: #ffffff; border-radius: 10px"
                   >
-                    <v-card-text class="iframe-responsive">
+                    <v-card-text
+                      class="iframe-responsive"
+                      style="max-height: 100%; overflow-y: auto"
+                    >
                       <v-text-field
                         v-model="phaseForm.nombre"
                         label="Nombre"
@@ -646,12 +654,12 @@
                         required
                       ></v-text-field>
 
-                      <v-text-field
+                      <v-select
                         v-model="phaseForm.modalidad"
+                        :items="['En línea', 'Presencial', 'Otro']"
                         label="Modalidad"
-                        maxlength="45"
                         required
-                      ></v-text-field>
+                      ></v-select>
 
                       <v-text-field
                         v-model="phaseForm.calificacion_minima"
@@ -716,15 +724,33 @@
                         required
                       ></v-textarea>
 
-                      <v-text-field
+                      <v-select
                         v-model="phaseForm.ubicacion"
-                        label="Ubicación (idUbicacion)"
-                        placeholder="idUbicacion"
-                      ></v-text-field>
+                        :items="UBICACIONES"
+                        item-value="idUbicacion"
+                        :item-text="ubicacionToText"
+                        label="Ubicación"
+                        return-object="false"
+                        required
+                      />
 
                       <v-btn color="primary" @click="addPhase"
                         >Agregar fase</v-btn
                       >
+                      <br /><br />
+                      <v-row>
+                        <v-col cols="12">
+                          <v-btn
+                            class="flex-grow-1 text-truncate"
+                            color="white"
+                            style="background-color: #2583d0; max-width: 100%"
+                            text
+                            @click="confirmPhases"
+                          >
+                            Confirmar Cambios
+                          </v-btn>
+                        </v-col>
+                      </v-row>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -789,27 +815,22 @@
                             </p>
                             <p>
                               <strong>Ubicación:</strong>
-                              {{ phase.ubicacion || "Sin especificar" }}
+                              {{
+                                ubicacionToText(
+                                  UBICACIONES.find(
+                                    (a) =>
+                                      a.idUbicacion ===
+                                      (phase.Ubicacion_idUbicacion ??
+                                        phase.ubicacion?.idUbicacion)
+                                  )
+                                ) || "Sin especificar"
+                              }}
                             </p>
                           </v-card-text>
                         </v-card>
                       </div>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12">
-                  <v-btn
-                    class="flex-grow-1 text-truncate"
-                    color="white"
-                    style="background-color: #2583d0; max-width: 100%"
-                    text
-                    @click="confirmPhases"
-                  >
-                    Confirmar
-                  </v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -914,12 +935,11 @@
       </util-dialogs>
     </extra>
 
-    <v-btn @click="saveConv = true">Crear Convocatoria</v-btn>
     <template>
       <v-container
         fluid
-        style="background-color: #bfd6ff"
-        class="very-rounded py-5 px-5 mt-4"
+        style="background-color: #bfd6ff; max-height: 72vh; overflow-y: auto"
+        class="rounded py-5 px-5 mt-4"
       >
         <v-row dense>
           <v-col v-for="(card, index) in projectCards" :key="index" cols="12">
@@ -1011,6 +1031,16 @@
         </v-row>
       </v-container>
     </template>
+    <br>
+        <v-btn
+          @click="saveConv = true"
+          style="
+            background: linear-gradient(45deg, #2196f3, #9c27b0);
+            color: white;
+          "
+        >
+          Crear Convocatoria
+        </v-btn>
   </div>
 </template>
 
@@ -1045,6 +1075,7 @@ export default {
       alertCreate: false,
       ARCHIVO: null,
       FASES: null,
+      UBICACIONES: null,
       ITEMFASE: null,
       pdfUrl: null,
       pdfName: "",
@@ -1060,6 +1091,7 @@ export default {
         fechaFin: "",
         descripcion: "",
         ubicacion: "",
+        idUbicacion: null,
       },
       menuInicioConv: false,
       menuFinConv: false,
@@ -1070,6 +1102,10 @@ export default {
   },
 
   methods: {
+    ubicacionToText(ubicacion) {
+      if (!ubicacion || typeof ubicacion !== "object") return "";
+      return `${ubicacion.ciudad}, Colonia ${ubicacion.colonia}, Calle ${ubicacion.calle} #${ubicacion.numero}, CP: ${ubicacion.codigoPostal}, ${ubicacion.estado}`;
+    },
     addPhase() {
       const {
         idFase,
@@ -1150,8 +1186,10 @@ export default {
           calificacion_minima: phase.calificacion_minima,
         };
 
-        if (phase.ubicacion !== "---") {
-          phaseData.Ubicacion_idUbicacion = phase.ubicacion;
+        console.log("Mis momos: ", JSON.stringify(phase.ubicacion));
+
+        if (phase.ubicacion) {
+          phaseData.Ubicacion_idUbicacion = phase.ubicacion.idUbicacion;
         }
 
         if (phase.idFase == null) {
@@ -1370,7 +1408,6 @@ export default {
         }
       }
 
-
       try {
         const response = await fetch(
           "http://localhost:3000/api/convocatoria/" + this.currentConv.id,
@@ -1455,7 +1492,7 @@ export default {
           return;
         }
       }
-      console.log('AGH',this.newConv.Archivos_idArchivos)
+      console.log("AGH", this.newConv.Archivos_idArchivos);
       try {
         const response = await fetch(
           "http://localhost:3000/api/convocatoria/",
@@ -1469,7 +1506,7 @@ export default {
               descripcion: this.newConv.descripcion,
               fechaInicio: this.newConv.fechaInicioRaw,
               fechaFin: this.newConv.fechaFinRaw,
-              estado:'Pendiente',
+              estado: "Pendiente",
               max_integrantes: this.newConv.max_integrantes,
               Archivos_idArchivos: this.newConv.Archivos_idArchivos,
             }),
@@ -1499,29 +1536,40 @@ export default {
       fetch("http://localhost:3000/api/itemconvocatoria_fase/").then((res) =>
         res.json()
       ),
+      fetch("http://localhost:3000/api/ubicacion/").then((res) => res.json()),
     ])
-      .then(([archivosData, convocatoriaData, faseData, itemFaseData]) => {
-        this.loading = false;
+      .then(
+        ([
+          archivosData,
+          convocatoriaData,
+          faseData,
+          itemFaseData,
+          ubicacionData,
+        ]) => {
+          this.ARCHIVO = archivosData;
 
-        this.ARCHIVO = archivosData;
+          this.projectCards = convocatoriaData.map((item) => ({
+            id: item.idConvocatoria,
+            nombre: item.nombre,
+            max_integrantes: item.max_integrantes,
+            estado: item.estado || "Desconocido",
+            descripcion: item.descripcion || "...",
+            fechaInicioRaw: item.fechaInicio?.slice(0, 10) || "",
+            fechaFinRaw: item.fechaFin?.slice(0, 10) || "",
+            fechaInicio: this.weirdDateToNormalDate(item.fechaInicio),
+            fechaFin: this.weirdDateToNormalDate(item.fechaFin),
+            Archivos_idArchivos: item.Archivos_idArchivos,
+          }));
 
-        this.projectCards = convocatoriaData.map((item) => ({
-          id: item.idConvocatoria,
-          nombre: item.nombre,
-          max_integrantes: item.max_integrantes,
-          estado: item.estado || "Desconocido",
-          descripcion: item.descripcion || "...",
-          fechaInicioRaw: item.fechaInicio?.slice(0, 10) || "",
-          fechaFinRaw: item.fechaFin?.slice(0, 10) || "",
-          fechaInicio: this.weirdDateToNormalDate(item.fechaInicio),
-          fechaFin: this.weirdDateToNormalDate(item.fechaFin),
-          Archivos_idArchivos: item.Archivos_idArchivos,
-        }));
+          this.FASES = faseData;
 
-        this.FASES = faseData;
+          this.ITEMFASE = itemFaseData;
 
-        this.ITEMFASE = itemFaseData;
-      })
+          this.UBICACIONES = ubicacionData;
+
+          this.loading = false;
+        }
+      )
       .catch((error) => {
         console.error("Error al obtener datos:", error);
       });
