@@ -489,6 +489,7 @@
                       <v-text-field
                         type="text"
                         class=""
+                        maxlength="45"
                         v-model="newConv.nombre"
                         placeholder="Ingrese el nombre de la convocatoria..."
                       ></v-text-field>
@@ -497,6 +498,7 @@
                       <v-text-field
                         type="text"
                         class=""
+                        maxlength="255"
                         v-model="newConv.descripcion"
                         placeholder="Ingrese la descripcion..."
                       ></v-text-field>

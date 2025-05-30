@@ -85,6 +85,14 @@ export default {
         onClick: () => {
           this.navigateTo("/adminmenu/reportes");
         },
+      },
+      {
+        message: "Participantes",
+        id: "btnParticipantes",
+        icon: "mdi-account-group",
+        onClick: () => {
+          this.navigateTo("/adminmenu/adminparticipantes");
+        },
       }
     ];
   },
