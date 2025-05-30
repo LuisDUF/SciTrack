@@ -23,6 +23,7 @@ import LandingPage from "../views/LandingPage.vue";
 import AdminMenu from "../views/AdminMenu.vue";
 import InvMenu from "../views/InvMenu.vue";
 import UserMenu from "../views/UserMenu.vue";
+import ListaInvestigadores from "../views/ListaInvestigadores.vue";
 
 
 Vue.use(Router);
@@ -119,6 +120,11 @@ export default new Router({
           path: "registerAdmin",
           name: "RegisterAdmin",
           component: RegisterAdmin,
+        },
+                 {
+          path: "listaInvestigadores",
+          name: "ListaInvestigadores",
+          component: ListaInvestigadores,
         },
       ],
     },

@@ -104,6 +104,14 @@ export default {
         onClick: () => {
           this.navigateTo("/adminmenu/reportes");
         },
+      },
+      {
+        message: "Padrón de investigadores",
+        id: "btnPadron",
+        icon: "mdi-finance",
+        onClick: () => {
+          this.navigateTo("/adminmenu/listaInvestigadores");
+        },
       }
     ];
   },

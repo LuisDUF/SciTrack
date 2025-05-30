@@ -33,7 +33,7 @@
           <div class="rounded" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
             <div style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF;">
             <v-list style="background-color: #EBF2FF;">
-              <v-radio-group v-model="selectedConvocatoria">
+              <v-radio-group v-model="selectedConvocatoria" style="margin-top: 0;">
                   <v-radio
                   v-for="convocatoria in convocatorias"
                   :key="convocatoria.idConvocatoria"
