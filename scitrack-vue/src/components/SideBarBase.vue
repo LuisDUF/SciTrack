@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer color="#2C58B5" dark permanent app fixed>
+  <v-navigation-drawer color="#2C58B5" dark  permanent>
     
     <div class="d-flex justify-center py-0 px-0 mb-2 hidden-sm-and-down">
 
