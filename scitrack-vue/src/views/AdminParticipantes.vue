@@ -2,11 +2,11 @@
     <div>
   
       <div class="pa-4 mt-4 rounded" style="background-color: #ffffff;">
-        <h1>Investigadores</h1>
+        <h1>Participantes</h1>
         <v-row class="pa-4" style="background-color: #ffffff;">
                   <v-col class="rounded me-2" cols="4" style="margin-left: 1.5vw; background-color: #BFD6FF; height: fit-content; ">
             <h4 style="font-weight: bold;">Pendientes</h4>
-              <itemListaInv
+              <itemListaPart
               v-for="(pendiente, index) in pendientes"
               :key="index"
               :nombre="pendiente.nombre"
@@ -21,7 +21,7 @@
   
           <v-col class="rounded me-2" cols="4" style="margin-left: 1.5vw; background-color: #BFD6FF; height: fit-content; ">
             <h4 style="font-weight: bold;">Aprobados</h4>
-              <itemListaInv
+              <itemListaPart
               v-for="(aceptado, index) in aceptados"
               :key="index"
               :nombre="aceptado.nombre"
@@ -140,147 +140,139 @@
   </template>
   
   
-  <script>
-  import api from  "../services/api.js"
-  import itemListaInv from "@/components/itemListaInv.vue";
-  
-    export default{
-      components: {itemListaInv},
-      name: "App",
-      data(){
-        return{
-          AreaDeConocimientos: [],
-          Institucions: [],
-          investigadores: [],
-          selectedAreaDeConocimiento: "Todos",
-          selectedInstitucion: "Todos",
-          pendientes: [],
-          aceptados: [],
-          vari: {no:'NO'},
-          elegido: {selectis:null,isti:null,area:null,archivos:null},
-          pdfUrl: null,
-          selectedPdf: 0
-        }
-      },
-      created(){
-        this.onCheckboxChange();
-      },async mounted(){
-  
-        try {
-            
-            const response = await api.get('/api/AreaDeConocimientoInv');
-            this.AreaDeConocimientos = JSON.parse(JSON.stringify(response.data));
-          this.AreaDeConocimientos.splice(0,0,{nombre:"Todos",idAreaDeConocimientoInv:"Todos"});
-            const response2 = await api.get('/api/institucion');
-            this.Institucions = JSON.parse(JSON.stringify(response2.data));
-            this.Institucions.splice(0,0,{nombre:"Todos",idInstitucion:"Todos"});
-            
-        }catch(error){
-          console.log(error);
-  
-        }
-      },methods: {
-        async aprobar(investigador,esAprobado){
-          console.log(investigador.idInvestigador); 
-          const response = await fetch(`http://localhost:3000/api/investigador/${investigador.idInvestigador}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" }, 
-            body: JSON.stringify({ EstadoPersona_idEstadoPersona: esAprobado ? 2 : 3 }),
-          });
-            if(response.ok)
-              alert("Realizado")
-  
-          location.reload();    
-        },
-        abrirArchivo(doc){
-          const byteArray = new Uint8Array(doc.contenido.data);
-        const blob = new Blob([byteArray], { type: "application/pdf" });
-        
-        this.pdfUrl = URL.createObjectURL(blob);
-        },
-        cerrar(){
-          this.vari.no = 'NO';
-          this.pdfUrl = null;
-        },
-      
-       async onCheckboxChange(){
-        this.aceptados = [];
-        this.pendientes = [];
-        this.investigadores = [];
-          try {
-              const response = await api.get(`/api/investigador/`);
-              this.investigadores = (JSON.parse(JSON.stringify(response.data)));
-              var inv2 = [];
-            if(this.selectedAreaDeConocimiento!=null&&this.selectedAreaDeConocimiento!="Todos"){
-              const response = await api.get(`/api/investigador/area/`+this.selectedAreaDeConocimiento);
-             
-              inv2.push(...JSON.parse(JSON.stringify(response.data)));
-              if(this.selectedInstitucion!=null&&this.selectedInstitucion!="Todos"){
-                inv2 = inv2.filter(i => i.Institucion_idInstitucion==this.selectedInstitucion);
-              }
-              
-           
-            }
-            if(this.selectedInstitucion!=null&&this.selectedInstitucion!="Todos"){
-              const response = await api.get(`/api/investigador/institucion/`+this.selectedInstitucion);
-              inv2.push(...JSON.parse(JSON.stringify(response.data)));
-              if(this.selectedAreaDeConocimiento!=null&&this.selectedAreaDeConocimiento!="Todos"){
-              inv2 = inv2.filter(i => i.AreaDeConocimientoInv_idAreaDeConocimientoInv==this.selectedAreaDeConocimiento);
-              }
-  
-            }
-  
-            if(inv2.length>0){
-              inv2 = inv2.filter((item, index, self) => 
-              index === self.findIndex((t) => (
-                  t.idInvestigador === item.idInvestigador 
-              ))
-              );
-              this.investigadores = inv2;
-            }else if(this.selectedAreaDeConocimiento!=null&&this.selectedAreaDeConocimiento!="Todos"||this.selectedInstitucion!=null&&this.selectedInstitucion!="Todos"){
-              this.investigadores = [];
-  
-            }
-            
-            
-            
-            this.investigadores.forEach(async inv  =>   {
-  
-              
-              const response2 = await api.get('/api/institucion/'+inv.Institucion_idInstitucion)
-              const ins = JSON.parse(JSON.stringify(response2.data));
-  
-  
-              const response = await api.get('/api/AreaDeConocimientoInv/disciplina/'+inv.Disciplina_idDisciplina)
-              const are = JSON.parse(JSON.stringify(response.data));
-  
-              inv.nombreIns = ins[0].nombre;
-              inv.nombreAre = are[0].nombre;
-  
-              if(inv.EstadoPersona_idEstadoPersona==1){
-                inv.estadoP = "Pendiente de revisión"
-                this.pendientes.push(inv);
-                console.log("si");
-              }
-  
-              else if(inv.EstadoPersona_idEstadoPersona==2){
-              inv.estadoP = "Aprobado"
-                this.aceptados.push(inv); 
-              }
-              
-          });
-  
-          } catch (error) {
-            console.error("Error al cargar datos:", error);
-          }
-        },
-  
-      }
-  
+<script>
+import itemListaPart from "@/components/itemListaPart.vue";
+
+export default {
+  components: { itemListaPart },
+  name: "App",
+  data() {
+    return {
+      AreaDeConocimientos: [],
+      Institucions: [],
+      investigadores: [],
+      selectedAreaDeConocimiento: "Todos",
+      selectedInstitucion: "Todos",
+      pendientes: [],
+      aceptados: [],
+      vari: { no: 'NO' },
+      elegido: { selectis: null, isti: null, area: null, archivos: null },
+      pdfUrl: null,
+      selectedPdf: 0
     }
-  
-  
-  </script>
+  },
+  created() {
+    this.onCheckboxChange();
+  },
+  async mounted() {
+    try {
+      const res1 = await fetch('http://localhost:3000/api/AreaDeConocimientoInv');
+      const data1 = await res1.json();
+      this.AreaDeConocimientos = JSON.parse(JSON.stringify(data1));
+      this.AreaDeConocimientos.splice(0, 0, { nombre: "Todos", idAreaDeConocimientoInv: "Todos" });
+
+      const res2 = await fetch('http://localhost:3000/api/institucion');
+      const data2 = await res2.json();
+      this.Institucions = JSON.parse(JSON.stringify(data2));
+      this.Institucions.splice(0, 0, { nombre: "Todos", idInstitucion: "Todos" });
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  methods: {
+    async aprobar(investigador, esAprobado) {
+      console.log(investigador.idInvestigador);
+      const response = await fetch(`http://localhost:3000/api/investigador/${investigador.idInvestigador}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ EstadoPersona_idEstadoPersona: esAprobado ? 2 : 3 }),
+      });
+      if (response.ok) alert("Realizado");
+      location.reload();
+    },
+    abrirArchivo(doc) {
+      const byteArray = new Uint8Array(doc.contenido.data);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+      this.pdfUrl = URL.createObjectURL(blob);
+    },
+    cerrar() {
+      this.vari.no = 'NO';
+      this.pdfUrl = null;
+    },
+
+    async onCheckboxChange() {
+      this.aceptados = [];
+      this.pendientes = [];
+      this.investigadores = [];
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/investigador/`);
+        const data = await res.json();
+        this.investigadores = JSON.parse(JSON.stringify(data));
+
+        let inv2 = [];
+
+        if (this.selectedAreaDeConocimiento && this.selectedAreaDeConocimiento !== "Todos") {
+          const resArea = await fetch(`http://localhost:3000/api/investigador/area/${this.selectedAreaDeConocimiento}`);
+          const dataArea = await resArea.json();
+          inv2.push(...JSON.parse(JSON.stringify(dataArea)));
+
+          if (this.selectedInstitucion && this.selectedInstitucion !== "Todos") {
+            inv2 = inv2.filter(i => i.Institucion_idInstitucion == this.selectedInstitucion);
+          }
+        }
+
+        if (this.selectedInstitucion && this.selectedInstitucion !== "Todos") {
+          const resInst = await fetch(`http://localhost:3000/api/investigador/institucion/${this.selectedInstitucion}`);
+          const dataInst = await resInst.json();
+          inv2.push(...JSON.parse(JSON.stringify(dataInst)));
+
+          if (this.selectedAreaDeConocimiento && this.selectedAreaDeConocimiento !== "Todos") {
+            inv2 = inv2.filter(i => i.AreaDeConocimientoInv_idAreaDeConocimientoInv == this.selectedAreaDeConocimiento);
+          }
+        }
+
+        if (inv2.length > 0) {
+          inv2 = inv2.filter((item, index, self) =>
+            index === self.findIndex((t) => t.idInvestigador === item.idInvestigador)
+          );
+          this.investigadores = inv2;
+        } else if (
+          this.selectedAreaDeConocimiento !== "Todos" ||
+          this.selectedInstitucion !== "Todos"
+        ) {
+          this.investigadores = [];
+        }
+
+        this.investigadores.forEach(async inv => {
+          const resIns = await fetch(`http://localhost:3000/api/institucion/${inv.Institucion_idInstitucion}`);
+          const ins = await resIns.json();
+
+          const resAre = await fetch(`http://localhost:3000/api/AreaDeConocimientoInv/disciplina/${inv.Disciplina_idDisciplina}`);
+          const are = await resAre.json();
+
+          inv.nombreIns = ins[0].nombre;
+          inv.nombreAre = are[0].nombre;
+
+          if (inv.EstadoPersona_idEstadoPersona == 1) {
+            inv.estadoP = "Pendiente de revisión";
+            this.pendientes.push(inv);
+          } else if (inv.EstadoPersona_idEstadoPersona == 2) {
+            inv.estadoP = "Aprobado";
+            this.aceptados.push(inv);
+          }
+        });
+
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      }
+    }
+  }
+}
+</script>
+
+
   <style scoped>
     .baner{
       font-weight: normal;
