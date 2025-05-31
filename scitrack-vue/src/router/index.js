@@ -24,6 +24,7 @@ import AdminMenu from "../views/AdminMenu.vue";
 import InvMenu from "../views/InvMenu.vue";
 import UserMenu from "../views/UserMenu.vue";
 import ListaInvestigadores from "../views/ListaInvestigadores.vue";
+import Constancias from "../views/Constancias.vue";
 
 
 Vue.use(Router);
@@ -126,6 +127,11 @@ export default new Router({
           name: "ListaInvestigadores",
           component: ListaInvestigadores,
         },
+        {
+          path:"constancias",
+          name:"Constancias",
+          component: Constancias,
+        }
       ],
     },
   ],

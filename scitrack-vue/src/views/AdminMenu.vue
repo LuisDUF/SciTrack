@@ -76,7 +76,7 @@ export default {
       {
         message: "Aministradores",
         id: "btnAdministradores",
-        icon: "mdi-file-document-multiple-outline",
+        icon: "mdi-account-plus-outline",
         onClick: () => {
           this.navigateTo("/adminmenu/registerAdmin");
         },
@@ -106,12 +106,19 @@ export default {
         },
       },
       {
-        message: "Padrón de investigadores",
+        message: "PIIM",
         id: "btnPadron",
-        icon: "mdi-finance",
+        icon: "mdi-brain",
         onClick: () => {
           this.navigateTo("/adminmenu/listaInvestigadores");
         },
+      },{
+        message: "Constancias",
+        id: "btnConstancias",
+        icon: "mdi-account-file-outline ",
+        onClick:()=>{
+          this.navigateTo("/adminmenu/constancias");
+        }
       }
     ];
   },

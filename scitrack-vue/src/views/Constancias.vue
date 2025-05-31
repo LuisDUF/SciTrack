@@ -1,53 +1,54 @@
 <template>
-  <div>
+  <div >
 
-    <div class="pa-4 mt-4 rounded" style="background-color: #ffffff;">
-      <h1 class="ms-7">Investigadores</h1>
-      <v-row class="pa-4" style="background-color: #ffffff;">
-                <v-col class="rounded me-2" cols="4" style="margin-left: 1.5vw; background-color: #BFD6FF; height: fit-content; ">
-          <h4 style="font-weight: bold;">Pendientes</h4>
-            <itemListaInv
-            v-for="(pendiente, index) in pendientes"
-            :key="index"
-            :nombre="pendiente.nombre"
-            :institucion="pendiente.nombreIns"
-            :conocimiento="pendiente.nombreAre"
-            :estado="pendiente.estadoP"
-            :investigador="pendiente"
-            :vari ="vari"
-            :seleccion="elegido"
-          />
-        </v-col>
+    <div class="pa-7 mt-4 rounded" style="background-color: #ffffff; height: 82.5vmin">
+      <v-text-field placeholder="Nombre/ID Participante" label="Buscar" v-model="buscado" @input="buscar()" ></v-text-field>
+      <h1 class="">Participantes</h1>
+      <v-row class="px-0 mt-2"   style=" background-color: #BFD6FF; border-radius: 15px;  border: solid 10px #BFD6FF; overflow-y:scroll; scrollbar-width: none; height: max-content; max-height: 80%;">
 
-        <v-col class="rounded me-2" cols="4" style="margin-left: 1.5vw; background-color: #BFD6FF; height: fit-content; ">
-          <h4 style="font-weight: bold;">Aprobados</h4>
-            <itemListaInv
-            v-for="(aceptado, index) in aceptados"
+        <v-col class="rounded me-2 mx-0 ms-0" cols="8" style="margin-left: 1.5vw; background-color: #BFD6FF; height: fit-content; ">
+          <v-row v-if="filtrados.length>1">
+            <itemListaUsuario
+            v-for="(filtrado, index) in filtrados"
             :key="index"
-            :nombre="aceptado.nombre"
-            :institucion="aceptado.nombreIns"
-            :conocimiento="aceptado.nombreAre"
-            :estado="aceptado.estadoP"
-            :investigador="aceptado"
+            :nombre="filtrado.nombre"
+            :institucion="filtrado.nombreIns"
+            :convocatoria="filtrado.nombreConvo"
+            :participante="filtrado"
             :vari="vari"
             :seleccion="elegido"
+            :esUno = false
           />
+          </v-row>
+          <v-row style="background-color: #BFD6FF;" v-else>           
+            <itemListaUsuario
+            v-for="(filtrado, index) in filtrados"
+            :key="index"
+            :nombre="filtrado.nombre"
+            :institucion="filtrado.nombreIns"
+            :convocatoria="filtrado.nombreConvo"
+            :participante="filtrado"
+            :vari="vari"
+            :seleccion="elegido"
+            :esUno = true
+          /></v-row>
+
         </v-col>
 
         
         <v-col class="rounded"  style="margin-left: 1.5vw;">
           <v-row>
-            <v-col class="rounded" style=" background-color: #BFD6FF; margin-bottom: 2vw;">
-                        <h4 style="font-weight: bold;">Filtrar por area de conocimiento:</h4>
+            <v-col cols="12" class="rounded" style=" background-color: #BFD6FF; margin-bottom: 2vw;">
+                        <h4 style="font-weight: bold; color: gray;">Filtrar por convocatoria:</h4>
           <div class="rounded pa-0" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
-            <div style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
-            <v-list class="ma-5 my-0" style="background-color: #EBF2FF; ">
+            <div class="rounded" style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
+            <v-list class="ma-5 my-0 rounded" style="background-color: #EBF2FF; ">
               <v-radio-group v-model="selectedAreaDeConocimiento" style="margin-top: 0;">
                   <v-radio
                   v-for="AreaDeConocimiento in AreaDeConocimientos"
-                  :key="AreaDeConocimiento.idAreaDeConocimientoInv"
+                  :key="AreaDeConocimiento.idConvocatoria"
                   :label="AreaDeConocimiento.nombre"
-                  :value="AreaDeConocimiento.idAreaDeConocimientoInv"
+                  :value="AreaDeConocimiento.idConvocatoria"
                   @change="selectedAreaDeConocimiento=AreaDeConocimiento, onCheckboxChange()"
                 ></v-radio>
               </v-radio-group>
@@ -58,9 +59,9 @@
           </div>
             </v-col>
             <v-col class="rounded" style=" background-color: #BFD6FF;">
-                        <h4 style="font-weight: bold;">Filtrar por institución:</h4>
+                        <h4 style="font-weight: bold; color: gray;">Filtrar por institución:</h4>
           <div class="rounded pa-0" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
-            <div class="" style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
+            <div class="rounded" style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
             <v-list class="ma-5 my-0" style="background-color: #EBF2FF; ">
               <v-radio-group class="" v-model="selectedInstitucion" style="margin-top: 0;">
                   <v-radio class=""
@@ -150,86 +151,121 @@
 
   </DIV>
 
-  
-
 </template>
 
 
 <script>
 import api from  "../services/api.js"
-import itemListaInv from "@/components/itemListaInv.vue";
+import itemListaUsuario from "@/components/itemListaUsuario.vue"
 
   export default{
-    components: {itemListaInv},
     name: "App",
+    components: {itemListaUsuario},
     data(){
       return{
         usuario : JSON.parse(localStorage.getItem("userData")) || null,
-        AreaDeConocimientos: [],
-        Institucions: [],
-        investigadores: [],
-        selectedAreaDeConocimiento: "Todos",
-        selectedInstitucion: "Todos",
-        pendientes: [],
-        aceptados: [],
-        vari: {no:'NO'},
-        elegido: {selectis:null,isti:null,area:null,archivos:null},
         pdfUrl: null,
-        selectedPdf: 0,
         confirmAlert: '',
         confirmError: '',
+        buscado: null,
+        participantes: [],
+        filtrados: [],
+        Institucions: [],
+        AreaDeConocimientos: [],
+        selectedAreaDeConocimiento: "Todos",
+        selectedInstitucion: "Todos",
+        vari: {no:'NO'},
+        elegido: {selectis:null,isti:null,area:null,archivos:null},
+
+
+
+
+        investigadores: [],
+
+
+        pendientes: [],
+        aceptados: [],
+
+
+
+        selectedPdf: 0,
+
       }
     },
     created(){
       this.onCheckboxChange();
     },async mounted(){
+      try{
+      this.participantes = JSON.parse(JSON.stringify((await api.get('/api/Participante')).data));
+      
+      const response2 = await api.get('/api/institucion');
+      this.Institucions = JSON.parse(JSON.stringify(response2.data));
+      this.Institucions.splice(0,0,{nombre:"Todos",idInstitucion:"Todos"});
 
-      try {
-          
-          const response = await api.get('/api/AreaDeConocimientoInv');
-          this.AreaDeConocimientos = JSON.parse(JSON.stringify(response.data));
-        this.AreaDeConocimientos.splice(0,0,{nombre:"Todos",idAreaDeConocimientoInv:"Todos"});
-          const response2 = await api.get('/api/institucion');
-          this.Institucions = JSON.parse(JSON.stringify(response2.data));
-          this.Institucions.splice(0,0,{nombre:"Todos",idInstitucion:"Todos"});
-          
-      }catch(error){
-        console.log(error);
+      const response3 = await api.get('/api/Dependencia/');
+      const data = [];
+      data.push(...JSON.parse(JSON.stringify(response3.data)));
 
+      const response = await api.get('/api/convocatoria');
+      this.AreaDeConocimientos = JSON.parse(JSON.stringify(response.data));
+      this.AreaDeConocimientos.splice(0,0,{nombre:"Todos",idConvocatoria:"Todos"});
+
+
+     for (const p of this.participantes) {
+  // Asignar nombre de institución
+  const inst = this.Institucions.find(i =>
+    i.idInstitucion === (data.find(d => d.idDependencia === p.Dependencia_idDependencia)?.Institucion_idInstitucion)
+  );
+  p.nombreIns = inst ? inst.nombre : "Institución desconocida";
+
+  // Si tiene equipo, buscar convocatoria
+  if (p.Equipo_idEquipo != null) {
+    try {
+      const response = await api.get('/api/proyectos/equipo/' + p.Equipo_idEquipo);
+      const proyecto = response.data[0] || response.data;
+
+      const response2 = await api.get('/api/convocatoria/id/' + proyecto.idProyecto);
+      const convocatoria = response2.data[0] || response2.data;
+
+      p.nombreConvo = convocatoria.nombre;
+    } catch (err) {
+      console.error("Error obteniendo convocatoria:", err);
+      p.nombreConvo = "Error al obtener convocatoria";
+    }
+  } else {
+    p.nombreConvo = "No se encuentra en un equipo.";
+  }
+}
+
+
+
+                
+
+      
+
+
+          
+        this.filtrados = this.participantes;
+          
+          this.vari.no = 'NO';
+      }catch(e){
+        console.log(e);
       }
+
     },methods: {
-      async aprobar(investigador,esAprobado){
-
-        this.confirmAlert = '';
-        this.confirmError = '';
-        const response = await fetch(`http://localhost:3000/api/investigador/${investigador.idInvestigador}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" }, 
-          body: JSON.stringify({ EstadoPersona_idEstadoPersona: esAprobado ? 2 : 3 }),
-        });
-          if(response.ok){
-            this.onCheckboxChange();
-            this.vari = 'NO';
-            this.confirmAlert = 'Cambios realizados con éxito.';
-            
-          }else{
-            this.confirmError = 'Error, vuelva a intentarlo más tarde.'
-          }
-
-         
-      },
       abrirArchivo(doc){
         const byteArray = new Uint8Array(doc.contenido.data);
-      const blob = new Blob([byteArray], { type: "application/pdf" });
-      
-      this.pdfUrl = URL.createObjectURL(blob);
+        const blob = new Blob([byteArray], { type: "application/pdf" });
+        this.pdfUrl = URL.createObjectURL(blob);
       },
-      cerrar(){
+      async buscar(){
+        this.filtrados = this.participantes.filter(p=> p.nombre.toLowerCase().trim().includes(this.buscado.toLowerCase().trim()) || p.idParticipante == (this.buscado));
+      },
+            cerrar(){
         this.vari.no = 'NO';
         this.pdfUrl = null;
       },
-    
-     async onCheckboxChange(){
+       async onCheckboxChange(){
       this.aceptados = [];
       this.pendientes = [];
       this.investigadores = [];
@@ -300,7 +336,6 @@ import itemListaInv from "@/components/itemListaInv.vue";
           console.error("Error al cargar datos:", error);
         }
       },
-
     }
 
   }
