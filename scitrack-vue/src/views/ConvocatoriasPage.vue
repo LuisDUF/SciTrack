@@ -396,7 +396,7 @@
                       </div>
                       <v-file-input
                         v-model="pdfFileUpload"
-                        label="Sube un archivo PDF (máximo 50kb)"
+                        label="Sube un archivo PDF (máximo 10mb)"
                         accept=".pdf"
                         prepend-icon="mdi-file-pdf-box"
                         show-size
@@ -573,7 +573,7 @@
 
                       <v-file-input
                         v-model="pdfFileUpload"
-                        label="Sube un archivo PDF (máximo 50kb)"
+                        label="Sube un archivo PDF (máximo 10mb)"
                         accept=".pdf"
                         prepend-icon="mdi-file-pdf-box"
                         show-size
@@ -1060,7 +1060,7 @@ export default {
       errorDialog: false,
       pdfFileUpload: null,
       deleteFileAlert: false,
-      maxSize: 0.05 * 1024 * 1024,
+      maxSize: 10 * 1024 * 1024,
       alreadyDeleted: false,
       succesfulDelete: false,
       showConv: false,
