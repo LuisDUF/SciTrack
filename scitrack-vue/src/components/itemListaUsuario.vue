@@ -1,6 +1,6 @@
 <template>
   <v-col v-if="!esUno" cols="5" class="rounded mx-8 my-3"  style="background-color: #ffffff;">
-    <label style="font-size: small; font-weight: bold;" >Nombre:</label> <label style="font-size: small;"> {{ nombre }}</label> <br>
+    <label style="font-size: small; font-weight: bold;" >Nombre:</label> <label style="font-size: small;">{{ `${nombre} ${participante.apellidoPaterno} ${participante.apellidoMaterno}` }}</label> <br>
     <label style="font-size: small; font-weight: bold;">Institución:</label> <label style="font-size: small;" > {{ institucion }}</label> <br>
     <label style="font-size: small; font-weight: bold;">Convocatoria: </label> <label style="font-size: small;"> {{ convocatoria }} </label> <br>
     <button @click="openModalRev()" class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
