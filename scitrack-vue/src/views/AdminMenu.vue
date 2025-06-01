@@ -119,6 +119,13 @@ export default {
         onClick:()=>{
           this.navigateTo("/adminmenu/constancias");
         }
+      },{
+        message: "Alertas",
+        id: "btnAlertas",
+        icon: "mdi-bell-outline",
+        onClick:()=>{
+          this.navigateTo("/adminmenu/alertas");
+        }
       }
     ];
   },
