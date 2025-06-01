@@ -46,10 +46,10 @@
               <v-radio-group v-model="selectedAreaDeConocimiento" style="margin-top: 0;">
                   <v-radio
                   v-for="AreaDeConocimiento in AreaDeConocimientos"
-                  :key="AreaDeConocimiento.idConvocatoria"
+                  :key="AreaDeConocimiento.nombre"
                   :label="AreaDeConocimiento.nombre"
-                  :value="AreaDeConocimiento.idConvocatoria"
-                  @change="selectedAreaDeConocimiento=AreaDeConocimiento, onCheckboxChange()"
+                  :value="AreaDeConocimiento.nombre"
+                  @change="selectedAreaDeConocimiento=AreaDeConocimiento.nombre, onCheckboxChange()"
                 ></v-radio>
               </v-radio-group>
 
@@ -66,10 +66,10 @@
               <v-radio-group class="" v-model="selectedInstitucion" style="margin-top: 0;">
                   <v-radio class=""
                   v-for="Institucion in Institucions"
-                  :key="Institucion.idInstitucion"
+                  :key="Institucion.nombre"
                   :label="Institucion.nombre"
-                  :value="Institucion.idInstitucion"
-                  @change="selectedInstitucion=Institucion, onCheckboxChange()"
+                  :value="Institucion.nombre"
+                  @change="selectedInstitucion=Institucion.nombre, onCheckboxChange()"
                 ></v-radio>
               </v-radio-group>
 
@@ -89,19 +89,34 @@
       </v-row>
 
       <transition name="fade">
+
         <div v-if="vari.no=='SI'" class="overlay" @click.self="cerrar">
             <v-card  class="pa-8 pt-3 modal-card" >
+                          <v-alert
+    v-if="confirmAlert"
+    type="success"
+    dismissible
+    >
+    {{ confirmAlert }}
+    </v-alert>
+        <v-alert
+    v-if="confirmError"
+    type="error"
+    dismissible
+    >
+    {{ confirmError }}
+    </v-alert>
         <div style=" font-size: 2.5vmax; font-weight: bold; margin-top: 0vmax; " class="card-header ps-0 mb-3" >Información</div> 
         
           <v-row  class="rounded py-3 px-2" style="background-color: #BFD6FF;">
             <v-col cols="8">
               <v-card style="width: 100%;">
                 <h4 class="ps-5 pt-3">Nombre: {{ elegido.selectis.nombre }}</h4>
-                <h4 class="ps-5 mt-5">Institucion: {{ elegido.isti.nombre }} </h4>
-                <h4 class="ps-5 mt-5">Área de conocimiento: {{ elegido.area.nombre }}</h4>
+                <h4 class="ps-5 mt-5">Institucion: {{ elegido.isti }} </h4>
+                <h4 v-if="elegido.selectis.proyecto" class="ps-5 mt-5">Proyecto: {{ elegido.selectis.proyecto[0].nombre }}</h4>
                 <h4 class="ps-5 mt-5">Correo: {{ elegido.selectis.correo }}</h4>
                 <h4 class="ps-5 mt-5">Teléfono: {{ elegido.selectis.telefono }}</h4>
-                <h4 class="ps-5 mt-5">Documentos: </h4>
+                <h4 class="ps-5 mt-5" v-if="elegido.archivos">Documentos: </h4>
                 <v-list class="ps-5 mt-0">
                   <v-radio-group  class="mt-0">
                     <v-radio
@@ -113,9 +128,7 @@
                     ></v-radio>
                   </v-radio-group>
                 </v-list>
-                <button @click="aprobar(elegido.selectis,true)" v-if="elegido.selectis.EstadoPersona_idEstadoPersona==1" class="ms-5 mt-5 rounded pa-2 px-5 aceptar" >Aprobar</button>
-                <button  @click="aprobar(elegido.selectis,false)" v-if="elegido.selectis.EstadoPersona_idEstadoPersona==1" class="ms-5 mt-5 mb-5 rounded pa-2 px-5 denegar" >Denegar</button>
-                <button @click="aprobar(elegido.selectis,false)" v-if="elegido.selectis.EstadoPersona_idEstadoPersona==2" class="ms-5 mt-5 mb-5 rounded pa-2 px-5 denegar">Eliminar</button>
+                <button @click="generar()" class="ms-5 mt-5 mb-5 rounded pa-2 px-5 aceptar" >Generar constancia</button>
               </v-card>
             </v-col>
             <v-col cols="4">
@@ -134,20 +147,7 @@
 
     </div>
     
-    <v-alert
-    v-if="confirmAlert"
-    type="success"
-    dismissible
-    >
-    {{ confirmAlert }}
-    </v-alert>
-        <v-alert
-    v-if="confirmError"
-    type="error"
-    dismissible
-    >
-    {{ confirmError }}
-    </v-alert>
+
 
   </DIV>
 
@@ -221,8 +221,24 @@ import itemListaUsuario from "@/components/itemListaUsuario.vue"
   // Si tiene equipo, buscar convocatoria
   if (p.Equipo_idEquipo != null) {
     try {
+      const res = await api.get('/api/equipo/'+p.Equipo_idEquipo);
+      const equipo = res.data[0] || response.data;
+      p.equipo = [];
+      p.equipo.push(equipo);
+
       const response = await api.get('/api/proyectos/equipo/' + p.Equipo_idEquipo);
       const proyecto = response.data[0] || response.data;
+      p.proyecto = [];
+      p.proyecto.push(proyecto);
+     
+      if(proyecto){
+        const response = await api.get('/api/archivos/proyecto/' + p.proyecto[0].idProyecto);
+        const archivos = response.data[0] || response.data;
+       
+        p.archivos = [];
+        p.archivos.push(archivos); 
+        
+      }
 
       const response2 = await api.get('/api/convocatoria/id/' + proyecto.idProyecto);
       const convocatoria = response2.data[0] || response2.data;
@@ -253,88 +269,83 @@ import itemListaUsuario from "@/components/itemListaUsuario.vue"
       }
 
     },methods: {
+async  generar(){
+  const v = this.elegido.selectis.proyecto[0];
+  const p = this.elegido.selectis;
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const currentDate = `${year}-${month}-${day}`;
+
+  const response = await api.get('/api/asesor/'+this.elegido.selectis.equipo[0].Asesor_idAsesor);
+  const Asesor = []
+  Asesor.push( response.data[0] || response.data);
+
+  const res = await api.get('/api/fase/'+this.elegido.selectis.proyecto[0].Fase_idFase);
+  const fase = [];
+  fase.push(res.data[0] || res.data);
+
+  const res2 = await api.get('/api/ubicacion/'+fase[0].Ubicacion_idUbicacion);
+  const Ubicacion = [];
+  Ubicacion.push(res2.data[0] || res2.data)
+
+
+    fetch("http://localhost:3000/api/constancias/enviar-constancia/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nombre: p.nombre,
+        proyecto: v.nombre,
+        asesor: Asesor[0].nombre,
+        ciudad: Ubicacion[0].ciudad,
+        estado: Ubicacion[0].estado,
+        fecha: currentDate,
+        email: p.correo,
+        fase: fase[0].nombre,
+        esGanador: false
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        this.confirmAlert = 'Generada y enviada con éxito';
+      })
+      .catch((error) => {console.error("Error:", error); this.confirmError='Error al generar constancia.'});
+
+}
+  ,
       abrirArchivo(doc){
         const byteArray = new Uint8Array(doc.contenido.data);
         const blob = new Blob([byteArray], { type: "application/pdf" });
         this.pdfUrl = URL.createObjectURL(blob);
       },
       async buscar(){
-        this.filtrados = this.participantes.filter(p=> p.nombre.toLowerCase().trim().includes(this.buscado.toLowerCase().trim()) || p.idParticipante == (this.buscado));
+        this.onCheckboxChange();
       },
             cerrar(){
         this.vari.no = 'NO';
         this.pdfUrl = null;
       },
        async onCheckboxChange(){
-      this.aceptados = [];
-      this.pendientes = [];
-      this.investigadores = [];
-        try {
-            const response = await api.get(`/api/investigador/`);
-            this.investigadores = (JSON.parse(JSON.stringify(response.data)));
-            var inv2 = [];
-          if(this.selectedAreaDeConocimiento!=null&&this.selectedAreaDeConocimiento!="Todos"){
-            const response = await api.get(`/api/investigador/area/`+this.selectedAreaDeConocimiento);
-           
-            inv2.push(...JSON.parse(JSON.stringify(response.data)));
-            if(this.selectedInstitucion!=null&&this.selectedInstitucion!="Todos"){
-              inv2 = inv2.filter(i => i.Institucion_idInstitucion==this.selectedInstitucion);
-            }
-            
-         
-          }
-          if(this.selectedInstitucion!=null&&this.selectedInstitucion!="Todos"){
-            const response = await api.get(`/api/investigador/institucion/`+this.selectedInstitucion);
-            inv2.push(...JSON.parse(JSON.stringify(response.data)));
-            if(this.selectedAreaDeConocimiento!=null&&this.selectedAreaDeConocimiento!="Todos"){
-            inv2 = inv2.filter(i => i.AreaDeConocimientoInv_idAreaDeConocimientoInv==this.selectedAreaDeConocimiento);
-            }
+        this.filtrados = this.participantes;
+        if(this.buscado)
+          this.filtrados = this.participantes.filter(p=> p.nombre.toLowerCase().trim().includes(this.buscado.toLowerCase().trim()) || p.idParticipante == (this.buscado));
 
+     
+
+          if(this.selectedInstitucion!="Todos"){
+            this.filtrados = this.filtrados.filter(f => f.nombreIns == this.selectedInstitucion);
           }
 
-          if(inv2.length>0){
-            inv2 = inv2.filter((item, index, self) => 
-            index === self.findIndex((t) => (
-                t.idInvestigador === item.idInvestigador 
-            ))
-            );
-            this.investigadores = inv2;
-          }else if(this.selectedAreaDeConocimiento!=null&&this.selectedAreaDeConocimiento!="Todos"||this.selectedInstitucion!=null&&this.selectedInstitucion!="Todos"){
-            this.investigadores = [];
+          if( this.selectedAreaDeConocimiento!="Todos")
+            this.filtrados = this.filtrados.filter(f => f.nombreConvo == this.selectedAreaDeConocimiento);
 
-          }
-          
-          
-          
-          this.investigadores.forEach(async inv  =>   {
-
-            
-            const response2 = await api.get('/api/institucion/'+inv.Institucion_idInstitucion)
-            const ins = JSON.parse(JSON.stringify(response2.data));
-
-
-            const response = await api.get('/api/AreaDeConocimientoInv/disciplina/'+inv.Disciplina_idDisciplina)
-            const are = JSON.parse(JSON.stringify(response.data));
-
-            inv.nombreIns = ins[0].nombre;
-            inv.nombreAre = are[0].nombre;
-
-            if(inv.EstadoPersona_idEstadoPersona==1){
-              inv.estadoP = "Pendiente de revisión"
-              this.pendientes.push(inv);
-              console.log("si");
-            }
-
-            else if(inv.EstadoPersona_idEstadoPersona==2){
-            inv.estadoP = "Aprobado"
-              this.aceptados.push(inv); 
-            }
-            
-        });
-
-        } catch (error) {
-          console.error("Error al cargar datos:", error);
-        }
+            console.log(this.selectedAreaDeConocimiento);
+            console.log(this.selectedInstitucion);
+        
       },
     }
 
@@ -378,7 +389,7 @@ import itemListaUsuario from "@/components/itemListaUsuario.vue"
 
 .iframe-responsive {
   max-height: 60vh;
-  height: 60vh;
+  height: 54vh;
 }
 
 @media (max-width: 960px) {
