@@ -1,160 +1,77 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color=#062A78
-      dark
-    >
-    
-      <div class="d-flex align-center">
-        
+    <v-app-bar app color="#062A78" dark>
+      <v-row class="px-5">
+        <div class="d-flex align-center">
+          <v-img
+            alt="Vuetify Name"
+            class="shrink mt-1 hidden-sm-and-down"
+            contain
+            @click="reloadPage()"
+            min-width="200"
+            src="../SCITRACK.png"
+            width="100"
+          />
+        </div>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="200"
-          src="../SCITRACK.png"
-          width="100"
-        />
-      </div>
+        <v-spacer></v-spacer>
 
-      <v-spacer></v-spacer>
+        <v-btn
+          @click="goToPublicConvs"
+          text
+          color="#DFFFFF"
+          class="mx-2"
+          style="background: linear-gradient(to left, #7b2ff7, #4277ff);"
+        >
+          <span>Convocatorias</span>
+          <v-icon>mdi-school</v-icon>
+        </v-btn>
 
-      <v-btn
-        @click="goToLogin" 
-        target="_blank"
-        text
-        color=#DFFFFF
-        style="background-color: #4277FF;"
-      >
-        <span class="mr-2">Acceder</span>
-        <v-icon>mdi-account</v-icon>
-      </v-btn>
+        <v-btn
+          @click="goToLogin"
+          text
+          color="#DFFFFF"
+          style="background-color: #4277ff"
+          class="mx-2"
+        >
+          <span>Acceder</span>
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
+      </v-row>
     </v-app-bar>
 
     <v-main>
-     <template>
-  <v-container fluid class="pa-0 ma-0">
-
-  <v-container fluid class="pa-0 ma-0 mb-15">
-    <div class="hero">
-      <v-container >
-        <div class="d-flex flex-column align-center justify-center" style="gap: 0; width: 100%; margin-top: 5vw;">
-          <p class="text-center ma-0 hammersmith-one-regular" style="color: aliceblue; font-size: 5vw; line-height: 1;">
-            Organiza tus concursos con SCITRACK
-          </p>        
-          <p class="ma-0 text-center mt-10 px-8 " style=" color: aliceblue; width: 85%; font-size: 1.8vw;">
-            Organiza y optimiza tus concursos de proyectos con SciTrack, la plataforma ideal para gestionar cada etapa del proceso.
-          </p>
-        </div>
-      </v-container>
-    </div>
-  </v-container>
-
-<v-container
-  class="full-page-center"
-  fluid
-  style="gap: 0; width: 100vw;"
->
-  <v-row no-gutters class="align-center justify-center" style="width: 100%;">
-    <v-col cols="5" class="pe-12">
-      <v-card flat tile>
-        <p style="font-weight: bold; font-size: 1.4vw;">JUSTO A TU MEDIDA</p>
-        <p style="font-size: 1.4vw; text-align: justify; width: 100%;">
-          Diseñado para simplificar la gestión de concursos en instituciones de nivel medio superior y superior, SciTrack te ayuda a organizar cada detalle mientras garantizas el cumplimiento de los lineamientos y estándares académicos.
-        </p>
-        <ul style="font-size: 1.4vw;">
-          <li>Plataforma intuitiva y fácil de usar.</li>
-          <li>Seguridad de datos con encriptación avanzada.</li>
-          <li>Soporte y asistencia 24/7.</li>
-          <li>Implementación rápida y sin complicaciones.</li>
-          <li>Actualizaciones periódicas con nuevas funcionalidades.</li>
-        </ul>
-      </v-card>
-    </v-col>
-   
-    <v-col cols="6">
-      <v-card flat tile>
-        <img src="../señora.png" alt="" style="width: 100%;">
-      </v-card>
-    </v-col>
-  </v-row>
-</v-container>
-
-
-    <v-footer
-      color = #062A78
-      v-bind="localAttrs"
-      class="pa-0 d-flex align-center justify-center"
-      style="position: absolute; width: 100%; color: #062A78;"
-      
-
-    >
-      
-<v-card-text class="white--text d-flex" style="width: fit-content;">
-  <v-img
-    alt="Vuetify Name"
-    class="shrink mt-1 hidden-sm-and-down mr-2" 
-    contain
-    min-width="100"
-    src="../SCITRACK.png"
-    width="100"
-  /> 
-  <p class="pa-0 ma-0 pt-1" style="width: auto;"> - {{ new Date().getFullYear() }}</p>
-</v-card-text>
-
-<v-card-text class="white--text" style="width: fit-content;">
-<button>
-  <v-img
-    alt="Vuetify Name"
-    class="shrink mt-1 hidden-sm-and-down mr-2" 
-    contain
-    min-width="50"
-    src="../mail.png"
-    width="50"
-  /> 
-</button>
-</v-card-text>
-      
-    
-    </v-footer>
-      
-  </v-container>
-</template>
-      
+      <component :is="activeComponent" />
     </v-main>
   </v-app>
 </template>
 
-
-
 <script>
+import HomeLanding from "./HomeLanding.vue";
+
 export default {
   name: "App",
+  components: {
+    HomeLanding,
+  },
+  data() {
+    return {
+      activeComponent: "HomeLanding",
+    };
+  },
   methods: {
+    reloadPage()
+    {
+      window.location.reload();
+    },
     goToLogin() {
       this.$router.push({ name: "Login" });
     },
-  },
-};
 
-</script>
-
-<style scoped>
-
-
-
-      .hero {
-        background: url('../pdro.png');
-        background-size: cover;
-        height: 73.5vh;
-        width: 100vw;
-      }
-      .hammersmith-one-regular {
-      font-family: "Hammersmith One", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-    
+    async goToPublicConvs() {
+      const PublicConvocatorias = (await import("./PublicConvocatorias.vue")).default;
+      this.activeComponent = PublicConvocatorias;
     }
-</style>
+  }
+};
+</script>
