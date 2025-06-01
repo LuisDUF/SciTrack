@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import api from '@/services/api';
+//import api from '@/services/api';
 
 
 
@@ -34,15 +34,9 @@ export default {
     async openModalRev(){
         
         
-        this.$set(this.seleccion,'selectis',this.investigador);
-        var response = await api.get('/api/institucion/'+this.investigador.Institucion_idInstitucion);
-        this.$set(this.seleccion,'isti',JSON.parse(JSON.stringify(response.data[0])));
-        response = await api.get('/api/areaDeConocimientoInv/disciplina/'+this.investigador.Disciplina_idDisciplina);
-        this.$set(this.seleccion,'area',JSON.parse(JSON.stringify(response.data[0])));
-        response = await api.get('/api/archivos/investigador/'+this.investigador.idInvestigador);
-        var archi =[]; 
-        archi.push(...JSON.parse(JSON.stringify(response.data)));
-        this.$set(this.seleccion,'archivos',archi);
+        this.$set(this.seleccion,'selectis',this.participante);
+        this.$set(this.seleccion,'isti',this.participante.nombreIns);
+        this.$set(this.seleccion,'archivos',this.participante.archivos);
         this.$set(this.vari,'no','SI');
     }
   }
