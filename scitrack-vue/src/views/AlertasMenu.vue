@@ -107,6 +107,7 @@
 <script>
 import api from '@/services/api';
 
+
 export default {
   name: 'App',
   data(){
@@ -183,16 +184,43 @@ async submitForm() {
   const subject = this.asunto;
   const text = this.mensaje;
   const file = this.archivos;
- 
+       const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const currentDate = `${year}-${month}-${day}`;
 
-  if(file.length>0){
-  const requests = destinatarios.map(to => {
+  if(file){
+
+    const form = new FormData()
+    form.append("nombre",file.name);
+    form.append("tamanio",file.size);
+    form.append("fechaIngreso",currentDate);
+    form.append("contenido",file);
+
+    const response = await fetch("http://localhost:3000/api/archivos/",{
+      method: "POST",
+      body: form
+    })
+
+    const idA = JSON.parse(JSON.stringify(await response.json())).idArchivos;
+
+
+  const requests = destinatarios.map(async to => {
     const formData = new FormData();
     formData.append("email", to.correo);
     formData.append("asunto", subject);
     formData.append("mensaje", text);
     formData.append("nombreArchivo", file.name);
     formData.append("buffer", file);
+    formData.append("Administrador_idAdministrador",this.usuario.idAdministrador);
+    if(to.idInvestigador)
+    formData.append("Investigador_idInvestigador",to.idInvestigador);
+    else
+    formData.append("Participante_idParticipante",to.idParticipante);
+    formData.append("Archivo_idArchivo",idA);
+
+  
 
     return fetch("http://localhost:3000/api/constancias/enviarMensaje", {
       method: "POST",
@@ -210,9 +238,11 @@ async submitForm() {
     this.submitSuccess = 'Mensajes enviados correctamente.';
   } catch (err) {
     this.submitError = 'Error al enviar mensajes.';
+    console.log(err);
   }
 }else{
       const requests = destinatarios.map(to => {
+
 
     return fetch("http://localhost:3000/api/constancias/enviarMensaje2", {
       method: "POST",
@@ -221,7 +251,11 @@ async submitForm() {
       },body: JSON.stringify({
         email:to.correo,
         asunto:subject,
-        mensaje:text
+        mensaje:text,
+        Administrador_idAdministrador:this.usuario.idAdministrador,
+        Investigador_idInvestigador: to.idInvestigador,
+        Participantes_idParticipante: to.idParticipante
+
       })
     })
       .then(res => res.json())
