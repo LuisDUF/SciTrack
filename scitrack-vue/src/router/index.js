@@ -10,6 +10,8 @@ import ProyectosInvestigador from "../views/ProyectosInvPage.vue";
 
 import ProyectosYUsauriosPage from "../views/ProyectosYUsuariosPage.vue";
 import EquiposProyectosUser from "../views/ProyectosEquiposUser.vue";
+import CrearProyectoUser from "../views/CrearProyectoUser.vue";
+import CrearEquipoUser from "../views/CrearEquipoUser.vue";
 import HomeUser from "../views/HomePageUser.vue";
 import HomeInv from "../views/HomePageInv.vue";
 import RegisterInv from "../views/RegisterInv.vue";
@@ -80,6 +82,16 @@ export default new Router({
           path: "equiposproyectos",
           name: "EquiposProyectos",
           component: EquiposProyectosUser,
+        },
+        {
+          path: "crearproyecto",
+          name: "CrearProyecto",
+          component: CrearProyectoUser,
+        },
+        {
+          path: "crearequipo",
+          name: "CrearEquipo",
+          component: CrearEquipoUser,
         },
       ],
     },

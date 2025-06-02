@@ -1,0 +1,504 @@
+<template>
+  <div id="app">
+    <div class="contenedor">
+      <h1>Crear proyecto</h1>
+      <div class="marco">
+        <div class="contenido">
+          <form>
+            <label for="nombre">Nombre del proyecto:</label>
+            <input type="text" id="nombreProyecto" v-model="nombreProyecto" placeholder="...">
+
+            <div class="row">
+              <div class="column">
+                <label for="filtroConvocatoria"><strong>Convocatoria:</strong></label>
+                <div id="filtroConvocatoriaContainer" class="native-checkbox-group">
+                  <label 
+                    v-for="convocatoria in CONVOCATORIAS" 
+                    :key="convocatoria.idConvocatoria"
+                    class="native-checkbox-wrapper"
+                    :class="{'is-selected': convocatoriaSeleccionada === convocatoria.idConvocatoria}"
+                  >
+                    <input
+                      type="radio"
+                      v-model="convocatoriaSeleccionada"
+                      :value="convocatoria.idConvocatoria"
+                      @change="filtrarConvocatorias"
+                      class="native-checkbox"
+                    >
+                    <span class="checkmark"></span>
+                    <span class="label-text">{{ convocatoria.nombre }}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="column">
+                <label for="filtroCategoria"><strong>Categoria:</strong></label>
+                <div id="filtroCategoriaContainer" class="native-checkbox-group">
+                  <label 
+                    v-for="categoria in CATEGORIAS" 
+                    :key="categoria.idCategoria"
+                    class="native-checkbox-wrapper"
+                    :class="{'is-selected': categoriaSeleccionada === categoria.idCategoria}"
+                  >
+                    <input
+                      type="radio"
+                      v-model="categoriaSeleccionada"
+                      :value="categoria.idCategoria"
+                      @change="filtrarCategorias"
+                      class="native-checkbox"
+                    >
+                    <span class="checkmark"></span>
+                    <span class="label-text">{{ categoria.nombre }}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="columnVideo">
+                <label for="dropzoneVideo"><strong>Video del proyecto:</strong></label>
+                <v-text-field
+                  v-model="videoUrl"
+                  label="Enlace del video (YouTube o Vimeo)"
+                  placeholder="Ej: https://youtu.be/abc123..."
+                  :rules="[validarUrlVideo]"
+                  prepend-icon="mdi-video"
+                  required
+                  clearable
+                ></v-text-field>
+
+
+              </div>
+            </div>
+            <span class="note">* El proyecto se asignará al equipo que usted pertenezca en la convocatoria seleccionada.</span>
+
+            <label>Documentos:</label>
+            <div class="dropzone" id="dropzone" @click="abrirSelectorArchivos">
+              <img src="../assets/icono_doc.png" alt="icono documento" id="iconoDocumento" v-show="!archivo">
+              <p id="textoDropzone">
+                {{ archivo ? archivo.name : 'Suba aquí el documento pertinente al proyecto. Puede consultar los documentos requeridos en la convocatoria oficial' }}
+              </p>
+              <input 
+                type="file" 
+                id="documentoProyecto" 
+                ref="documentoProyecto"
+                accept="application/pdf" 
+                hidden
+                @change="manejarSeleccionArchivo"
+              >
+            </div>
+
+            <button 
+              id="btnEnviarRevision" 
+              type="button" 
+              class="submit-button"
+              @click="enviarProyecto"
+              :disabled="!formularioValido"
+            >
+              Enviar para revisión
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      nombreProyecto: '',
+      convocatoriaSeleccionada: null,
+      categoriaSeleccionada: null,
+      archivo: null,
+      videoUrl: "", // Almacena el enlace ingresado
+      // Datos de API (solo los necesarios para este componente)
+      CONVOCATORIAS: [],
+      FASES: [],
+      CATEGORIAS: [],
+      EQUIPOS: [],
+      PARTICIPANTE: [],
+      ARCHIVOS: [],
+      ITEMS: []
+    }
+  },
+  computed: {
+    formularioValido() {
+      return (
+        this.nombreProyecto && 
+        this.convocatoriaSeleccionada && 
+        this.categoriaSeleccionada && 
+        this.archivo &&
+        this.videoUrl
+      );
+    },
+
+    esUrlYouTube() {
+      return this.videoUrl.match(
+        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/
+      );
+    },
+    // Versión corregida (sin escapes innecesarios)
+    esUrlVimeo() {
+      return this.videoUrl.match(/^(https?:\/\/)?(www\.)?vimeo\.com\/.+/);
+    },
+    
+    // Verifica si la URL es válida
+    esUrlValida() {
+      return this.esUrlYouTube || this.esUrlVimeo;
+    }
+  },
+
+  async mounted() {
+    await this.cargarConvocatorias();
+    await this.cargarFases();
+    await this.cargarCategorias();
+    await this.cargarEquipos();
+    await this.cargarParticipantes();
+    await this.cargarItems();
+  },
+  methods: {
+    validarUrlVideo(url) {
+      if (!url) return "El enlace es requerido";
+      const esValida = this.esUrlValida;
+      return esValida || "Ingresa un enlace válido de YouTube o Vimeo";
+    },
+    abrirSelectorArchivos() {
+      this.$refs.documentoProyecto.click();
+    },
+    
+    manejarSeleccionArchivo(event) {
+      const file = event.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        this.archivo = file;
+      } else {
+        alert("Por favor seleccione un archivo PDF válido.");
+        this.archivo = null;
+      }
+    },
+    
+    filtrarConvocatorias() {
+      // Lógica de filtrado si es necesaria
+    },
+    
+    filtrarCategorias() {
+      // Lógica de filtrado si es necesaria
+    },
+    
+    async cargarConvocatorias() {
+      try {
+        const response = await fetch("http://localhost:3000/api/convocatoria/");
+        this.CONVOCATORIAS = await response.json();
+      } catch (error) {
+        console.error("Error al obtener convocatorias:", error);
+      }
+    },
+      async cargarFases() {
+      try {
+        const response = await fetch("http://localhost:3000/api/fase/");
+        this.FASES = await response.json();
+      } catch (error) {
+        console.error("Error al obtener convocatorias:", error);
+      }
+    },
+
+    async cargarItems() {
+      try {
+        const response = await fetch("http://localhost:3000/api/itemconvocatoria_fase/");
+        this.ITEMS = await response.json();
+      } catch (error) {
+        console.error("Error al obtener items:", error);
+      }
+    },
+    
+    async cargarCategorias() {
+      try {
+        const response = await fetch("http://localhost:3000/api/categoria/");
+        this.CATEGORIAS = await response.json();
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+      }
+    },
+    
+    async cargarEquipos() {
+      try {
+        const response = await fetch("http://localhost:3000/api/equipo/");
+        this.EQUIPOS = await response.json();
+      } catch (error) {
+        console.error("Error al obtener equipos:", error);
+      }
+    },
+    
+    async cargarParticipantes() {
+      try {
+        const response = await fetch("http://localhost:3000/api/participante/");
+        this.PARTICIPANTE = await response.json();
+      } catch (error) {
+        console.error("Error al obtener participantes:", error);
+      }
+    },
+    
+    async enviarProyecto() {
+      const usuario = JSON.parse(localStorage.getItem("userData")) || null;
+      if (!usuario || !usuario.idParticipante) {
+        alert("No se pudo identificar al usuario líder. Por favor, inicie sesión nuevamente.");
+        return;
+      }
+      if (!this.esUrlValida) {
+        alert("¡Ingresa un enlace de video válido!");
+        return;
+      }
+      if (!this.formularioValido) {
+        alert("Por favor complete todos los campos requeridos.");
+        return;
+      }
+
+      try {
+            // Obtener datos necesarios
+        const fechaHoy = new Date().toISOString().split("T")[0];
+        const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === this.convocatoriaSeleccionada);
+        
+        // Verificar fase inicial
+        const itemFaseInicial = this.ITEMS.find(i => 
+          i.Convocatoria_idConvocatoria === convocatoria.idConvocatoria && i.orden === 0
+        );
+        
+        if (!itemFaseInicial) {
+          throw new Error("No se encontró la fase inicial para esta convocatoria");
+        }
+
+        const fase = this.FASES.find(f => f.idFase === itemFaseInicial.Fase_idFase);
+        
+        if (fechaHoy > fase.fechaInicio) {
+          console.log("La fecha límite para registrar proyectos ha expirado");
+          return;
+        }
+        // 1. Subir archivo
+        const formDataArchivo = new FormData();
+        formDataArchivo.append('documentoProyecto', this.archivo);
+        
+        const resArchivo = await fetch('http://localhost:3000/api/archivos', {
+          method: 'POST',
+          body: formDataArchivo
+        });
+
+        const dataArchivo = await resArchivo.json();
+        const idArchivo = dataArchivo.idArchivos;
+
+        if (!idArchivo) throw new Error("No se obtuvo el ID del archivo");
+
+      
+        const participante = this.PARTICIPANTE.find(p => p.idParticipante === usuario.idParticipante);
+        const equipo = this.EQUIPOS.find(e => e.idEquipo === participante.Equipo_idEquipo);
+        
+        // 2. Crear proyecto
+        const datosProyecto = {
+          nombre: this.nombreProyecto,
+          fechaRegistro: new Date().toISOString().split("T")[0],
+          promedio: null,
+          Equipo_idEquipo: equipo.idEquipo,
+          Categoria_idCategoria: this.categoriaSeleccionada,
+          Investigador_idInvestigador: null,
+          Archivos_idArchivos: idArchivo,
+          Fase_idFase: fase.idFase,
+          EstadoProyecto_idEstadosProyecto: 1,
+          urlVideo: this.videoUrl,
+        };
+
+        const resProyecto = await fetch('http://localhost:3000/api/proyecto', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datosProyecto)
+        });
+
+        const dataProyecto = await resProyecto.json();
+        if (dataProyecto.success) {
+          alert('Proyecto enviado a revisión correctamente.');
+          // Resetear formulario
+          this.nombreProyecto = '';
+          this.convocatoriaSeleccionada = null;
+          this.categoriaSeleccionada = null;
+          this.archivo = null;
+        } else {
+          throw new Error("Error al registrar el proyecto");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Ocurrió un error al enviar a revisión.");
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* Mantengo exactamente tus estilos originales */
+.contenedor {
+  background: #ffffff;
+  border-radius: 10px;
+  max-width: 100%;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.marco {
+  background: #BFD6FF;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 100%;
+  margin: auto;
+}
+
+.contenido {
+  background: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 100%;
+  margin: auto;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 0.25rem;
+}
+
+.note {
+  color: red;
+  font-size: 0.85rem;
+}
+
+.dropzone {
+  margin-top: 1rem;
+  border: 2px dashed #000;
+  background-color: #ffffff;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.dropzone img {
+  width: 50px;
+}
+
+.dropzone p {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.submit-button {
+  margin-top: 2rem;
+  background: linear-gradient(to left, #4f4fef, #7a7aff);
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submit-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 320px;
+  overflow-y: auto;
+  background-color: #BFD6FF;
+  border-radius: 10px;
+  padding: 15px;
+}
+.columnVideo {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 180px;
+  width:200px;
+  overflow-y: auto;
+  background-color: #BFD6FF;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.row {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  height: 350px;
+  width: 100%;
+  overflow-x: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+/* Estilos para los checkboxes (ahora radios) */
+.native-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 95%;
+  margin-bottom: 20px;
+}
+
+.native-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+  padding: 6px;
+  width: 100%;
+  border-bottom: 1px solid #aaa; 
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.native-checkbox {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff;
+}
+
+.is-selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+.label-text {
+  pointer-events: none;
+  display: inline-block;
+  padding: 0 4px;
+}
+</style>
