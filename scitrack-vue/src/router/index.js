@@ -12,8 +12,6 @@ import ProyectosYUsauriosPage from "../views/ProyectosYUsuariosPage.vue";
 import EquiposProyectosUser from "../views/ProyectosEquiposUser.vue";
 import HomeUser from "../views/HomePageUser.vue";
 import HomeInv from "../views/HomePageInv.vue";
-import AdminParticipantes from "../views/AdminParticipantes.vue";
-
 
 import Reportes from "../views/ReportesPage.vue";
 import LoginPage from "../views/LoginPage.vue";
@@ -78,11 +76,6 @@ export default new Router({
           path: "", 
           name: "AdminMenu",
           component: Initial, 
-        },
-        {
-          path: "adminparticipantes",
-          name: "AdminParticipantes",
-          component: AdminParticipantes,
         },
         {
           path: "convocatorias",
