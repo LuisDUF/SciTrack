@@ -1,11 +1,50 @@
 <template>
+
   <div>
+    <extra>
+    <v-dialog
+          v-model="loading"
+          max-width="400"
+          persistent
+          no-click-animation
+        >
+          <v-card class="text-center pa-5">
+            <br /><v-progress-circular
+              :size="100"
+              :width="7"
+              color="blue"
+              indeterminate
+            ></v-progress-circular
+            ><br />
+            <p class="font-weight-bold text-h4 mt-5">Procesando...</p>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="loadingDone" :persistent="true" max-width="400">
+          <v-card class="text-center pa-5">
+            <v-icon class="text-h1 text-center mt-4" color="green lighten-2"
+              >mdi-check-circle</v-icon
+            >
+            <p class="font-weight-bold text-h4 mt-5">
+              Se han procesado las fases
+            </p>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn
+                color="white"
+                style="background-color: #6596ff"
+                text
+                @click="loadingDone = false"
+                >Aceptar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+  </extra>
     <div class=" px-4 py-4 rounded" style="background-color: #ffffff; ">
       <h2 ref="baner" class="baner"></h2>
       <h2 class="nombreUsuario">{{ usuario?.nombre +" "+ usuario?.apellidoPaterno}}</h2>
     </div>
     <div class="pa-4 mt-4 rounded" style="background-color: #ffffff;">
-      
+      <h2 class="mb-4">General:</h2>
       <v-row class="pa-4" style="background-color: #ffffff;">
         <v-col class="rounded me-2" cols="4" style="background-color: #BFD6FF; ">
           <h4 style="font-weight: bold;">Equipos</h4>
@@ -48,6 +87,7 @@
           </div>
           </div>
         </v-col>
+
       </v-row>
             <v-row class="pa-4" style="background-color: #ffffff;">
         <v-col class="rounded me-2" cols="4" style="background-color: #BFD6FF; ">
@@ -73,7 +113,18 @@
 
         </v-col>
       </v-row>
-      
+      <h2 class="mt-5">Otros:</h2>
+      <v-row class="mt-3">
+        <v-col>
+          <v-btn
+          text
+          color="#FFFFFF"
+          class="mx-2"
+          @click="doPhaseManager()"
+          style="background: linear-gradient(to left, #7b2ff7, #4277ff);"
+        >Progresar Fases <v-icon class="ml-3">mdi-clipboard-text-clock</v-icon></v-btn>
+        </v-col>
+      </v-row>
     </div>
   </DIV>
 
@@ -89,6 +140,8 @@ import api from  "../services/api.js"
         convocatorias: [],
         proyectos: [],
         equipos: [],
+        loading:false,
+        loadingDone:false,
         selectedConvocatoria: null
 
 
@@ -111,6 +164,13 @@ import api from  "../services/api.js"
           this.$refs.pendientes.textContent="Pendientes: 0";
       }
     },methods: {
+      async doPhaseManager(){
+        this.loading = true;
+        const responsePhase = await api.get('/api/phasemanager');
+        console.log(JSON.parse(JSON.stringify(responsePhase.data)));
+        this.loading = false;
+        this.loadingDone = true;
+      },
      async onCheckboxChange(item) {
       this.$refs.inscritos.textContent = "Inscritos: ";
       this.$refs.aprobados.textContent = "Aprobados: ";
