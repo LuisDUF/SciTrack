@@ -16,7 +16,6 @@ import RegisterInv from "../views/RegisterInv.vue";
 import RegisterPart from "../views/RegisterPart.vue";
 import RegisterAdmin from "../views/RegisterAdmin.vue";
 
-
 import Reportes from "../views/ReportesPage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import LandingPage from "../views/LandingPage.vue";

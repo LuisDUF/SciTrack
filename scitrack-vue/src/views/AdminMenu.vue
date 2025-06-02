@@ -106,6 +106,14 @@ export default {
         },
       },
       {
+
+        message: "Participantes",
+        id: "btnParticipantes",
+        icon: "mdi-account-group",
+        onClick: () => {
+          this.navigateTo("/adminmenu/adminparticipantes");
+        },
+
         message: "PIIM",
         id: "btnPadron",
         icon: "mdi-brain",
@@ -126,6 +134,7 @@ export default {
         onClick:()=>{
           this.navigateTo("/adminmenu/alertas");
         }
+
       }
     ];
   },

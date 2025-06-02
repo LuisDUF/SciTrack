@@ -1,7 +1,7 @@
 
 let phaseCounter = 0;
 const phases = [];
-const conv_to_edit = sessionStorage.getItem('sci:conv_to_edit');
+const conv_to_edit =1;
 
 window.onload = function () {
     const inputNombre = document.getElementById("inputNombre");

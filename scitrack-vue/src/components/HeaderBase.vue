@@ -1,5 +1,5 @@
 <template>
-  <v-row class="px-6 py-3" style="background-color: aliceblue; min-height: 6%">
+  <v-row class="px-6 py-3 position-fixed" style="background-color: aliceblue; min-height: 6%" >
     <v-col cols="10" lg="10" md="10" sm="12"> </v-col>
     <v-col
       cols="2"
