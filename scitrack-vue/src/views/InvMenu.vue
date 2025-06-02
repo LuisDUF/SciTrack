@@ -1,5 +1,6 @@
 <template>
   <v-main>
+    <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
     <div class="d-flex">
       <SideBarBase :options="sideBarSettings" style="min-height: 100vh" />
       <div class="flex-grow-1" style="background-color: #c4cef2">
@@ -10,8 +11,8 @@
           style="background-color: #c4cef2; margin: 0; padding: 0"
         >
           <div
-            class="actual-content px-4 py-4 rounded"
-            style="background-color: aliceblue"
+            class="actual-content"
+            style="background-color: #C4CEF2"
           >
             <router-view />
           </div>
@@ -24,6 +25,8 @@
 <script>
 import HeaderBase from "@/components/HeaderBase.vue";
 import SideBarBase from "@/components/SideBarBase.vue";
+import api from "@/services/api";
+
 
 export default {
   name: "App",
@@ -33,41 +36,61 @@ export default {
   },
   data() {
     return {
-      headerSettings: {},
-      sideBarSettings: [], // Initialized empty; we'll populate it in `created`
+      headerSettings: {
+        userName: "Cargando...", // Valor inicial
+        userRole: "Investigador",
+        notificationStatus: true,
+        notis: []
+      },
+      sideBarSettings: [], // Menú básico inicial
+      loading: false,
+      investigador: JSON.parse(localStorage.getItem('userData')) || null,
+      Notificaciones: [],
+      notification: false
     };
+  },async mounted(){
+
   },
   methods: {
     navigateTo(path) {
       if (this.$route.path !== path) {
         this.$router.push(path);
       }
-    },
-  },
-  created() {
-    this.headerSettings = {
-      userName: "Alonzo Hdalgo",
-      userRole: "Investigador",
-      notificationStatus: false,
-    };
-    this.sideBarSettings = [
-      {
-        message: "Inicio",
-        id: "btnInicio",
-        icon: "mdi-home",
-        onClick: () => {
-          this.navigateTo("/invmenu"); // default child
-        },
-      },
-      {
-        message: "Proyectos",
-        id: "btnProyectosInv",
-        icon: "mdi-lightbulb-outline",
-        onClick: () => {
-          this.navigateTo("/invmenu/proyectos");
-        },
+    }
+  }, async created() {
+        const response = await api.get('/api/notificacion/investigador/'+this.investigador.idInvestigador);
+    this.Notificaciones.push (...JSON.parse(JSON.stringify(response.data)));
+    if(this.Notificaciones.filter(s=> s.esLeido!='T').length>=1)
+    this.notification = true;
+
+    
+    this.notis = this.Notificaciones;
+      
+      if (!this.investigador) {
+        // Redirige si no hay datos
+        this.$router.push('/login');
       }
-    ];
-  },
+      this.headerSettings = {
+        userName: this.investigador?.nombre || "Usuario", // Safe navigation
+        userRole: "Investigador",
+        notificationStatus: this.notification,
+        notis: this.notis
+      };
+      
+      this.sideBarSettings = [
+        {
+          message: "Inicio",
+          id: "btnInicio",
+          icon: "mdi-home",
+          onClick: () => this.navigateTo("/invmenu"),
+        },
+        {
+          message: "Proyectos",
+          id: "btnProyectosInv",
+          icon: "mdi-lightbulb-outline",
+          onClick: () => this.navigateTo("/invmenu/proyectos"),
+        }
+      ];
+    }
 };
 </script>

@@ -12,6 +12,9 @@ import ProyectosYUsauriosPage from "../views/ProyectosYUsuariosPage.vue";
 import EquiposProyectosUser from "../views/ProyectosEquiposUser.vue";
 import HomeUser from "../views/HomePageUser.vue";
 import HomeInv from "../views/HomePageInv.vue";
+import RegisterInv from "../views/RegisterInv.vue";
+import RegisterPart from "../views/RegisterPart.vue";
+import RegisterAdmin from "../views/RegisterAdmin.vue";
 
 
 import Reportes from "../views/ReportesPage.vue";
@@ -20,6 +23,9 @@ import LandingPage from "../views/LandingPage.vue";
 import AdminMenu from "../views/AdminMenu.vue";
 import InvMenu from "../views/InvMenu.vue";
 import UserMenu from "../views/UserMenu.vue";
+import ListaInvestigadores from "../views/ListaInvestigadores.vue";
+import Constancias from "../views/Constancias.vue";
+import AlertasMenu from "../views/AlertasMenu.vue";
 
 
 Vue.use(Router);
@@ -36,6 +42,15 @@ export default new Router({
       path: "/login",
       name: "Login",
       component: LoginPage,
+    },    {
+      path: "/registerInv",
+      name: "RegisterInv",
+      component: RegisterInv,
+    },
+        {
+      path: "/registerPart",
+      name: "RegisterPart",
+      component: RegisterPart,
     },
     {
       path: "/invmenu",
@@ -103,6 +118,25 @@ export default new Router({
           name: "Raws",
           component: Raws,
         },
+         {
+          path: "registerAdmin",
+          name: "RegisterAdmin",
+          component: RegisterAdmin,
+        },
+                 {
+          path: "listaInvestigadores",
+          name: "ListaInvestigadores",
+          component: ListaInvestigadores,
+        },
+        {
+          path:"constancias",
+          name:"Constancias",
+          component: Constancias,
+        },{
+          path:"alertas",
+          name:"AlertasMenu",
+          component: AlertasMenu,
+        }
       ],
     },
   ],
