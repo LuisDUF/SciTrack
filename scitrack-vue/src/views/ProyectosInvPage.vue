@@ -85,9 +85,9 @@
               </ul>
 
               <p class="mt-4"><strong>RÚBRICA:</strong></p>
-              <div v-for="(crit, i) in rubric" :key="i" class="mb-3">
+              <div v-for="(crit, i) in selectedProject.criterios" :key="i" class="mb-3">
                 <v-card flat class="pa-2">
-                  <p>{{ crit.text }}</p>
+                  <p>{{ crit.descripcion }}</p>
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field v-model="crit.score" label="Calif." type="number" dense />
@@ -124,10 +124,6 @@ export default {
       evaluatedProjects: [],
       convocatories: [],
       selectedConvocatories: [],
-      rubric: [
-        { id: 1, text: 'Claridad de los objetivos', score: 0, max: 20 },
-        { id: 2, text: 'Metodología apropiada', score: 0, max: 20 },
-      ],
     };
   },
   computed: {
@@ -153,6 +149,8 @@ export default {
         if (!res.ok) throw new Error('Error al cargar los proyectos');
         const data = await res.json();
 
+        console.log(data)
+        this.rubric = data[0].criterios
         const processed = data.map((p, i) => ({
           id: p.id,
           displayId: 'PRJ' + (1000 + i),
@@ -160,6 +158,7 @@ export default {
           institution: p.institucion,
           areas: p.areas_conocimiento,
           leader: p.lider_equipo,
+          criterios: p.criterios,
           advisor: p.asesor,
           members: p.integrantes ? p.integrantes.split(', ') : [],
           comment: p.comentario_calificacion || '',
