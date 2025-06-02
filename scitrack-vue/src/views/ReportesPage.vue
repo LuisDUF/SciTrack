@@ -9,8 +9,8 @@
           <div class="flex-grow-1 pr-4" style="overflow-y: auto; height: 100%;">
             <p class="text-subtitle-1 mb-4">Proyectos disponibles para reporte:</p>
             <v-card 
-              v-for="(project, index) in filteredProjects" 
-              :key="index" 
+              v-for="project in filteredProjects" 
+              :key="project.id || project.name" 
               class="mb-4" 
               flat
               outlined
@@ -18,11 +18,11 @@
               <v-card-text>
                 <div class="d-flex justify-space-between align-start">
                   <div>
-                    <p class="mb-1 font-weight-bold">#{{ project.id }}</p>
+                    <p class="mb-1 font-weight-bold">#{{ project.id || 'N/A' }}</p>
                     <p class="mb-1">Nombre: {{ project.name }}</p>
                     <p class="mb-1">Institución: {{ project.institution }}</p>
-                    <p class="mb-1">Convocatoria: {{ project.convocatory }}</p>
-                    <p class="mb-0">Estado: {{ project.status }}</p>
+                    <p class="mb-1">Convocatoria: {{ project.convocatory || 'N/A' }}</p>
+                    <p class="mb-0">Estado: {{ project.status || 'N/A' }}</p>
                   </div>
                   <v-btn color="primary" depressed @click="openReport(project)">
                     Ver reporte
@@ -38,10 +38,10 @@
             <v-card outlined class="pa-2 mb-4" style="max-height: 150px; overflow-y: auto;">
               <v-checkbox
                 v-for="conv in convocatories"
-                :key="conv"
+                :key="conv.idConvocatoria || conv"
                 v-model="selectedConvocatories"
-                :label="conv"
-                :value="conv"
+                :label="conv.nombre || conv"
+                :value="conv.nombre || conv"
                 dense
                 hide-details
               />
@@ -61,8 +61,6 @@
             </v-card-title>
             
             <v-card-text style="max-height: 80vh; overflow-y: auto;">
-              
-
               <v-row dense>
                 <!-- Información General -->
                 <v-col cols="12" md="6">
@@ -70,35 +68,30 @@
                     <v-card-title class="subtitle-1 font-weight-bold">Información general</v-card-title>
                     <v-card-text>
                       <v-simple-table>
-                        <template v-slot:default>
-                          <tbody>
-                            <tr><td class="font-weight-bold">NOMBRE:</td><td>{{ currentReport.name }}</td></tr>
-                            <tr><td class="font-weight-bold">INSTITUCION(ES):</td><td>{{ currentReport.institution }}</td></tr>
-                            <tr><td class="font-weight-bold">AREA(S) DE CONOCIMIENTO:</td><td>{{ currentReport.area || 'INGENIERÍA DE SOFTWARE' }}</td></tr>
-                            <tr><td class="font-weight-bold">LIDER DEL EQUIPO:</td><td>{{ currentReport.leader || 'DOMINGUEZ GUZMAN SEBASTIAN' }}</td></tr>
-                            <tr><td class="font-weight-bold">ASESOR:</td><td>{{ currentReport.advisor || 'RAMOS DIAZ JOSE GUADALUPE' }}</td></tr>
-                            <tr><td class="font-weight-bold">FASE:</td><td>{{ currentReport.phase || 'PRELIMINAR' }}</td></tr>
-                          </tbody>
-                        </template>
+                        <tbody>
+                          <tr><td class="font-weight-bold">NOMBRE:</td><td>{{ currentReport.name }}</td></tr>
+                          <tr><td class="font-weight-bold">INSTITUCIÓN(ES):</td><td>{{ currentReport.institution }}</td></tr>
+                          <tr><td class="font-weight-bold">ÁREA(S) DE CONOCIMIENTO:</td><td>{{ currentReport.area || 'INGENIERÍA DE SOFTWARE' }}</td></tr>
+                          <tr><td class="font-weight-bold">LÍDER DEL EQUIPO:</td><td>{{ currentReport.leader || 'DOMINGUEZ GUZMAN SEBASTIAN' }}</td></tr>
+                          <tr><td class="font-weight-bold">ASESOR:</td><td>{{ currentReport.advisor || 'RAMOS DIAZ JOSE GUADALUPE' }}</td></tr>
+                          <tr><td class="font-weight-bold">FASE:</td><td>{{ currentReport.phase || 'PRELIMINAR' }}</td></tr>
+                        </tbody>
                       </v-simple-table>
 
                       <div class="mt-4">
                         <p class="font-weight-bold mb-2">INTEGRANTES:</p>
                         <div style="max-height: 100px; overflow-y: auto;">
                           <ul>
-                            <li v-for="(member, i) in currentReport.members || ['DOMINGUEZ GUZMAN SEBASTIAN','HIDALGO MEDINA ALONZO JESUS','TALAVERA ORTIZ ANNA LILIA']" :key="i">• {{ member }}</li>
+                            <li v-for="(member, i) in currentReport.members || []" :key="i">• {{ member }}</li>
                           </ul>
                         </div>
 
                         <p class="font-weight-bold mb-2 mt-4">DOCUMENTOS:</p>
                         <div style="max-height: 100px; overflow-y: auto;">
                           <ul>
-                            <li v-for="(doc, i) in currentReport.documents || ['IDENTIFICACION.pdf','RECOMENDACION.pdf']" :key="'doc-'+i">• {{ doc }}</li>
+                            <li v-for="(doc, i) in currentReport.documents || []" :key="'doc-'+i">• {{ doc }}</li>
                           </ul>
                         </div>
-
-                        <p class="font-weight-bold mb-2 mt-4">COMENTARIOS DEL ADMINISTRADOR:</p>
-                        <p>{{ currentReport.adminComments || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' }}</p>
                       </div>
                     </v-card-text>
                   </v-card>
@@ -109,28 +102,23 @@
                   <v-card outlined class="h-100">
                     <v-card-title class="subtitle-1 font-weight-bold">Ponderación</v-card-title>
                     <v-card-text>
-                      <p class="font-weight-bold mb-2">RUBRICA: #{{ currentReport.rubric || '431548R' }}</p>
+                      <p class="font-weight-bold mb-2">RÚBRICA: #{{ currentReport.rubric || 'N/A' }}</p>
                       <p class="font-weight-bold mb-2">CRITERIOS:</p>
                       <div style="max-height: 200px; overflow-y: auto;">
                         <v-simple-table>
-                          <template v-slot:default>
-                            <tbody>
-                              <tr v-for="(criteria, i) in currentReport.criteria || [
-                                { name: 'Lorem ipsum...', civil: '8 20', maximo: '8 20' }
-                              ]" :key="'criteria-'+i">
-                                <td>{{ criteria.name }}</td>
-                                <td class="text-right font-weight-bold">Civil. {{ criteria.civil }}</td>
-                                <td class="text-right font-weight-bold">Maximo {{ criteria.maximo }}</td>
-                              </tr>
-                            </tbody>
-                          </template>
+                          <tbody>
+                            <tr v-for="(criteria, i) in currentReport.criteria || []" :key="'criteria-'+i">
+                              <td>{{ criteria.descripcion }}</td>
+                              <td class="text-right font-weight-bold">Ponderación: {{ criteria.ponderacion }}</td>
+                            </tr>
+                          </tbody>
                         </v-simple-table>
                       </div>
 
-                      <p class="font-weight-bold mt-4">PONDERACIÓN FINAL: {{ currentReport.finalScore || '88' }}</p>
+                      <p class="font-weight-bold mt-4">PONDERACIÓN FINAL: {{ currentReport.finalScore || 'N/A' }}</p>
 
                       <p class="font-weight-bold mb-2 mt-4">COMENTARIOS DEL JUEZ:</p>
-                      <p>{{ currentReport.judgeComments || 'Lorem ipsum dolor sit amet...' }}</p>
+                      <p>{{ currentReport.judgeComments || 'Sin comentarios aún.' }}</p>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -147,100 +135,102 @@
 export default {
   data() {
     return {
-      projects: [
-  { 
-    id: '10001AX', 
-    name: 'Agrobot X', 
-    institution: 'TEC Culiacán', 
-    convocatory: 'InovaTEC', 
-    status: 'Participando',
-    area: 'Agrotecnología',
-    leader: 'MARIA GONZALEZ LARA',
-    advisor: 'ING. JULIO PÉREZ',
-    phase: 'FINAL',
-    members: ['MARIA GONZALEZ LARA', 'JUAN PEREZ TORRES', 'LUCIA HERNANDEZ'],
-    documents: ['PROPUESTA.pdf', 'PRESENTACION.pptx'],
-    adminComments: 'Muy buen enfoque de aplicación en el sector agrícola.',
-    rubric: 'RB-78956',
-    criteria: [
-      { name: 'Innovación tecnológica', civil: '9 20', maximo: '18 20' },
-      { name: 'Impacto social', civil: '7 20', maximo: '17 20' }
-    ],
-    finalScore: '89',
-    judgeComments: 'Gran potencial, aunque el prototipo aún está en desarrollo.'
-  },
-  { 
-    id: '10002BX', 
-    name: 'EcoAqua', 
-    institution: 'TEC Veracruz', 
-    convocatory: 'PLEXO', 
-    status: 'Finalizado',
-    area: 'Medio Ambiente',
-    leader: 'CARLOS REYES MORA',
-    advisor: 'DRA. ANA LOPEZ',
-    phase: 'PRELIMINAR',
-    members: ['CARLOS REYES MORA', 'PABLO RAMIREZ', 'SOFIA LUNA'],
-    documents: ['ECOAQUA_PLAN.pdf', 'ECOAQUA_RESULTS.docx'],
-    adminComments: 'Cumplió con todos los requisitos y entregables.',
-    rubric: 'RB-96325',
-    criteria: [
-      { name: 'Sostenibilidad', civil: '10 20', maximo: '19 20' },
-      { name: 'Aplicabilidad práctica', civil: '8 20', maximo: '18 20' }
-    ],
-    finalScore: '92',
-    judgeComments: 'Muy buen análisis de impacto ambiental.'
-  },
-  { 
-    id: '10003CX', 
-    name: 'Smart Mobility', 
-    institution: 'TEC Monterrey', 
-    convocatory: 'ES-XIV SMP', 
-    status: 'Descalificado',
-    area: 'Ingeniería de Transporte',
-    leader: 'ANA MARTINEZ DIAZ',
-    advisor: 'MTRO. EDUARDO SALAZAR',
-    phase: 'FINAL',
-    members: ['ANA MARTINEZ DIAZ', 'ROBERTO CASTRO', 'FABIOLA HERRERA'],
-    documents: ['SMART_MOBILITY.pdf', 'VALIDACION.xlsx'],
-    adminComments: 'Faltó documentación técnica esencial.',
-    rubric: 'RB-11223',
-    criteria: [
-      { name: 'Eficiencia energética', civil: '5 20', maximo: '15 20' },
-      { name: 'Diseño urbano inteligente', civil: '6 20', maximo: '16 20' }
-    ],
-    finalScore: '73',
-    judgeComments: 'Concepto interesante pero pobremente fundamentado.'
-  }
-],
-
-      convocatories: ['InovaTEC', 'PLEXO', 'ES-XIV SMP'],
+      projects: [],
+      convocatories: [],
       selectedConvocatories: [],
       filteredProjects: [],
       showReportDialog: false,
       currentReport: {}
-    }
+    };
   },
   created() {
-    this.filteredProjects = [...this.projects];
+    this.loadConvocatorias();
+    this.loadAndCombineProyectos();
   },
   watch: {
     selectedConvocatories: 'applyFilters'
   },
   methods: {
+    async loadConvocatorias() {
+      try {
+        const res = await fetch('http://localhost:3000/api/convocatorias/');
+        const data = await res.json();
+        this.convocatories = data;
+      } catch (error) {
+        console.error('Error cargando convocatorias:', error);
+      }
+    },
+
+    async loadAndCombineProyectos() {
+      try {
+        // Cargar proyectos con detalles (criterios, integrantes, etc)
+        const resDetalles = await fetch('http://localhost:3000/api/reportes/');
+        const detalles = await resDetalles.json();
+
+        // Cargar datos complementarios (convocatoria, estado, nombre, institucion)
+        const resVp = await fetch('http://localhost:3000/api/reportesVp/');
+        const infoVp = await resVp.json();
+
+        // Crear un mapa para acceso rápido por nombre de proyecto
+        const detallesMap = new Map();
+        detalles.forEach(d => {
+          detallesMap.set(d.nombre_proyecto, d);
+        });
+
+        this.projects = infoVp.map(item => {
+          const detalle = detallesMap.get(item.nombre_proyecto) || {};
+
+          // Calcular promedio de ponderaciones de criterios
+          const criterios = detalle.criterios || [];
+          let finalScore = 'N/A';
+          if (criterios.length > 0) {
+            const suma = criterios.reduce((acc, c) => acc + (c.ponderacion || 0), 0);
+            finalScore = (suma / criterios.length).toFixed(2);
+          }
+
+          return {
+            id: detalle.idProyecto || null,
+            name: item.nombre_proyecto,
+            institution: item.institucion_investigador,
+            convocatory: item.nombre_convocatoria || 'N/A',
+            status: item.estado_proyecto || 'N/A',
+
+            area: detalle.area_conocimiento_categoria || 'N/A',
+            leader: detalle.lider_equipo || 'N/A',
+            advisor: detalle.asesor_equipo || 'N/A',
+            phase: detalle.fase_proyecto || 'N/A',
+            members: detalle.integrantes_equipo || [],
+            documents: detalle.archivos || [],
+            rubric: 'N/A',
+            criteria: criterios,
+            finalScore,
+            judgeComments: ''
+          };
+        });
+
+        // Inicialmente mostrar todos
+        this.filteredProjects = [...this.projects];
+      } catch (error) {
+        console.error('Error cargando proyectos:', error);
+      }
+    },
+
     openReport(project) {
       this.currentReport = project;
       this.showReportDialog = true;
     },
+
     applyFilters() {
-      this.filteredProjects = this.projects.filter(project => {
-        return (
-          this.selectedConvocatories.length === 0 ||
+      if (this.selectedConvocatories.length === 0) {
+        this.filteredProjects = [...this.projects];
+      } else {
+        this.filteredProjects = this.projects.filter(project =>
           this.selectedConvocatories.includes(project.convocatory)
         );
-      });
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
