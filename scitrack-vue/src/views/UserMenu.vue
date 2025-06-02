@@ -17,6 +17,7 @@
 <script>
 import HeaderBase from '@/components/HeaderBase.vue'
 import SideBarBase from '@/components/SideBarBase.vue'
+import api from "@/services/api";
 
 export default {
   name: "App",
@@ -30,10 +31,13 @@ export default {
         userName: "Cargando...", // Valor inicial
         userRole: "Participante",
         notificationStatus: false,
+        notis: []
       },
       sideBarSettings: [], // Menú básico inicial
       loading: false,
-      participante: JSON.parse(localStorage.getItem('userData')) || null
+      participante: JSON.parse(localStorage.getItem('userData')) || null,
+      Notificaciones: [],
+      notification: false
     };
   },
   methods: {
@@ -43,7 +47,18 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
+    try{
+        const response = await api.get('/api/notificacion/participante/'+this.participante.idParticipante);
+    this.Notificaciones.push (...JSON.parse(JSON.stringify(response.data)));
+    if(this.Notificaciones.length>=1)
+    this.notification = true;
+
+    this.notis = this.Notificaciones;
+    }catch{
+      console.log("");
+    }
+
       if (!this.participante) {
         // Redirige si no hay datos
         this.$router.push('/login');
@@ -51,7 +66,8 @@ export default {
     this.headerSettings = {
       userName: this.participante?.nombre || "Usuario",
       userRole: "Participante",
-      notificationStatus: false,
+      notificationStatus: this.notification,
+      notis: this.notis
     };
     this.sideBarSettings = [
       {

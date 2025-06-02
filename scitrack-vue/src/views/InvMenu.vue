@@ -25,6 +25,7 @@
 <script>
 import HeaderBase from "@/components/HeaderBase.vue";
 import SideBarBase from "@/components/SideBarBase.vue";
+import api from "@/services/api";
 
 
 export default {
@@ -38,12 +39,17 @@ export default {
       headerSettings: {
         userName: "Cargando...", // Valor inicial
         userRole: "Investigador",
-        notificationStatus: false,
+        notificationStatus: true,
+        notis: []
       },
       sideBarSettings: [], // Menú básico inicial
       loading: false,
-      investigador: JSON.parse(localStorage.getItem('userData')) || null
+      investigador: JSON.parse(localStorage.getItem('userData')) || null,
+      Notificaciones: [],
+      notification: false
     };
+  },async mounted(){
+
   },
   methods: {
     navigateTo(path) {
@@ -51,7 +57,15 @@ export default {
         this.$router.push(path);
       }
     }
-  }, created() {
+  }, async created() {
+        const response = await api.get('/api/notificacion/investigador/'+this.investigador.idInvestigador);
+    this.Notificaciones.push (...JSON.parse(JSON.stringify(response.data)));
+    if(this.Notificaciones.length>=1)
+    this.notification = true;
+
+    
+    this.notis = this.Notificaciones;
+      
       if (!this.investigador) {
         // Redirige si no hay datos
         this.$router.push('/login');
@@ -59,7 +73,8 @@ export default {
       this.headerSettings = {
         userName: this.investigador?.nombre || "Usuario", // Safe navigation
         userRole: "Investigador",
-        notificationStatus: false,
+        notificationStatus: this.notification,
+        notis: this.notis
       };
       
       this.sideBarSettings = [
