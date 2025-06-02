@@ -1,5 +1,23 @@
 <template>
   <div id="app">
+   <div v-if="mostrarModal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+        <v-icon color="warning" large class="mr-2">mdi-alert-circle</v-icon>
+          <h3>{{ modalTitulo }}</h3>
+          <button @click="mostrarModal = false" class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>{{ modalMensaje }}</p>
+          <ul>
+            <li v-for="(error, index) in modalErrores" :key="index">{{ error }}</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button @click="mostrarModal = false" class="modal-button">Entendido</button>
+        </div>
+      </div>
+    </div>
     <div class="contenedor">
       <h1>Crear proyecto</h1>
       <div class="marco">
@@ -118,7 +136,11 @@ export default {
       EQUIPOS: [],
       PARTICIPANTE: [],
       ARCHIVOS: [],
-      ITEMS: []
+      ITEMS: [],
+      mostrarModal: false,
+      modalTitulo: '',
+      modalMensaje: '',
+      modalErrores: []
     }
   },
   computed: {
@@ -237,27 +259,49 @@ export default {
       }
     },
     
-    async enviarProyecto() {
+     async enviarProyecto() {
+      const errores = [];
       const usuario = JSON.parse(localStorage.getItem("userData")) || null;
+      
       if (!usuario || !usuario.idParticipante) {
-        alert("No se pudo identificar al usuario líder. Por favor, inicie sesión nuevamente.");
+        this.mostrarErroresModal(
+          "Error de usuario",
+          "No se pudo identificar al usuario líder:",
+          ["Por favor, inicie sesión nuevamente"]
+        );
         return;
       }
-      if (!this.esUrlValida) {
-        alert("¡Ingresa un enlace de video válido!");
+
+      if (usuario.Equipo_idEquipo === null) {
+        this.mostrarErroresModal(
+          "Error en equipo",
+          "No puedes crear un proyecto:",
+          ["Necesitas tener un equipo para poder crear un proyecto"]
+        );
+        this.$router.push({ name: 'CrearEquipo' });
         return;
       }
-      if (!this.formularioValido) {
-        alert("Por favor complete todos los campos requeridos.");
+
+      if (!this.nombreProyecto) errores.push("El nombre del proyecto es requerido");
+      if (!this.convocatoriaSeleccionada) errores.push("Debes seleccionar una convocatoria");
+      if (!this.categoriaSeleccionada) errores.push("Debes seleccionar una categoría");
+      if (!this.archivo) errores.push("Debes subir el documento del proyecto");
+      if (!this.videoUrl) errores.push("El enlace del video es requerido");
+      else if (!this.esUrlValida) errores.push("El enlace del video debe ser de YouTube o Vimeo");
+
+      if (errores.length > 0) {
+        this.mostrarErroresModal(
+          "Error en el formulario",
+          "Por favor corrige los siguientes errores:",
+          errores
+        );
         return;
       }
 
       try {
-            // Obtener datos necesarios
         const fechaHoy = new Date().toISOString().split("T")[0];
         const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === this.convocatoriaSeleccionada);
         
-        // Verificar fase inicial
         const itemFaseInicial = this.ITEMS.find(i => 
           i.Convocatoria_idConvocatoria === convocatoria.idConvocatoria && i.orden === 0
         );
@@ -269,9 +313,14 @@ export default {
         const fase = this.FASES.find(f => f.idFase === itemFaseInicial.Fase_idFase);
         
         if (fechaHoy > fase.fechaInicio) {
-          console.log("La fecha límite para registrar proyectos ha expirado");
+          this.mostrarErroresModal(
+            "Error de fecha",
+            "No se puede registrar el proyecto:",
+            ["La fecha límite para registrar proyectos ha expirado"]
+          );
           return;
         }
+
         // 1. Subir archivo
         const formDataArchivo = new FormData();
         formDataArchivo.append('documentoProyecto', this.archivo);
@@ -286,7 +335,6 @@ export default {
 
         if (!idArchivo) throw new Error("No se obtuvo el ID del archivo");
 
-      
         const participante = this.PARTICIPANTE.find(p => p.idParticipante === usuario.idParticipante);
         const equipo = this.EQUIPOS.find(e => e.idEquipo === participante.Equipo_idEquipo);
         
@@ -313,18 +361,33 @@ export default {
         const dataProyecto = await resProyecto.json();
         if (dataProyecto.success) {
           alert('Proyecto enviado a revisión correctamente.');
-          // Resetear formulario
-          this.nombreProyecto = '';
-          this.convocatoriaSeleccionada = null;
-          this.categoriaSeleccionada = null;
-          this.archivo = null;
+          this.resetForm();
         } else {
           throw new Error("Error al registrar el proyecto");
         }
       } catch (err) {
         console.error(err);
-        alert("Ocurrió un error al enviar a revisión.");
+        this.mostrarErroresModal(
+          "Error al enviar",
+          "Ocurrió un error inesperado:",
+          [err.message]
+        );
       }
+    },
+
+    mostrarErroresModal(titulo, mensaje, errores) {
+      this.modalTitulo = titulo;
+      this.modalMensaje = mensaje;
+      this.modalErrores = errores;
+      this.mostrarModal = true;
+    },
+
+    resetForm() {
+      this.nombreProyecto = '';
+      this.convocatoriaSeleccionada = null;
+      this.categoriaSeleccionada = null;
+      this.archivo = null;
+      this.videoUrl = "";
     }
   }
 }
@@ -500,5 +563,82 @@ textarea {
   pointer-events: none;
   display: inline-block;
   padding: 0 4px;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.modal-header {
+  background: #4f4fef;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body ul {
+  margin: 10px 0 0 20px;
+  padding: 0;
+}
+
+.modal-body li {
+  margin-bottom: 5px;
+  color: #d32f2f;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  background: #f5f5f5;
+}
+
+.modal-button {
+  background: #4f4fef;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-button:hover {
+  background: #3a3aad;
 }
 </style>
