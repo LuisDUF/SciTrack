@@ -17,7 +17,7 @@
                 class="mb-4 project-card"
               >
                 <v-card-text>
-                  <p class="green--text font-weight-bold mb-1">#{{ project.id }}</p>
+                  <p class="green--text font-weight-bold mb-1">#{{ project.displayId }}</p>
                   <p><strong>Nombre:</strong> {{ project.name }}</p>
                   <p><strong>Institución:</strong> {{ project.institution }}</p>
                   <p><strong>Convocatoria:</strong> {{ project.convocatory }}</p>
@@ -39,7 +39,7 @@
                 class="mb-4 project-card"
               >
                 <v-card-text>
-                  <p class="green--text font-weight-bold mb-1">#{{ project.id }}</p>
+                  <p class="green--text font-weight-bold mb-1">#{{ project.displayId }}</p>
                   <p><strong>Nombre:</strong> {{ project.name }}</p>
                   <p><strong>Institución:</strong> {{ project.institution }}</p>
                   <p><strong>Convocatoria:</strong> {{ project.convocatory }}</p>
@@ -125,8 +125,8 @@ export default {
       convocatories: [],
       selectedConvocatories: [],
       rubric: [
-        { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', score: 0, max: 20 },
-        { text: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', score: 0, max: 20 },
+        { id: 1, text: 'Claridad de los objetivos', score: 0, max: 20 },
+        { id: 2, text: 'Metodología apropiada', score: 0, max: 20 },
       ],
     };
   },
@@ -154,16 +154,16 @@ export default {
         const data = await res.json();
 
         const processed = data.map((p, i) => ({
-          id: 'PRJ' + (1000 + i),
+          id: p.id,
+          displayId: 'PRJ' + (1000 + i),
           name: p.nombre_proyecto,
           institution: p.institucion,
           areas: p.areas_conocimiento,
           leader: p.lider_equipo,
           advisor: p.asesor,
           members: p.integrantes ? p.integrantes.split(', ') : [],
-          rubrics: p.rubricas ? p.rubricas.split(', ') : [],
           comment: p.comentario_calificacion || '',
-          convocatory: 'FERIA DE PROYECTOS', // Reemplaza con el campo real si es necesario
+          convocatory: 'FERIA DE PROYECTOS',
           status: i % 2 === 0 ? 'Inactiva' : 'Evaluada',
         }));
 
@@ -188,37 +188,37 @@ export default {
     },
 
     openEvaluation(project) {
-      this.selectedProject = project;
+      this.selectedProject = { ...project };
       this.dialog = true;
     },
+
     async submitEvaluation() {
-  try {
-    const evaluaciones = this.rubric.map(crit => ({
-      calificacion: crit.score,
-      idFase: this.selectedProject.faseId, // debes incluir este dato desde el backend
-      idCriterio: crit.id,
-      comentario: this.comment,
-      Proyecto_idProyecto: this.selectedProject.idProyecto, // debe ser el ID real del proyecto
-    }));
+      try {
+        const evaluaciones = this.rubric.map(crit => ({
+          calificacion: crit.score,
+          idFase: 1, // ajustar según lógica real
+          idCriterio: crit.id,
+          comentario: this.selectedProject.comment,
+          Proyecto_idProyecto: this.selectedProject.id,
+        }));
 
-    const res = await fetch('http://localhost:3000/api/calificacion/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(evaluaciones)
-    });
+        const res = await fetch('http://localhost:3000/api/calificacion/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(evaluaciones)
+        });
 
-    if (!res.ok) throw new Error('Error al enviar la evaluación');
+        if (!res.ok) throw new Error('Error al enviar la evaluación');
 
-    console.log('Evaluación enviada con éxito');
-    this.dialog = false;
+        console.log('Evaluación enviada con éxito');
+        this.dialog = false;
 
-  } catch (err) {
-    console.error('Error al enviar evaluación:', err);
-  }
-}
-,
+      } catch (err) {
+        console.error('Error al enviar evaluación:', err);
+      }
+    }
   },
 };
 </script>
