@@ -122,18 +122,10 @@ export default {
     return {
       dialog: false,
       selectedProject: {},
-      unevaluatedProjects: [
-        { id: '212136P', name: 'Cash Royale', institution: 'TECNM Morelia', convocatory: 'InovaTEC', status: 'Pendiente de evaluación' },
-        { id: '212136P', name: 'Pony Hambriento', institution: 'TECNM Morelia', convocatory: 'InovaTEC', status: 'Pendiente de evaluación' },
-        { id: '212136P', name: 'WAVE-E', institution: 'TECNM Morelia', convocatory: 'InovaTEC', status: 'Pendiente de evaluación' },
-      ],
-      evaluatedProjects: [
-        { id: '212536P', name: 'Dolphin', institution: 'TECNM Morelia', convocatory: 'InovaTEC', status: 'Evaluado' },
-        { id: '212736P', name: 'Main@Home', institution: 'TECNM Morelia', convocatory: 'InovaTEC', status: 'Evaluado' },
-        { id: '212836P', name: 'OBU-L', institution: 'TECNM Morelia', convocatory: 'InovaTEC', status: 'Evaluado' },
-      ],
-      convocatories: ['InovaTEC', 'PLEXO'],
-      selectedConvocatories: ['InovaTEC'],
+      unevaluatedProjects: [],
+      evaluatedProjects: [],
+      convocatories: [],
+      selectedConvocatories: [],
       rubric: [
         { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', score: 0, max: 20 },
         { text: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', score: 0, max: 20 },
@@ -152,7 +144,45 @@ export default {
       );
     },
   },
+  mounted() {
+    this.loadProjects();
+    this.loadConvocatorias();
+  },
   methods: {
+    async loadProjects() {
+      try {
+        const res = await fetch('http://localhost:3000/api/proyectoVP/');
+        if (!res.ok) throw new Error('Error al cargar los proyectos');
+        const data = await res.json();
+
+        const processed = data.map((p, i) => ({
+          id: 'PRJ' + (1000 + i),
+          name: p.nombre_proyecto,
+          institution: p.institucion_investigador,
+          convocatory: p.nombre_convocatoria,
+          status: p.estado_proyecto,
+        }));
+
+        this.unevaluatedProjects = processed.filter((_, i) => i % 2 === 0);
+        this.evaluatedProjects = processed.filter((_, i) => i % 2 !== 0);
+      } catch (err) {
+        console.error('Error al cargar proyectos:', err);
+      }
+    },
+
+    async loadConvocatorias() {
+      try {
+        const res = await fetch('http://localhost:3000/api/convocatoria/');
+        if (!res.ok) throw new Error('Error al cargar convocatorias');
+        const data = await res.json();
+
+        this.convocatories = data.map(c => c.nombre);
+        this.selectedConvocatories = [...this.convocatories];
+      } catch (err) {
+        console.error('Error al cargar convocatorias:', err);
+      }
+    },
+
     openEvaluation(project) {
       this.selectedProject = project;
       this.dialog = true;
@@ -163,7 +193,10 @@ export default {
     },
   },
 };
+
+
 </script>
+
 
 <style scoped>
 .scroll-column {
