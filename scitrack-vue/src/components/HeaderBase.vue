@@ -21,7 +21,8 @@
           <v-list-item
             v-for="noti in options.notis"
             :key="noti.idNotificacion"
-            @click="vari.no='SI', notificacion=noti,  abrirArchivo(noti.Archivos_idArchivos)"
+            :class="noti.esLeido=='T' ? 'leida' : 'no-leida'"
+            @click="vari.no='SI', notificacion=noti,actualiza(noti) , abrirArchivo(noti.Archivos_idArchivos)"
           >
             <v-list-item-title>
               {{ noti.asunto }}
@@ -130,6 +131,15 @@ export default {
         this.vari.no = 'NO';
         this.pdfUrl = null;
       },
+      async actualiza(noti){
+        noti.esLeido = 'T';
+        try{
+          const response = await api.put('/api/notificacion/'+noti.idNotificacion,{esLeido:'T'});
+          console.log(response);
+        }catch(e){
+          console.log(e);
+        }
+      }
   }
 };
 </script>
@@ -202,5 +212,18 @@ export default {
   border: solid 0.3vmax #BFD6FF ;
   color: #BFD6FF;
   transition: 0.7s;
+}
+
+.leida {
+  /* Estilos para notificaciones leídas */
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+.no-leida {
+  /* Estilos para notificaciones no leídas */
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  font-weight: bold;
 }
 </style>

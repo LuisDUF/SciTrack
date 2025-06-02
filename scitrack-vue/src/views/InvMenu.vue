@@ -60,7 +60,7 @@ export default {
   }, async created() {
         const response = await api.get('/api/notificacion/investigador/'+this.investigador.idInvestigador);
     this.Notificaciones.push (...JSON.parse(JSON.stringify(response.data)));
-    if(this.Notificaciones.length>=1)
+    if(this.Notificaciones.filter(s=> s.esLeido!='T').length>=1)
     this.notification = true;
 
     
