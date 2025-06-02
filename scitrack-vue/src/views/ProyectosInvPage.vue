@@ -76,14 +76,12 @@
             <v-card-text class="modal-content">
               <p><strong>NOMBRE:</strong> {{ selectedProject.name }}</p>
               <p><strong>INSTITUCIÓN(ES):</strong> {{ selectedProject.institution }}</p>
-              <p><strong>ÁREA(S) DE CONOCIMIENTO:</strong> INGENIERÍA DE SOFTWARE</p>
-              <p><strong>LÍDER DEL EQUIPO:</strong> DOMINGUEZ GUZMAN SEBASTIAN</p>
-              <p><strong>ASESOR:</strong> RAMOS DÍAZ JOSE GUADALUPE</p>
+              <p><strong>ÁREA(S) DE CONOCIMIENTO:</strong> {{ selectedProject.areas }}</p>
+              <p><strong>LÍDER DEL EQUIPO:</strong> {{ selectedProject.leader }}</p>
+              <p><strong>ASESOR:</strong> {{ selectedProject.advisor }}</p>
               <p><strong>INTEGRANTES:</strong></p>
               <ul>
-                <li>DOMINGUEZ GUZMAN SEBASTIAN</li>
-                <li>HIDALGO MEDINA ALONZO JESUS</li>
-                <li>TALAVERA ORTIZ ANNA LILIA</li>
+                <li v-for="(member, i) in selectedProject.members" :key="i">{{ member }}</li>
               </ul>
 
               <p class="mt-4"><strong>RÚBRICA:</strong></p>
@@ -101,7 +99,7 @@
                 </v-card>
               </div>
 
-              <v-textarea label="Comentarios" rows="3" outlined class="mt-2" />
+              <v-textarea label="Comentarios" v-model="selectedProject.comment" rows="3" outlined class="mt-2" />
             </v-card-text>
 
             <v-card-actions>
@@ -151,16 +149,22 @@ export default {
   methods: {
     async loadProjects() {
       try {
-        const res = await fetch('http://localhost:3000/api/proyectoVP/');
+        const res = await fetch('http://localhost:3000/api/proyectoVE/');
         if (!res.ok) throw new Error('Error al cargar los proyectos');
         const data = await res.json();
 
         const processed = data.map((p, i) => ({
           id: 'PRJ' + (1000 + i),
           name: p.nombre_proyecto,
-          institution: p.institucion_investigador,
-          convocatory: p.nombre_convocatoria,
-          status: p.estado_proyecto,
+          institution: p.institucion,
+          areas: p.areas_conocimiento,
+          leader: p.lider_equipo,
+          advisor: p.asesor,
+          members: p.integrantes ? p.integrantes.split(', ') : [],
+          rubrics: p.rubricas ? p.rubricas.split(', ') : [],
+          comment: p.comentario_calificacion || '',
+          convocatory: 'FERIA DE PROYECTOS', // Reemplaza con el campo real si es necesario
+          status: i % 2 === 0 ? 'Inactiva' : 'Evaluada',
         }));
 
         this.unevaluatedProjects = processed.filter((_, i) => i % 2 === 0);
@@ -187,16 +191,37 @@ export default {
       this.selectedProject = project;
       this.dialog = true;
     },
-    submitEvaluation() {
-      console.log('Evaluación enviada:', this.selectedProject, this.rubric);
-      this.dialog = false;
-    },
+    async submitEvaluation() {
+  try {
+    const evaluaciones = this.rubric.map(crit => ({
+      calificacion: crit.score,
+      idFase: this.selectedProject.faseId, // debes incluir este dato desde el backend
+      idCriterio: crit.id,
+      comentario: this.comment,
+      Proyecto_idProyecto: this.selectedProject.idProyecto, // debe ser el ID real del proyecto
+    }));
+
+    const res = await fetch('http://localhost:3000/api/calificacion/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(evaluaciones)
+    });
+
+    if (!res.ok) throw new Error('Error al enviar la evaluación');
+
+    console.log('Evaluación enviada con éxito');
+    this.dialog = false;
+
+  } catch (err) {
+    console.error('Error al enviar evaluación:', err);
+  }
+}
+,
   },
 };
-
-
 </script>
-
 
 <style scoped>
 .scroll-column {
