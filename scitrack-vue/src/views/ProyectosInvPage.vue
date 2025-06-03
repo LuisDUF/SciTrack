@@ -22,7 +22,7 @@
                   <p><strong>Institución:</strong> {{ project.institution }}</p>
                   <p><strong>Convocatoria:</strong> {{ project.convocatory }}</p>
                   <p><strong>Estado:</strong> <span class="red--text">{{ project.status }}</span></p>
-                  <v-btn small depressed color="primary" @click="openEvaluation(project)">Evaluar</v-btn>
+                  <v-btn small depressed color="primary" @click="openEvaluation(project, false)">Evaluar</v-btn>
                 </v-card-text>
               </v-card>
             </div>
@@ -44,7 +44,7 @@
                   <p><strong>Institución:</strong> {{ project.institution }}</p>
                   <p><strong>Convocatoria:</strong> {{ project.convocatory }}</p>
                   <p><strong>Estado:</strong> <span class="green--text">{{ project.status }}</span></p>
-                  <v-btn small depressed color="primary">Revisar</v-btn>
+                  <v-btn small depressed color="primary" @click="openEvaluation(project, true)">Revisar</v-btn>
                 </v-card-text>
               </v-card>
             </div>
@@ -85,26 +85,27 @@
               </ul>
 
               <p class="mt-4"><strong>RÚBRICA:</strong></p>
-              <div v-for="(crit, i) in selectedProject.criterios" :key="i" class="mb-3">
+              <div v-for="(crit, i) in rubric" :key="i" class="mb-3">
                 <v-card flat class="pa-2">
                   <p>{{ crit.descripcion }}</p>
+                  <p class="text-caption grey--text">Ponderación: {{ crit.ponderacion }}%</p>
                   <v-row dense>
                     <v-col cols="6">
-                      <v-text-field v-model="crit.score" label="Calif." type="number" dense />
+                      <v-text-field v-model="crit.score" label="Calif." type="number" dense :readonly="isReadOnly" :disabled="isReadOnly" />
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field :value="crit.max" label="Máximo" type="number" dense readonly />
+                      <v-text-field :value="crit.ponderacion" label="Máximo" type="number" dense readonly disabled />
                     </v-col>
                   </v-row>
                 </v-card>
               </div>
 
-              <v-textarea label="Comentarios" v-model="selectedProject.comment" rows="3" outlined class="mt-2" />
+              <v-textarea label="Comentarios" v-model="selectedProject.comment" rows="3" outlined class="mt-2" :readonly="isReadOnly" :disabled="isReadOnly" />
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" depressed @click="submitEvaluation">Enviar</v-btn>
+              <v-btn v-if="!isReadOnly" color="primary" depressed @click="submitEvaluation">Enviar</v-btn>
               <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
             </v-card-actions>
           </v-card>
@@ -124,6 +125,8 @@ export default {
       evaluatedProjects: [],
       convocatories: [],
       selectedConvocatories: [],
+      rubric: [],
+      isReadOnly: false,
     };
   },
   computed: {
@@ -149,22 +152,28 @@ export default {
         if (!res.ok) throw new Error('Error al cargar los proyectos');
         const data = await res.json();
 
-        console.log(data)
-        this.rubric = data[0].criterios
-        const processed = data.map((p, i) => ({
-          id: p.id,
-          displayId: 'PRJ' + (1000 + i),
-          name: p.nombre_proyecto,
-          institution: p.institucion,
-          areas: p.areas_conocimiento,
-          leader: p.lider_equipo,
-          criterios: p.criterios,
-          advisor: p.asesor,
-          members: p.integrantes ? p.integrantes.split(', ') : [],
-          comment: p.comentario_calificacion || '',
-          convocatory: 'FERIA DE PROYECTOS',
-          status: i % 2 === 0 ? 'Inactiva' : 'Evaluada',
-        }));
+        const processed = data.map((p, i) => {
+          const criterios = p.criterios.map(c => ({
+            ...c,
+            score: 0,
+            max: c.ponderacion || 10
+          }));
+
+          return {
+            id: p.id,
+            displayId: 'PRJ' + (1000 + i),
+            name: p.nombre_proyecto,
+            institution: p.institucion,
+            areas: p.areas_conocimiento,
+            leader: p.lider_equipo,
+            criterios,
+            advisor: p.asesor,
+            members: p.integrantes ? p.integrantes.split(', ') : [],
+            comment: p.comentario_calificacion || '',
+            convocatory: 'FERIA DE PROYECTOS',
+            status: i % 2 === 0 ? 'Inactiva' : 'Evaluada',
+          };
+        });
 
         this.unevaluatedProjects = processed.filter((_, i) => i % 2 === 0);
         this.evaluatedProjects = processed.filter((_, i) => i % 2 !== 0);
@@ -186,8 +195,10 @@ export default {
       }
     },
 
-    openEvaluation(project) {
+    openEvaluation(project, readOnly = false) {
       this.selectedProject = { ...project };
+      this.rubric = [...project.criterios];
+      this.isReadOnly = readOnly;
       this.dialog = true;
     },
 
@@ -195,7 +206,7 @@ export default {
       try {
         const evaluaciones = this.rubric.map(crit => ({
           calificacion: crit.score,
-          idFase: 1, // ajustar según lógica real
+          idFase: 1,
           idCriterio: crit.id,
           comentario: this.selectedProject.comment,
           Proyecto_idProyecto: this.selectedProject.id,
@@ -203,9 +214,7 @@ export default {
 
         const res = await fetch('http://localhost:3000/api/calificacion/', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(evaluaciones)
         });
 
@@ -213,7 +222,6 @@ export default {
 
         console.log('Evaluación enviada con éxito');
         this.dialog = false;
-
       } catch (err) {
         console.error('Error al enviar evaluación:', err);
       }
