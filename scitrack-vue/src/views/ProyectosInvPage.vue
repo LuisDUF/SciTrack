@@ -72,7 +72,13 @@
         <!-- Modal de evaluación -->
         <v-dialog v-model="dialog" max-width="800px">
           <v-card>
-            <v-card-title class="text-h5">Evaluar proyecto</v-card-title>
+            <v-card-title class="text-h5 d-flex justify-space-between align-start">
+  Evaluar proyecto
+  <v-btn icon @click="dialog = false" class="ml-auto" style="margin-top: -8px;">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
+</v-card-title>
+
             <v-card-text class="modal-content">
               <p><strong>NOMBRE:</strong> {{ selectedProject.name }}</p>
               <p><strong>INSTITUCIÓN(ES):</strong> {{ selectedProject.institution }}</p>
@@ -106,7 +112,6 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn v-if="!isReadOnly" color="primary" depressed @click="submitEvaluation">Enviar</v-btn>
-              <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
