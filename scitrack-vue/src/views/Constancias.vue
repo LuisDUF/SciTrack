@@ -253,16 +253,7 @@ import itemListaUsuario from "@/components/itemListaUsuario.vue"
   }
 }
 
-
-
-                
-
-      
-
-
-          
         this.filtrados = this.participantes;
-          
           this.vari.no = 'NO';
       }catch(e){
         console.log(e);
