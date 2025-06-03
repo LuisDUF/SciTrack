@@ -278,19 +278,14 @@ export default {
         return;
     }
 
-    if (this.participantesSeleccionados.length === 0) { // Corregido: usar === en lugar de =
-        alert("Debe agregar al menos un participante.");
-        return;
-    }
-
     const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === this.convocatoriaSeleccionada); // Agregado this.
     let numMax = convocatoria ? convocatoria.max_integrantes : null; 
     
     
-        numMax = numMax - 1; 
+        let numOm = numMax - 1; 
         
-        if (this.participantesSeleccionados.length > numMax) {
-        alert(`Cantidad de participantes sobrepasada (Máximo permitido omitiendo al líder: ${numMax}). Por favor, seleccione la cantidad aceptada en la convocatoria.`);
+        if (this.participantesSeleccionados.length > numOm) {
+        alert(`Cantidad de participantes sobrepasada (Máximo permitido omitiendo al líder: ${numOm}). Por favor, seleccione la cantidad aceptada en la convocatoria.`);
         return;
         }
     
@@ -298,8 +293,12 @@ export default {
     try {
         // 1. Primero creamos el equipo
         const equipoData = {
-        Asesor_idAsesor: this.idAsesor,
         Participante_idLider: usuario.idParticipante,
+        Asesor_idAsesor: this.idAsesor,
+        estado: "Pendiente de revisión",
+        max_integrantes: numMax
+        
+
         };
 
         // Enviar solicitud para crear el equipo

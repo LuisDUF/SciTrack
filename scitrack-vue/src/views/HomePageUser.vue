@@ -50,6 +50,34 @@
         </v-col>
       </v-row>
       
+       <div v-if="!usuarioTieneEquipo">
+          <section style="margin-top:2%">
+            <h2 style = "text-align: center">¡Únete a un equipo existente!</h2>
+            <input
+              type="text"
+              v-model="busqueda"
+              placeholder="Buscar equipo (Nombre del líder o del asesor)"
+              @input="buscarEquipos"
+              class="input"
+            />
+            <div class="card-grid">
+              <div v-for="equipo in equiposFiltrados" :key="equipo.idEquipo" class="card">
+                <h4>Líder: {{ obtenerLider(equipo) }}</h4>
+                <p><strong>Asesor:</strong> {{ obtenerAsesor(equipo) }}</p>
+                <p><strong>Institución:</strong> {{ obtenerInstitucion(equipo) }}</p>
+                <p><strong>Participantes:</strong> {{ contarParticipantes(equipo) }} / {{ obtenerMaximo(equipo) }}</p>
+                <button 
+                  @click="unirseEquipo(equipo.idEquipo)"
+                  :disabled="contarParticipantes(equipo) >= obtenerMaximo(equipo)"
+                  class="button1"
+                  style="color: #ffffff; background-color: #6596FF;"
+                >
+                  {{ contarParticipantes(equipo) >= obtenerMaximo(equipo) ? 'Equipo lleno' : 'Unirse' }}
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
     </div>
   </DIV>
 
@@ -66,12 +94,33 @@ import api from  "../services/api.js"
         convocatorias: [],
         proyectos: [],
         equipos: [],
-        selectedConvocatoria: null
-
+        selectedConvocatoria: null,
+        asesores: [],
+        participantes: [],
+        EQUIPOS: [],
+        dependencias: [],
+        instituciones: [],
+        equiposFiltrados: [],
+        busqueda: '',
+        idAsesor: 'none',
+        MAX_PARTICIPANTES: '',
 
       }
     },
+    computed: {
+      usuarioTieneEquipo() {
+        if (!this.usuario || !this.usuario.idParticipante) return false;
+        const participante = this.participantes.find(p => p.idParticipante === this.usuario.idParticipante);
+        return participante && participante.Equipo_idEquipo;
+      }
+    },
+    
     created(){
+      this.cargarAsesores()
+      this.cargarParticipantes()
+      this.cargarEquipos()
+      this.cargarDependencias()
+      this.cargarInstituciones()
 
     },async mounted(){
       switch(this.usuario.Genero_idGenero){
@@ -91,7 +140,90 @@ import api from  "../services/api.js"
           this.$refs.evaluados.textContent = "Evaluados: 0";
           this.$refs.pendientes.textContent="Pendientes: 0";
       }
-    },methods: {
+    },
+    methods: {
+
+    async cargarAsesores() {
+      const res = await fetch('http://localhost:3000/api/asesor/')
+      this.asesores = await res.json()
+    },
+    async cargarParticipantes() {
+      const res = await fetch('http://localhost:3000/api/participante/')
+      this.participantes = await res.json()
+    },
+    async cargarEquipos() {
+      const res = await fetch('http://localhost:3000/api/equipo/')
+      this.equipos = await res.json()
+      this.equiposFiltrados = this.equipos.filter(e => e.estado === 'Aprobado')
+    },
+    async cargarDependencias() {
+      const res = await fetch('http://localhost:3000/api/dependencia/')
+      this.dependencias = await res.json()
+    },
+    async cargarInstituciones() {
+      const res = await fetch('http://localhost:3000/api/institucion/')
+      this.instituciones = await res.json()
+    },
+     buscarEquipos() {
+      const q = this.busqueda.toLowerCase()
+      this.equiposFiltrados = this.equipos.filter(e => {
+        if (e.estado !== 'Aprobado') return false
+        const lider = this.participantes.find(p => p.idParticipante === e.Participante_idLider)
+        const asesor = this.asesores.find(a => a.idAsesor === e.Asesor_idAsesor)
+        const nomLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : ''
+        const nomAsesor = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}`.toLowerCase() : ''
+        return nomLider.includes(q) || nomAsesor.includes(q)
+      })
+    },
+    obtenerLider(equipo) {
+      const p = this.participantes.find(p => p.idParticipante === equipo.Participante_idLider)
+      return p ? `${p.nombre} ${p.apellidoPaterno}` : 'Sin líder'
+    },
+    obtenerAsesor(equipo) {
+      const a = this.asesores.find(a => a.idAsesor === equipo.Asesor_idAsesor)
+      return a ? `${a.nombre} ${a.apellidoPaterno}` : 'Sin asesor'
+    },
+    obtenerInstitucion(equipo) {
+      const p = this.participantes.find(p => p.idParticipante === equipo.Participante_idLider)
+      const d = this.dependencias.find(dep => dep.idDependencia === p?.Dependencia_idDependencia)
+      const i = this.instituciones.find(inst => inst.idInstitucion === d?.Institucion_idInstitucion)
+      return i?.nombre || 'Sin institución'
+    },
+    obtenerMaximo(equipo) {
+      const eq = this.EQUIPOS.find(e => e.idEquipo === equipo.idEquipo);
+      return eq ? `${eq.max_integrantes}` : 'Sin limite'
+
+    },
+    contarParticipantes(equipo) {
+      return this.participantes.filter(p => p.Equipo_idEquipo === equipo.idEquipo).length
+    },
+    async unirseEquipo(id) {
+      const usuario = JSON.parse(localStorage.getItem("userData")) || null;
+      const actual = this.participantes.find(p => p.idParticipante === usuario.idParticipante)
+      if (!actual) return alert('Debe iniciar sesión.')
+      if (actual.Equipo_idEquipo) return alert('Ya estás en un equipo.')
+
+      const eq = this.equipos.find(e => e.idEquipo === id)
+      if (!eq) return alert('Equipo no encontrado.')
+
+      const total = this.contarParticipantes(eq);
+      const MAX_PARTICIPANTES = eq.max_integrantes;
+      if (total >= MAX_PARTICIPANTES) return alert('Este equipo ya está lleno.')
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/participante/${actual.idParticipante}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ Equipo_idEquipo: eq.idEquipo })
+        })
+
+        if (!res.ok) throw new Error()
+        alert('Te has unido al equipo con éxito.')
+        location.reload()
+      } catch (err) {
+        alert('No se pudo unir al equipo.')
+      }
+    },
      async onCheckboxChange(item) {
       this.$refs.nombre.textContent = "Nombre: ";
       this.$refs.estado.textContent = "Estado: ";
@@ -151,4 +283,78 @@ import api from  "../services/api.js"
   .baner{
     font-weight: normal;
   }
+
+
+
+.form {
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #d2dfff;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+
+input {
+  border-radius: 30px;
+}
+
+.button1 {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+
+.button1:hover {
+  opacity: 0.9;
+}
+
+.input {
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  display: block;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 30px;
+  border: 2px solid #6596FF; 
+  margin-top:2%;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.43);
+}
 </style>  
