@@ -76,8 +76,8 @@
           <h4 style="font-weight: bold;">Participantes</h4>
           <div class="rounded"
             style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #ffffff; ">
-            <h5 ref="inscritospa">Incritos: </h5>
-            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
+            <h5 ref="inscritospa">Inscritos: </h5>
+            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;" @click="$router.push('/');">Revisar</button>
           </div>
 
         </v-col>
@@ -97,26 +97,26 @@
 
         </v-col>
       </v-row>
-      <h2 class="mt-5">Estadísticas:</h2>
-      <v-row class="mt-3">
+      <h2 class="mt-5" v-if="selectedConvocatoria != null">Estadísticas:</h2>
+      <v-row class="mt-3" v-if="selectedConvocatoria != null">
         <v-col>
           <div>
-            <ApexChart width="500" type="donut" :options="optionsGenderPart" :series="seriesGenderPart"></ApexChart>
+            <ApexChart style="width: 100%;" type="donut" :options="optionsGenderPart" :series="seriesGenderPart"></ApexChart>
           </div>
         </v-col>
         <v-col>
           <div>
-            <ApexChart width="500" type="donut" :options="optionsGenderInv" :series="seriesGenderInv"></ApexChart>
+            <ApexChart style="width: 100%;" type="donut" :options="optionsGenderInv" :series="seriesGenderInv"></ApexChart>
           </div>
         </v-col>
         <v-col>
           <div>
-            <ApexChart width="500" type="donut" :options="optionsProjects" :series="seriesProjects"></ApexChart>
+            <ApexChart style="width: 100%;" type="donut" :options="optionsProjects" :series="seriesProjects"></ApexChart>
           </div>
         </v-col>
         <v-col>
           <div>
-            <ApexChart width="500" type="line" :options="optionsPromedio" :series="seriesPromedio"></ApexChart>
+            <ApexChart style="width: 100%;" type="line" :options="optionsPromedio" :series="seriesPromedio"></ApexChart>
           </div>
         </v-col>
       </v-row>
