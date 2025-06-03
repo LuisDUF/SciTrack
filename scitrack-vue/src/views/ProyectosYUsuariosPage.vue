@@ -2,6 +2,7 @@
   <div id="app">
     <div class="contenedor">
       <h2>Gestión de Equipos</h2>
+           <loading-dialog v-model="loading" />
 
       <div class="tabs">
         <v-btn 
@@ -186,7 +187,11 @@
 </template>
 
 <script>
+import LoadingDialog from "@/components/LoadingDialog.vue";
+
 export default {
+    components: {LoadingDialog },
+
   data() {
     return {
       activeTab: 'equipos',
@@ -199,6 +204,7 @@ export default {
       modalDetalles: '',
       pdfPreview: '',
       tipoActual: '',
+      loading:false,
       datosActuales: null,
       
 // Datos de API
@@ -243,12 +249,13 @@ export default {
           this.cargarEstados(),
           this.cargarArchivos()
         ]);
-        
+                this.loading = false;
 
-        
       } catch (error) {
         this.error = "Error al cargar los datos. Por favor intenta nuevamente.";
         console.error("Error cargando datos:", error);
+                this.loading = false;
+
       } finally {
         this.loading = false;
       }

@@ -1,5 +1,6 @@
 <template>
   <div>
+     <loading-dialog v-model="loading" />
     <div class="pa-4 mt-4 rounded" style="background-color: #ffffff">
       <h1>Participantes</h1>
       <v-row class="pa-4" style="background-color: #ffffff">
@@ -191,13 +192,15 @@
 
 <script>
 import itemListaPart from "@/components/itemListaPart.vue";
+import LoadingDialog from "@/components/LoadingDialog.vue";
 
 export default {
-  components: { itemListaPart },
+  components: { itemListaPart,LoadingDialog },
   name: "App",
   data() {
     return {
       CONVOCATORIAS: [],
+      loading:false,
       Institucions: [],
       investigadores: [],
       selectedConvocatoria: "Todos",
