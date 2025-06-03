@@ -305,7 +305,9 @@ async  generar(){
         fecha: currentDate,
         email: p.correo,
         fase: fase[0].nombre,
-        esGanador: false
+        esGanador: false,
+        idP: p.idParticipante,
+        idProy: v.idProyecto
       }),
     })
       .then((response) => response.json())
