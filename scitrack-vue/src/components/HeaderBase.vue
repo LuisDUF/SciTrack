@@ -10,8 +10,8 @@
     >
      
 
-      <v-menu offset-y style="overflow-y: scroll;">
-        <template v-slot:activator="{ on, attrs }">
+      <v-menu offset-y style="overflow-y: scroll;" v-if="bandera">
+        <template  v-slot:activator="{ on, attrs }">
           <v-icon v-bind="attrs" v-on="on" v-if="options.notificationStatus" class="mx-5"
             >mdi-bell-badge</v-icon
           >
@@ -40,13 +40,8 @@
             v-on="on"
           >mdi-cog</v-icon>
         </template>
-        <v-list>
-          <v-list-item
-            v-for="(item, index) in userSettings"
-            :key="index"
-          >
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
+        <v-list class="pa-3">
+        <p @click="alerta()">Salir</p>
         </v-list>
       </v-menu>
 
@@ -105,7 +100,8 @@ export default {
     return{
         notificacion: {},
   vari: {no:'NO'},
-  pdfUrl: null
+  pdfUrl: null,
+  bandera: true
     }
   },
   name: "HeaderBase",
@@ -114,6 +110,10 @@ export default {
       type: Object,
       required: true,
     },
+  },mounted(){
+    this.bandera = (!JSON.parse(localStorage.getItem('userData')).idAdministrador)
+    console.log(this.bandera);
+
   },methods:{
           async abrirArchivo(Archivo_idArchivo){
             if(!Archivo_idArchivo)
@@ -139,7 +139,10 @@ export default {
         }catch(e){
           console.log(e);
         }
-      }
+      },alerta(){
+        localStorage.setItem('userData',null);
+        location.reload();
+      },
   }
 };
 </script>

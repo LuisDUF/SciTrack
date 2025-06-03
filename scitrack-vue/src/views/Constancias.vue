@@ -226,61 +226,57 @@ export default {
 
 
 
+        this.filtrados = this.participantes;
+          this.vari.no = 'NO';
+      }catch(e){
+        console.log(e);
+      }
+
+    },methods: {
+async  generar(){
+  const v = this.elegido.selectis.proyecto[0];
+  const p = this.elegido.selectis;
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const currentDate = `${year}-${month}-${day}`;
+
+  const response = await api.get('/api/asesor/'+this.elegido.selectis.equipo[0].Asesor_idAsesor);
+  const Asesor = []
+  Asesor.push( response.data[0] || response.data);
+
+  const res = await api.get('/api/fase/'+this.elegido.selectis.proyecto[0].Fase_idFase);
+  const fase = [];
+  fase.push(res.data[0] || res.data);
+
+  const res2 = await api.get('/api/ubicacion/'+fase[0].Ubicacion_idUbicacion);
+  const Ubicacion = [];
+  Ubicacion.push(res2.data[0] || res2.data)
 
 
-
-
-
-      this.filtrados = this.participantes;
-
-      this.vari.no = 'NO';
-    } catch (e) {
-      console.log(e);
-    }
-    this.loading = false;
-  }, methods: {
-    async generar() {
-      const v = this.elegido.selectis.proyecto[0];
-      const p = this.elegido.selectis;
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      const currentDate = `${year}-${month}-${day}`;
-
-      const response = await api.get('/api/asesor/' + this.elegido.selectis.equipo[0].Asesor_idAsesor);
-      const Asesor = []
-      Asesor.push(response.data[0] || response.data);
-
-      const res = await api.get('/api/fase/' + this.elegido.selectis.proyecto[0].Fase_idFase);
-      const fase = [];
-      fase.push(res.data[0] || res.data);
-
-      const res2 = await api.get('/api/ubicacion/' + fase[0].Ubicacion_idUbicacion);
-      const Ubicacion = [];
-      Ubicacion.push(res2.data[0] || res2.data)
-
-
-      fetch("http://localhost:3000/api/constancias/enviar-constancia/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombre: p.nombre,
-          proyecto: v.nombre,
-          asesor: Asesor[0].nombre,
-          ciudad: Ubicacion[0].ciudad,
-          estado: Ubicacion[0].estado,
-          fecha: currentDate,
-          email: p.correo,
-          fase: fase[0].nombre,
-          esGanador: false
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
+    fetch("http://localhost:3000/api/constancias/enviar-constancia/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nombre: p.nombre,
+        proyecto: v.nombre,
+        asesor: Asesor[0].nombre,
+        ciudad: Ubicacion[0].ciudad,
+        estado: Ubicacion[0].estado,
+        fecha: currentDate,
+        email: p.correo,
+        fase: fase[0].nombre,
+        esGanador: false,
+        idP: p.idParticipante,
+        idProy: v.idProyecto
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
           this.confirmAlert = 'Generada y enviada con éxito';
         })
         .catch((error) => { console.error("Error:", error); this.confirmError = 'Error al generar constancia.' });

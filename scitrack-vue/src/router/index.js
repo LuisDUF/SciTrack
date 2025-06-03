@@ -27,6 +27,7 @@ import UserMenu from "../views/UserMenu.vue";
 import ListaInvestigadores from "../views/ListaInvestigadores.vue";
 import Constancias from "../views/Constancias.vue";
 import AlertasMenu from "../views/AlertasMenu.vue";
+import Constancia from "../views/Constancia.vue";
 
 
 Vue.use(Router);
@@ -94,6 +95,10 @@ export default new Router({
           component: CrearEquipoUser,
         },
       ],
+    },{
+      path:"/constancia/:id/:proy",
+      name: "constancia",
+      component: Constancia
     },
     {
       path: "/adminmenu",
