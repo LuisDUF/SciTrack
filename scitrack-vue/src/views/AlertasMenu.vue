@@ -1,7 +1,7 @@
 <template>
   
       <v-container >
-        <v-card class="mx-auto" max-width="600" style="overflow-y: scroll; scrollbar-width: thin;  max-height: 600px; height: max-content">
+        <v-card class="mx-auto" max-width="600" style="overflow-y: scroll; scrollbar-width: thin;  max-height: 900px; height: max-content">
           <v-card-title class="text-h4 text-center">Enviar alerta</v-card-title>
               <v-alert
                 v-if="confirmAlert"

@@ -25,7 +25,6 @@
           <form>
             <label for="nombre">Nombre del proyecto:</label>
             <input type="text" id="nombreProyecto" v-model="nombreProyecto" placeholder="...">
-
             <div class="row">
               <div class="column">
                 <label for="filtroConvocatoria"><strong>Convocatoria:</strong></label>
@@ -44,7 +43,11 @@
                       class="native-checkbox"
                     >
                     <span class="checkmark"></span>
-                    <span class="label-text">{{ convocatoria.nombre }}</span>
+                    <span class="label-text">{{ convocatoria.nombre }} : 
+                          <span :style="{ color: obtenerEstadoConv(convocatoria.idConvocatoria).color }">
+                            {{ obtenerEstadoConv(convocatoria.idConvocatoria).texto }}
+                          </span>
+                    </span>
                   </label>
                 </div>
               </div>
@@ -79,7 +82,6 @@
                   placeholder="Ej: https://youtu.be/abc123..."
                   :rules="[validarUrlVideo]"
                   prepend-icon="mdi-video"
-                  required
                   clearable
                 ></v-text-field>
 
@@ -149,8 +151,7 @@ export default {
         this.nombreProyecto && 
         this.convocatoriaSeleccionada && 
         this.categoriaSeleccionada && 
-        this.archivo &&
-        this.videoUrl
+        this.archivo 
       );
     },
 
@@ -196,6 +197,23 @@ export default {
         alert("Por favor seleccione un archivo PDF válido.");
         this.archivo = null;
       }
+    },
+    obtenerEstadoConv(idConvocatoria) {
+          const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === idConvocatoria);
+  
+      if (!convocatoria) {
+        return { texto: 'Convocatoria no encontrada', color: 'gray' };
+      }
+
+      const fechaHoy = new Date();
+      const fechaFin = new Date(convocatoria.fechaFinRegistro);
+      
+      fechaHoy.setHours(0, 0, 0, 0);
+      fechaFin.setHours(0, 0, 0, 0);
+
+      return fechaHoy > fechaFin 
+        ? { texto: 'Fecha de inscripción concluida', color: 'red' } 
+        : { texto: 'Disponible', color: 'green' };
     },
     
     filtrarConvocatorias() {
@@ -286,7 +304,6 @@ export default {
       if (!this.convocatoriaSeleccionada) errores.push("Debes seleccionar una convocatoria");
       if (!this.categoriaSeleccionada) errores.push("Debes seleccionar una categoría");
       if (!this.archivo) errores.push("Debes subir el documento del proyecto");
-      if (!this.videoUrl) errores.push("El enlace del video es requerido");
       else if (!this.esUrlValida) errores.push("El enlace del video debe ser de YouTube o Vimeo");
 
       if (errores.length > 0) {
@@ -297,11 +314,20 @@ export default {
         );
         return;
       }
-
+    
       try {
+        const participante = this.PARTICIPANTE.find(p => p.idParticipante === usuario.idParticipante);
         const fechaHoy = new Date().toISOString().split("T")[0];
         const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === this.convocatoriaSeleccionada);
+        const equipo = this.EQUIPOS.find(e => e.idEquipo === participante.Equipo_idEquipo);
         
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        const currentDate = year+'-'+month+'-'+day;
+
         const itemFaseInicial = this.ITEMS.find(i => 
           i.Convocatoria_idConvocatoria === convocatoria.idConvocatoria && i.orden === 0
         );
@@ -312,7 +338,7 @@ export default {
 
         const fase = this.FASES.find(f => f.idFase === itemFaseInicial.Fase_idFase);
         
-        if (fechaHoy > fase.fechaInicio) {
+        if (fechaHoy > convocatoria.fechaFinRegistro) {
           this.mostrarErroresModal(
             "Error de fecha",
             "No se puede registrar el proyecto:",
@@ -321,34 +347,48 @@ export default {
           return;
         }
 
+        if (equipo.max_integrantes !== convocatoria.max_integrantes) {
+          this.mostrarErroresModal(
+            "Error de integrantes",
+            "No se puede registrar el proyecto:",
+            ["Los integrantes máximos de tu equipo no coinicden con los de la convocatoria seleccionada."]
+          );
+          return;
+        }
+
         // 1. Subir archivo
-        const formDataArchivo = new FormData();
-        formDataArchivo.append('documentoProyecto', this.archivo);
-        
-        const resArchivo = await fetch('http://localhost:3000/api/archivos', {
-          method: 'POST',
-          body: formDataArchivo
-        });
+      const formDataArchivo = new FormData();
+      formDataArchivo.append('nombre', this.archivo.name);
+      formDataArchivo.append('tamanio', this.archivo.size);
+      formDataArchivo.append('fechaIngreso', currentDate);
+      formDataArchivo.append('contenido', this.archivo);
+
+
+      const resArchivo = await fetch('http://localhost:3000/api/archivos', {
+        method: 'POST',
+        body: formDataArchivo
+      });
 
         const dataArchivo = await resArchivo.json();
         const idArchivo = dataArchivo.idArchivos;
+        console.log(dataArchivo);
 
         if (!idArchivo) throw new Error("No se obtuvo el ID del archivo");
 
-        const participante = this.PARTICIPANTE.find(p => p.idParticipante === usuario.idParticipante);
-        const equipo = this.EQUIPOS.find(e => e.idEquipo === participante.Equipo_idEquipo);
+        
+        
         
         // 2. Crear proyecto
         const datosProyecto = {
           nombre: this.nombreProyecto,
-          fechaRegistro: new Date().toISOString().split("T")[0],
-          promedio: null,
+          fechaRegistro: currentDate,
+
           Equipo_idEquipo: equipo.idEquipo,
           Categoria_idCategoria: this.categoriaSeleccionada,
-          Investigador_idInvestigador: null,
+
           Archivos_idArchivos: idArchivo,
           Fase_idFase: fase.idFase,
-          EstadoProyecto_idEstadosProyecto: 1,
+          EstadosProyecto_idEstadosProyecto: 1,
           urlVideo: this.videoUrl,
         };
 
@@ -358,8 +398,9 @@ export default {
           body: JSON.stringify(datosProyecto)
         });
 
-        const dataProyecto = await resProyecto.json();
-        if (dataProyecto.success) {
+         await resProyecto.json();
+        console.log(resProyecto);
+        if (resProyecto.ok) {
           alert('Proyecto enviado a revisión correctamente.');
           this.resetForm();
         } else {
@@ -479,11 +520,11 @@ textarea {
 }
 
 .column {
-  flex: 1;
+  flex: 2;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 320px;
+  height: 350px;
   overflow-y: auto;
   background-color: #BFD6FF;
   border-radius: 10px;
@@ -507,7 +548,7 @@ textarea {
   display: flex;
   flex-direction: row;
   gap: 15px;
-  height: 350px;
+  height: 390px;
   width: 100%;
   overflow-x: auto;
   background-color: #ffffff;
@@ -519,7 +560,7 @@ textarea {
 .native-checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding: 10px;
   background-color: #f8f9fa;
   border: 1px solid #ddd;
@@ -537,7 +578,7 @@ textarea {
   font-size: 14px;
   color: #333;
   background-color: #fff;
-  padding: 6px;
+  padding:1px;
   width: 100%;
   border-bottom: 1px solid #aaa; 
   transition: background-color 0.3s, border-color 0.3s;

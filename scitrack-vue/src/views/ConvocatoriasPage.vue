@@ -940,8 +940,8 @@
     <template>
       <v-container
         fluid
-        style="background-color: #bfd6ff; max-height: 72vh; overflow-y: auto"
-        class="rounded py-5 px-5 mt-4"
+        style="background-color: #FFFFFF; max-height: 72vh; overflow-y: auto; border-style: solid; border: #FFFFFF;"
+        class="rounded py-5 px-5 mt-4 elevation-2"
       >
         <v-row dense>
           <v-col v-for="(card, index) in projectCards" :key="index" cols="12">
@@ -949,7 +949,7 @@
               class="pa-4"
               outlined
               elevation="1"
-              style="background-color: #ffffff; border-radius: 10px"
+              style="background-color: #dfe9fc; border-radius: 10px"
             >
               <v-card-text>
                 <div class="text--primary font-weight-bold">#{{ card.id }}</div>

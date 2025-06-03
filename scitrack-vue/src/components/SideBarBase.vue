@@ -25,10 +25,12 @@
         <v-container>
           <v-row>
             <v-col cols="12" style="background-color: #062A78;" class="hidden-xs-only">
-              <v-img src="../assets/SCITRACK-logo-white.png" style="min-height: 5vh;" alt="SCITRACK Logo" contain width="100%" />
+              <v-img src="../assets/SCITRACK-logo-white.png"         @click="goToLanding()"
+ style="min-height: 5vh;" alt="SCITRACK Logo" contain width="100%" />
             </v-col>
             <v-col cols="12" class="hidden-sm-and-up">
-              <v-img src="../assets/SCITRACK-logo-white.png" style="min-height: 5vh;" alt="SCITRACK Logo" contain width="100%" />
+              <v-img src="../assets/SCITRACK-logo-white.png"         @click="goToLanding()"
+ style="min-height: 5vh;" alt="SCITRACK Logo" contain width="100%" />
             </v-col>
             <v-col cols="12" style="background-color: #18439E;" class="hidden-xs-only">
               <v-img src="../assets/ICTI-logo-white.png" alt="ICTI Logo" contain width="100%" />
@@ -89,6 +91,11 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', checkScreen)
 })
+
+function goToLanding() {
+      
+    }
+
 </script>
 
 <style scoped>
