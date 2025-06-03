@@ -73,11 +73,12 @@
         <v-dialog v-model="dialog" max-width="800px">
           <v-card>
             <v-card-title class="text-h5 d-flex justify-space-between align-start">
-  Evaluar proyecto
+  {{ isReadOnly ? 'Revisión de proyecto' : 'Evaluar proyecto' }}
   <v-btn icon @click="dialog = false" class="ml-auto" style="margin-top: -8px;">
     <v-icon>mdi-close</v-icon>
   </v-btn>
 </v-card-title>
+
 
             <v-card-text class="modal-content">
               <p><strong>NOMBRE:</strong> {{ selectedProject.name }}</p>
@@ -97,21 +98,57 @@
                   <p class="text-caption grey--text">Ponderación: {{ crit.ponderacion }}%</p>
                   <v-row dense>
                     <v-col cols="6">
-                      <v-text-field v-model="crit.score" label="Calif." type="number" dense :readonly="isReadOnly" :disabled="isReadOnly" />
+                      <v-text-field
+                        v-model.number="crit.score"
+                        label="Calif."
+                        type="number"
+                        dense
+                        :readonly="isReadOnly"
+                        :disabled="isReadOnly"
+                        min="0"
+                        :max="crit.ponderacion"
+                      />
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field :value="crit.ponderacion" label="Máximo" type="number" dense readonly disabled />
+                      <v-text-field
+                        :value="crit.ponderacion"
+                        label="Máximo"
+                        type="number"
+                        dense
+                        readonly
+                        disabled
+                      />
                     </v-col>
                   </v-row>
                 </v-card>
               </div>
 
-              <v-textarea label="Comentarios" v-model="selectedProject.comment" rows="3" outlined class="mt-2" :readonly="isReadOnly" :disabled="isReadOnly" />
+              <div class="mt-2">
+  <label class="font-weight-medium">Comentarios</label>
+  <div v-if="isReadOnly" class="grey lighten-4 pa-3 rounded">
+    <span v-if="selectedProject.comment">{{ selectedProject.comment }}</span>
+    <span v-else class="grey--text">Sin comentarios</span>
+  </div>
+  <v-textarea
+    v-else
+    v-model="selectedProject.comment"
+    rows="3"
+    outlined
+  />
+</div>
+
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn v-if="!isReadOnly" color="primary" depressed @click="submitEvaluation">Enviar</v-btn>
+              <v-btn
+                v-if="!isReadOnly"
+                color="primary"
+                depressed
+                @click="submitEvaluation"
+              >
+                Enviar
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -136,11 +173,13 @@ export default {
   },
   computed: {
     filteredUnevaluatedProjects() {
+      if (this.selectedConvocatories.length === 0) return this.unevaluatedProjects;
       return this.unevaluatedProjects.filter(p =>
         this.selectedConvocatories.includes(p.convocatory)
       );
     },
     filteredEvaluatedProjects() {
+      if (this.selectedConvocatories.length === 0) return this.evaluatedProjects;
       return this.evaluatedProjects.filter(p =>
         this.selectedConvocatories.includes(p.convocatory)
       );
@@ -152,40 +191,42 @@ export default {
   },
   methods: {
     async loadProjects() {
-      try {
-        const res = await fetch('http://localhost:3000/api/proyectoVE/');
-        if (!res.ok) throw new Error('Error al cargar los proyectos');
-        const data = await res.json();
+  try {
+    const res = await fetch('http://localhost:3000/api/proyectoVP/');
+    if (!res.ok) throw new Error('Error al cargar los proyectos');
+    const data = await res.json();
 
-        const processed = data.map((p, i) => {
-          const criterios = p.criterios.map(c => ({
-            ...c,
-            score: 0,
-            max: c.ponderacion || 10
-          }));
+    const processed = data.map((p, i) => {
+      return {
+        id: p.id || i,
+        displayId: 'PRJ' + (1000 + i),
+        name: p.nombre_proyecto,
+        institution: p.institucion_investigador || 'No especificada',
+        areas: p.areas_conocimiento || 'No especificadas',
+        leader: p.lider_equipo || 'No asignado',
+        criterios: [],  // Se cargarán en detalle al abrir modal
+        advisor: p.asesor || 'No asignado',
+        members: p.integrantes ? p.integrantes.split(', ') : [],
+        comment: p.comentario_calificacion || '',
+        convocatory: p.nombre_convocatoria || 'Sin convocatoria',
+        status: p.estado_proyecto || 'Sin estado',
+      };
+    });
 
-          return {
-            id: p.id,
-            displayId: 'PRJ' + (1000 + i),
-            name: p.nombre_proyecto,
-            institution: p.institucion,
-            areas: p.areas_conocimiento,
-            leader: p.lider_equipo,
-            criterios,
-            advisor: p.asesor,
-            members: p.integrantes ? p.integrantes.split(', ') : [],
-            comment: p.comentario_calificacion || '',
-            convocatory: 'FERIA DE PROYECTOS',
-            status: i % 2 === 0 ? 'Inactiva' : 'Evaluada',
-          };
-        });
+    // Mostrar solo los estados válidos en la columna izquierda (sin evaluar)
+    this.unevaluatedProjects = processed.filter(p =>
+      ['Pendiente', 'Aceptado'].includes(p.status)
+    );
 
-        this.unevaluatedProjects = processed.filter((_, i) => i % 2 === 0);
-        this.evaluatedProjects = processed.filter((_, i) => i % 2 !== 0);
-      } catch (err) {
-        console.error('Error al cargar proyectos:', err);
-      }
-    },
+    // Todos los demás se consideran evaluados (incluidos los rechazados, concluidos, etc.)
+    this.evaluatedProjects = processed.filter(p =>
+      !['Pendiente', 'Aceptado'].includes(p.status)
+    );
+  } catch (err) {
+    console.error('Error al cargar proyectos:', err);
+  }
+}
+,
 
     async loadConvocatorias() {
       try {
@@ -200,12 +241,49 @@ export default {
       }
     },
 
-    openEvaluation(project, readOnly = false) {
-      this.selectedProject = { ...project };
-      this.rubric = [...project.criterios];
-      this.isReadOnly = readOnly;
-      this.dialog = true;
-    },
+    async openEvaluation(project, readOnly = false) {
+  try {
+    this.isReadOnly = readOnly;
+
+    console.log("Fetching detalle del proyecto con ID:", project.id);
+    const res = await fetch(`http://localhost:3000/api/proyectoVE/${project.id}`);
+    if (!res.ok) throw new Error('No se pudo cargar el proyecto completo');
+
+    const fullData = await res.json();
+    console.log('Respuesta completa del backend (proyectoVE):', fullData);
+
+    this.selectedProject = {
+      id: fullData.id,
+      name: fullData.nombre_proyecto || 'Sin nombre',
+      institution: fullData.institucion || 'Sin institución',
+      areas: fullData.areas_conocimiento || 'No especificadas',
+      leader: fullData.lider_equipo || 'Sin líder',
+      advisor: fullData.asesor || 'Sin asesor',
+      members: Array.isArray(fullData.integrantes)
+        ? fullData.integrantes
+        : (fullData.integrantes || '').split(', ').filter(m => m.trim() !== ''),
+      comment: fullData.comentario_calificacion || '',
+    };
+
+    this.rubric = Array.isArray(fullData.criterios)
+      ? fullData.criterios.map(c => ({
+          id: c.id,
+          descripcion: c.descripcion,
+          ponderacion: Number(c.ponderacion),
+          score: 0,
+        }))
+      : [];
+
+    this.dialog = true;
+  } catch (error) {
+    console.error('Error al abrir evaluación:', error, project);
+    alert('Hubo un problema al cargar los datos del proyecto.');
+  }
+}
+
+
+,
+
 
     async submitEvaluation() {
       try {
@@ -220,17 +298,20 @@ export default {
         const res = await fetch('http://localhost:3000/api/calificacion/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(evaluaciones)
+          body: JSON.stringify(evaluaciones),
         });
 
         if (!res.ok) throw new Error('Error al enviar la evaluación');
 
         console.log('Evaluación enviada con éxito');
         this.dialog = false;
+        // Opcional: recargar lista después de enviar evaluación
+        this.loadProjects();
       } catch (err) {
         console.error('Error al enviar evaluación:', err);
+        alert('Error al enviar evaluación. Intenta de nuevo.');
       }
-    }
+    },
   },
 };
 </script>
