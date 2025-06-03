@@ -24,7 +24,8 @@
             <h5 ref="nombre">Nombre: </h5>
             <h5 ref="nombreA">Asesor:</h5>
             <h5 ref="estadoE">Estado: </h5>
-            
+            <h5 ref="promedioP">Promedio: </h5>
+
           </div>
         </v-col>
       </v-row>
@@ -115,6 +116,7 @@ import api from  "../services/api.js"
       this.$refs.estadoE.textContent = "Estado: ";
       this.$refs.idE.textContent = "ID Equipo: ";
       this.$refs.integrantes.textContent = "Integrantes: ";
+      this.$refs.promedioP.textContent = "Promedio: ";
 
       try {
         const response2 = await api.get(`/api/equipo/participante/${this.usuario.idParticipante}`);
@@ -142,8 +144,10 @@ import api from  "../services/api.js"
               
               const response4 = await api.get(`/api/asesor/${equipo.Asesor_idAsesor}`);
               const aseso = JSON.parse(JSON.stringify(response4.data));
-              this.$refs.nombreA.textContent = "Asesor: " + aseso[0].nombre;
+              this.$refs.nombreA.textContent = "Asesor: " + aseso[0].nombre + ' '+aseso[0].apellidoPaterno+' '+aseso[0].apellidoMaterno;
               this.$refs.estadoE.textContent = "Estado: " + equipo.estado;
+              this.$refs.promedioP.textContent = "Promedio: " + (proyecto.promedio ?? "Sin calificar");
+
               this.$refs.idE.textContent = "ID Equipo: " + equipo.idEquipo;
 
               const response5 = await api.get(`/api/participantes/${equipo.idEquipo}`);
