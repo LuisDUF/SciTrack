@@ -111,6 +111,7 @@
             </div>
 
             <div class="row">
+              <!-- Esto era para agregar participantes a tu equipo a lo bestia.
               <div class="column">
                 <label><strong>Participantes disponibles:</strong></label>
                 <input 
@@ -124,7 +125,8 @@
                   <button @click="agregarParticipante(participante)" type="button" class="add-button">Agregar</button>
                 </div>
               </div>
-
+              
+              
               <div class="column">
                 <label><strong>Participantes seleccionados:</strong></label>
                 <table class="selected-table">
@@ -151,7 +153,7 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
+              </div> -->
             </div>
 
             <button 
