@@ -104,7 +104,7 @@
                   placeholder="Presiona para generar para crear código"
                   readonly
                 ></v-text-field>
-                <button class="add-button2" @click="generarCodigo">Generar</button>
+                <button class="add-button2" type="button" @click="generarCodigo()">Generar</button>
 
 
               </div>
@@ -121,7 +121,7 @@
                 >
                 <div v-for="participante in mostrarParticipantes" :key="participante.idParticipante" class="card">
                   <p>{{ obtenerNombre(participante.idParticipante) }} : <strong>{{ obtenerInstitucionLider(participante.idParticipante) }}</strong></p>
-                  <button @click="agregarParticipante(participante)" class="add-button">Agregar</button>
+                  <button @click="agregarParticipante(participante)" type="button" class="add-button">Agregar</button>
                 </div>
               </div>
 
@@ -141,6 +141,7 @@
                       <td>{{ obtenerInstitucionLider(participante.idParticipante) }}</td>
                       <td>
                         <button 
+                          type="button"
                           @click="eliminarParticipante(participante)"
                           class="remove-button"
                         >
@@ -564,8 +565,8 @@ textarea {
   display: flex;
   flex-direction: row;
   gap: 10px;
-  height: 250px;
-  width: 70%;
+  height: 280px;
+  width: 80%;
   overflow-x: auto;
   background-color:#ffffff;
   border-radius: 10px;
@@ -587,7 +588,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 200px;
+  height: 230px;
   overflow-y: auto;
   background-color: #BFD6FF;
   border-radius: 10px;
@@ -595,8 +596,8 @@ textarea {
 }
 
 .card {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   background: white;
   border-left: 5px solid #3b82f6;
@@ -633,7 +634,7 @@ textarea {
   margin-left: 10px;
 }
 .add-button2 {
-  background: #543D99;
+  background: #4f4fef;
   color: white;
   border: none;
   padding: 5px 10px;
