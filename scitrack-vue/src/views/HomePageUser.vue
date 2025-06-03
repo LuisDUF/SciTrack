@@ -68,7 +68,7 @@
                 <p><strong>Participantes:</strong> {{ contarParticipantes(equipo) }} / {{ obtenerMaximo(equipo) }}</p>
                 <button 
                   @click="unirseEquipo(equipo.idEquipo)"
-                  :disabled="contarParticipantes(equipo) >= obtenerMaximo(equipo)"
+                  :disabled="contarParticipantes(equipo) >= obtenerMaximo(equipo.idEquipo)"
                   class="button1"
                   style="color: #ffffff; background-color: #6596FF;"
                 >
@@ -153,8 +153,8 @@ import api from  "../services/api.js"
     },
     async cargarEquipos() {
       const res = await fetch('http://localhost:3000/api/equipo/')
-      this.equipos = await res.json()
-      this.equiposFiltrados = this.equipos.filter(e => e.estado === 'Aprobado')
+      this.EQUIPOS = await res.json()
+      this.equiposFiltrados = this.EQUIPOS.filter(e => e.estado === 'Aprobado')
     },
     async cargarDependencias() {
       const res = await fetch('http://localhost:3000/api/dependencia/')
@@ -189,11 +189,16 @@ import api from  "../services/api.js"
       const i = this.instituciones.find(inst => inst.idInstitucion === d?.Institucion_idInstitucion)
       return i?.nombre || 'Sin institución'
     },
-    obtenerMaximo(equipo) {
-      const eq = this.EQUIPOS.find(e => e.idEquipo === equipo.idEquipo);
-      return eq ? `${eq.max_integrantes}` : 'Sin limite'
+obtenerMaximo(equipo) {
+  // Verifica si el equipo tiene la propiedad max_integrantes
+  if (equipo && equipo.max_integrantes !== undefined) {
+    return equipo.max_integrantes;
+  }
 
-    },
+  if( equipo.max_integrantes === undefined){
+    return '-1'; // Valor por defecto
+  }
+},
     contarParticipantes(equipo) {
       return this.participantes.filter(p => p.Equipo_idEquipo === equipo.idEquipo).length
     },

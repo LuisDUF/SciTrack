@@ -89,9 +89,24 @@
                       class="native-checkbox"
                     >
                     <span class="checkmark"></span>
-                    <span class="label-text">{{ convocatoria.nombre }}</span>
+                    <span class="label-text">{{ convocatoria.nombre }} (Máx: {{convocatoria.max_integrantes}}) 
+                          <span :style="{ color: obtenerEstadoConv(convocatoria.idConvocatoria).color }">
+                            {{ obtenerEstadoConv(convocatoria.idConvocatoria).texto }}
+                          </span></span>
                   </label>
                 </div>
+              </div>
+
+              <div class="column1">
+                <label for="dropzoneVideo"><strong>Código de acceso:</strong></label>
+                <v-text-field
+                  v-model="codigoAcceso"
+                  placeholder="Presiona para generar para crear código"
+                  readonly
+                ></v-text-field>
+                <button class="add-button2" @click="generarCodigo">Generar</button>
+
+
               </div>
             </div>
 
@@ -161,6 +176,7 @@ export default {
       convocatoriaSeleccionada: null,
       busquedaParticipante: '',
       participantesSeleccionados: [],
+       codigoAcceso: '', // Agrega esta línea
        dialog: false,
       nuevoAsesor: {
         nombre: '',
@@ -211,6 +227,31 @@ export default {
       } else {
         alert('Este participante ya fue agregado');
       }
+    },
+        generarCodigo() {
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let resultado = '';
+        for (let i = 0; i < 6; i++) {
+          resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+        }
+        this.codigoAcceso = resultado;
+      },
+        obtenerEstadoConv(idConvocatoria) {
+          const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === idConvocatoria);
+  
+      if (!convocatoria) {
+        return { texto: 'Convocatoria no encontrada', color: 'gray' };
+      }
+
+      const fechaHoy = new Date();
+      const fechaFin = new Date(convocatoria.fechaFinRegistro);
+      
+      fechaHoy.setHours(0, 0, 0, 0);
+      fechaFin.setHours(0, 0, 0, 0);
+
+      return fechaHoy > fechaFin 
+        ? { texto: 'Fecha de inscripción concluida', color: 'red' } 
+        : { texto: 'Disponible', color: 'green' };
     },
     eliminarParticipante(participante) {
       this.participantesSeleccionados = this.participantesSeleccionados.filter(
@@ -273,12 +314,24 @@ export default {
       return;
     }
 
-    if (!this.idAsesor || !this.convocatoriaSeleccionada) {
+    if (!this.idAsesor || !this.convocatoriaSeleccionada || !this.codigoAcceso) {
         alert("Por favor complete todos los campos requeridos.");
         return;
     }
 
-    const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === this.convocatoriaSeleccionada); // Agregado this.
+    const fechaHoy = new Date().toISOString().split("T")[0];
+    const convocatoria = this.CONVOCATORIAS.find(c => c.idConvocatoria === this.convocatoriaSeleccionada);
+        
+        if (fechaHoy > convocatoria.fechaFinRegistro) {
+          this.mostrarErroresModal(
+            "Error de fecha",
+            "No se puede registrar el proyecto:",
+            ["La fecha límite para registrar proyectos ha expirado"]
+          );
+          return;
+        }
+
+    
     let numMax = convocatoria ? convocatoria.max_integrantes : null; 
     
     
@@ -296,7 +349,8 @@ export default {
         Participante_idLider: usuario.idParticipante,
         Asesor_idAsesor: this.idAsesor,
         estado: "Pendiente de revisión",
-        max_integrantes: numMax
+        max_integrantes: numMax,
+        codigo_acceso: this.codigoAcceso
         
 
         };
@@ -350,6 +404,7 @@ export default {
         this.convocatoriaSeleccionada = null;
         this.participantesSeleccionados = [];
         this.busquedaParticipante = '';
+        this.codigo_acceso = '';
         
     } catch (err) {
         console.error('Error al crear equipo:', err);
@@ -510,9 +565,9 @@ textarea {
   flex-direction: row;
   gap: 10px;
   height: 250px;
-  width: 40%;
+  width: 70%;
   overflow-x: auto;
-  background-color: #ffffff;
+  background-color:#ffffff;
   border-radius: 10px;
   padding: 15px;
 }
@@ -576,6 +631,14 @@ textarea {
   cursor: pointer;
   margin-top: 5px;
   margin-left: 10px;
+}
+.add-button2 {
+  background: #543D99;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .selected-table {
