@@ -148,9 +148,9 @@ export default {
       }
 
       if (!confirm("¿Eliminar este criterio?")) return;
-
+        alert(index)
       try {
-        const res = await fetch(`http://localhost:3000/api/criterio/${criterio.idCriterios}`, {
+        const res = await fetch(`http://localhost:3000/api/criterio/`+criterio.idCriterios, {
           method: "DELETE"
         });
 
