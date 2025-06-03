@@ -12,6 +12,64 @@
                 {{ asesor.nombre }} {{ asesor.apellidoPaterno }} {{ asesor.apellidoMaterno }}
               </option>
             </select>
+            <button  class="add-button1" @click="dialog = true">Registrar asesor</button>
+
+            <!-- Modal/Dialog para registrar nuevo asesor -->
+    <v-dialog v-model="dialog" max-width="600">
+      <v-card>
+        <v-card-title class="headline">Registrar Nuevo Asesor</v-card-title>
+        
+        <v-card-text>
+          <v-form ref="formAsesor">
+            <v-text-field
+              v-model="nuevoAsesor.nombre"
+              label="Nombre"
+              required
+            ></v-text-field>
+            
+            <v-text-field
+              v-model="nuevoAsesor.apellidoPaterno"
+              label="Apellido Paterno"
+              required
+            ></v-text-field>
+            
+            <v-text-field
+              v-model="nuevoAsesor.apellidoMaterno"
+              label="Apellido Materno"
+            ></v-text-field>
+            
+            <v-text-field
+              v-model="nuevoAsesor.correo"
+              label="Correo electrónico"
+              type="email"
+              required
+            ></v-text-field>
+            
+            <v-text-field
+              v-model="nuevoAsesor.telefono"
+              label="Teléfono"
+              required
+            ></v-text-field>
+            
+            <v-select
+              v-model="nuevoAsesor.Genero_idGenero"
+              :items="generos"
+              item-text="nombre"
+              item-value="idGenero"
+              label="Género"
+              required
+            ></v-select>
+          </v-form>
+        </v-card-text>
+        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="primary" @click="registrarAsesor">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
 
             <div class="row1">
               <div class="column1">
@@ -103,6 +161,16 @@ export default {
       convocatoriaSeleccionada: null,
       busquedaParticipante: '',
       participantesSeleccionados: [],
+       dialog: false,
+      nuevoAsesor: {
+        nombre: '',
+        apellidoPaterno: '',
+        apellidoMaterno: '',
+        correo: '',
+        telefono: '',
+        Genero_idGenero: null
+      },
+      generos: [],
       asesores: [],
       CONVOCATORIAS: [],
       PARTICIPANTES: [],
@@ -128,6 +196,7 @@ export default {
   },
   async mounted() {
     await this.cargarAsesores();
+    await this.cargarGeneros();
     await this.cargarConvocatorias();
     await this.cargarParticipantes();
     await this.cargarEquipos();
@@ -160,6 +229,10 @@ export default {
     },
     filtrarConvocatorias() {
       // Lógica de filtrado si es necesaria
+    },
+    async cargarGeneros() {
+      const res = await fetch('http://localhost:3000/api/genero/')
+      this.generos = await res.json()
     },
     async cargarAsesores() {
       const res = await fetch('http://localhost:3000/api/asesor/')
@@ -194,7 +267,12 @@ export default {
       alert("No se pudo identificar al usuario líder. Por favor, inicie sesión nuevamente.");
       return;
     }
-    // Validaciones básicas
+
+    if(usuario.Equipo_idEquipo !== null){
+      alert("Usted ya forma parte de un equipo.");
+      return;
+    }
+
     if (!this.idAsesor || !this.convocatoriaSeleccionada) {
         alert("Por favor complete todos los campos requeridos.");
         return;
@@ -278,7 +356,68 @@ export default {
         console.error('Error al crear equipo:', err);
         alert("Ocurrió un error al crear el equipo: " + err.message);
     }
+    },
+
+    async registrarAsesor() {
+  try {
+    // Validación reforzada para Genero_idGenero
+    if (!this.nuevoAsesor.Genero_idGenero) {
+      alert('Por favor seleccione un género');
+      return;
     }
+
+    // Asegurar que Genero_idGenero sea número
+    const datosAsesor = {
+      nombre: this.nuevoAsesor.nombre,
+      apellidoPaterno: this.nuevoAsesor.apellidoPaterno,
+      apellidoMaterno: this.nuevoAsesor.apellidoMaterno || '', // Opcional
+      correo: this.nuevoAsesor.correo,
+      telefono: this.nuevoAsesor.telefono,
+      Genero_idGenero: parseInt(this.nuevoAsesor.Genero_idGenero) // Convertir a entero
+    };
+
+    // Verificar conversión numérica
+    if (isNaN(datosAsesor.Genero_idGenero)) {
+      alert('El género seleccionado no es válido');
+      return;
+    }
+
+    const response = await fetch('http://localhost:3000/api/asesor/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(datosAsesor)
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Error al registrar asesor');
+    }
+
+    const asesorRegistrado = await response.json();
+    
+    // Actualizar lista y selección
+    this.asesores.push(asesorRegistrado);
+    this.idAsesor = asesorRegistrado.idAsesor;
+    this.dialog = false;
+    
+    // Resetear formulario
+    this.nuevoAsesor = {
+      nombre: '',
+      apellidoPaterno: '',
+      apellidoMaterno: '',
+      correo: '',
+      telefono: '',
+      Genero_idGenero: null
+    };
+    
+    alert('Asesor registrado correctamente');
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error al registrar asesor: ' + error.message);
+  }
+}
   }
 }
 </script>
@@ -427,6 +566,17 @@ textarea {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 5px;
+}
+
+.add-button1 {
+  background: #543D99;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-left: 10px;
 }
 
 .selected-table {

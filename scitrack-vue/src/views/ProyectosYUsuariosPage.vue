@@ -97,6 +97,7 @@
             <p><strong>Categoria:</strong> {{ obtenerCategoria(proyecto.Categoria_idCategoria) }}</p>
             <p><strong>Nombre del líder del equipo:</strong> {{ obtenerNombreLiderEquipo(proyecto.Equipo_idEquipo) }}</p>
             <p><strong>Institución:</strong> {{ obtenerInstitucionProyecto(proyecto.Equipo_idEquipo) }}</p>
+            <p><strong>Fase:</strong> {{ obtenerFaseProyecto(proyecto.Fase_idFase) }}</p>
             <p><strong>Convocatoria:</strong> {{ obtenerConvocatoriaProyecto(proyecto) }}</p>
             <p class="estado disponible"><strong>Estatus:</strong> {{ obtenerEstatusProyecto(proyecto.EstadosProyecto_idEstadosProyecto) }}</p>
           </div>
@@ -487,10 +488,14 @@ export default {
       const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
       const institucion = this.INSTITUCIONES.find(i => i.idInstitucion === (dependencia ? dependencia.Institucion_idInstitucion : null));
       return institucion ? institucion.nombre : 'Sin institución';
-    },
+    },   
     obtenerCategoria(idCategoria) {
       const categoria = this.CATEGORIAS.find(c => c.idCategoria === idCategoria);
       return categoria ? categoria.nombre : 'Sin categoria';
+    },
+    obtenerFaseProyecto(idFase) {
+      const fase = this.FASES.find(f => f.idFase === idFase);
+      return fase ? fase.nombre : 'Sin fase';
     },
     obtenerConvocatoriaProyecto(proyecto) {
       const fase = this.FASES.find(f => f.idFase === (proyecto ? proyecto.Fase_idFase : null));
@@ -740,7 +745,7 @@ export default {
     },
      proyectosPendientesFiltrados() {
     return this.PROYECTOS.filter(proyecto => {
-      if (proyecto.EstadosProyecto_idEstadosProyecto === 1) return false; // Cambiar a !
+      if (proyecto.EstadosProyecto_idEstadosProyecto !== 1) return false; // Cambiar a !
       const texto = this.busquedaProyectos.toLowerCase();
       const equipo = this.EQUIPOS.find(e => e.idEquipo === proyecto.Equipo_idEquipo);
       const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
@@ -774,7 +779,7 @@ export default {
   
   proyectosAprobadosFiltrados() {
     return this.PROYECTOS.filter(proyecto => {
-      if (proyecto.EstadosProyecto_idEstadosProyecto === 2) return false; //Cambiar a !
+      if (proyecto.EstadosProyecto_idEstadosProyecto === 1) return false; //Cambiar a !
       const texto = this.busquedaProyectos.toLowerCase();
       const equipo = this.EQUIPOS.find(e => e.idEquipo === proyecto.Equipo_idEquipo);
       const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
