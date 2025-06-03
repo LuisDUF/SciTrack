@@ -331,12 +331,8 @@ export default {
           );
           return;
         }
-
     
-    let numMax = convocatoria ? convocatoria.max_integrantes : null; 
-    
-    
-        let numOm = numMax - 1; 
+        const numOm = convocatoria.max_integrantes - 1; 
         
         if (this.participantesSeleccionados.length > numOm) {
         alert(`Cantidad de participantes sobrepasada (Máximo permitido omitiendo al líder: ${numOm}). Por favor, seleccione la cantidad aceptada en la convocatoria.`);
@@ -350,7 +346,7 @@ export default {
         Participante_idLider: usuario.idParticipante,
         Asesor_idAsesor: this.idAsesor,
         estado: "Pendiente de revisión",
-        max_integrantes: numMax,
+        max_integrantes: convocatoria.max_integrantes,
         codigo_acceso: this.codigoAcceso
         
 

@@ -611,6 +611,8 @@ export default {
       this.cerrarModal();
     },
     async aprobarEquipo(idEquipo) {
+      const equipo = this.EQUIPOS.find(e => e.idEquipo === idEquipo);
+      const lider = this.PARTICIPANTE.find(p => p.idParticipante === equipo.Participante_idLider);
       try {
         const actualizado = {
           idEquipo: idEquipo,
@@ -625,6 +627,20 @@ export default {
         });
         if (!response.ok) throw new Error(`Error al aprobar equipo: ${response.status}`);
         
+        
+        console.log("Actualizando líder:", {
+            id: lider.idParticipante,
+            body: { Equipo_idEquipo: idEquipo }
+        });
+        // Asociar líder con el equipo aprobado
+        const resLider = await fetch(`http://localhost:3000/api/participante/${lider.idParticipante}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ Equipo_idEquipo: idEquipo })
+        });
+
+        if (!resLider.ok) throw new Error("Error al asociar líder al equipo");
+
         // Recargar datos
         await this.cargarData();
       } catch (error) {
@@ -1121,7 +1137,7 @@ h2 {
   background: #f8f9fa;
   border-radius: 6px;
   height: 65vh;
-  weight: 50%;
+
 }
 
 .modal-actions {
