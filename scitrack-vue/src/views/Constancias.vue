@@ -231,7 +231,7 @@ export default {
       }catch(e){
         console.log(e);
       }
-
+      this.loading = false;
     },methods: {
 async  generar(){
   const v = this.elegido.selectis.proyecto[0];
