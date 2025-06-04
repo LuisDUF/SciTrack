@@ -32,7 +32,7 @@
       </v-card>
     </v-dialog>
     <div class="contenedor">
-      <h1>Crear equipo</h1>
+      <h1 style="margin: 20px; padding-top: 1%;">Crear equipo</h1>
       <div class="marco">
         <div class="contenido">
           <form>
@@ -96,9 +96,9 @@
                 </div>
               </div>
 
-              <div class="column1">
+              <div class="column">
                 <label for="dropzoneVideo"><strong>Código de acceso:</strong></label>
-                <v-text-field v-model="codigoAcceso" placeholder="Presiona para generar para crear código"
+                <v-text-field v-model="codigoAcceso" placeholder="Generar un código de acceso al equipo"
                   readonly></v-text-field>
                 
 
@@ -106,8 +106,8 @@
               </div>
             </div>
 
-            <div class="row">
-              <!-- Esto era para agregar participantes a tu equipo a lo bestia.
+            <!--<div class="row">
+               Esto era para agregar participantes a tu equipo a lo bestia.
               <div class="column">
                 <label><strong>Participantes disponibles:</strong></label>
                 <input 
@@ -149,8 +149,8 @@
                     </tr>
                   </tbody>
                 </table>
-              </div> -->
-            </div>
+              </div> 
+            </div> -->
 
             <button id="btnEnviarRevision" type="button" class="submit-button" @click="enviarEquipo">
               Enviar para revisión
@@ -544,7 +544,9 @@ export default {
   background: #ffffff;
   border-radius: 10px;
   max-width: 100%;
-  margin: auto;
+  height: 920px ;
+  margin: 10px;
+  margin-top: 2%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -553,11 +555,11 @@ export default {
   border-radius: 10px;
   padding: 2rem;
   max-width: 100%;
-  margin: auto;
+  margin: 20px;
 }
 
 .contenido {
-  background: #fff;
+  background: #ffffff;
   border-radius: 10px;
   padding: 2rem;
   max-width: 100%;
@@ -630,8 +632,8 @@ textarea {
   flex: 1;
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  height: 280px;
+  gap: 50px;
+  height: 500px;
   width: 80%;
   overflow-x: auto;
   background-color: #ffffff;
@@ -644,7 +646,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 330px;
+  height: 200px;
   overflow-y: auto;
   background-color: #BFD6FF;
   border-radius: 10px;
@@ -656,7 +658,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 230px;
+  height: 460px;
   overflow-y: auto;
   background-color: #BFD6FF;
   border-radius: 10px;
