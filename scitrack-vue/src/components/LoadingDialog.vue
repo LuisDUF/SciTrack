@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+  style="z-index: 1002;"
     v-model="internalValue"
     max-width="400"
     persistent

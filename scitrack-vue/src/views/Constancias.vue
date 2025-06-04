@@ -234,6 +234,7 @@ export default {
       this.loading = false;
     },methods: {
 async  generar(){
+  this.loading= true;
   const v = this.elegido.selectis.proyecto[0];
   const p = this.elegido.selectis;
   const today = new Date();
@@ -278,6 +279,7 @@ async  generar(){
       .then((data) => {
         console.log(data);
           this.confirmAlert = 'Generada y enviada con éxito';
+          this.loading = false;
         })
         .catch((error) => { console.error("Error:", error); this.confirmError = 'Error al generar constancia.' });
 

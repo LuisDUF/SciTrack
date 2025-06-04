@@ -11,13 +11,13 @@
      
 
       <v-menu offset-y style="overflow-y: scroll;" v-if="bandera">
-        <template  v-slot:activator="{ on, attrs }">
+        <template  v-slot:activator="{ on, attrs }" >
           <v-icon v-bind="attrs" v-on="on" v-if="options.notificationStatus" class="mx-5"
             >mdi-bell-badge</v-icon
           >
           <v-icon v-bind="attrs" v-on="on" v-else class="mx-5">mdi-bell</v-icon>
         </template>
-        <v-list>
+        <v-list style=" max-height: 10vw; ">
           <v-list-item
             v-for="noti in options.notis"
             :key="noti.idNotificacion"
