@@ -83,28 +83,55 @@
         </v-col>
       </v-row>
 
-      <div v-if="!usuarioTieneEquipo">
-        <section style="margin-top:2%">
-          <h2 style="text-align: center">¡Únete a un equipo!</h2>
-          <input type="text" v-model="busqueda" placeholder="Buscar equipo (Nombre del líder o del asesor)"
-            @input="buscarEquipos" class="input" />
-          <div class="card-grid">
-            <div v-for="equipo in equiposFiltrados" :key="equipo.idEquipo" class="card">
-              <h4>Líder: {{ obtenerLider(equipo) }}</h4>
-              <p><strong>Asesor:</strong> {{ obtenerAsesor(equipo) }}</p>
-              <p><strong>Institución:</strong> {{ obtenerInstitucion(equipo) }}</p>
-              <p><strong>Participantes:</strong> {{ contarParticipantes(equipo) }} / {{ obtenerMaximo(equipo) }}</p>
-              <button @click="unirseEquipo(equipo.idEquipo)"
-                :disabled="contarParticipantes(equipo) >= obtenerMaximo(equipo.idEquipo)" class="button1"
-                style="color: #ffffff; background-color: #6596FF;">
-                {{ contarParticipantes(equipo) >= obtenerMaximo(equipo) ? 'Equipo lleno' : 'Unirse' }}
-              </button>
+
+      
+       <div v-if="!usuarioTieneEquipo">
+          <section style="margin-top:2%">
+            <h2 style = "text-align: center">¡Únete a un equipo existente!</h2>
+            <input
+              type="text"
+              v-model="busqueda"
+              placeholder="Buscar equipo (Nombre del líder o del asesor)"
+              @input="buscarEquipos"
+              class="input"
+            />
+            <div class="card-grid">
+              <div v-for="equipo in equiposFiltrados" :key="equipo.idEquipo" class="card">
+                <h4>Líder: {{ obtenerLider(equipo) }}</h4>
+                <p><strong>Asesor:</strong> {{ obtenerAsesor(equipo) }}</p>
+                <p><strong>Institución:</strong> {{ obtenerInstitucion(equipo) }}</p>
+                <p><strong>Participantes:</strong> {{ contarParticipantes(equipo) }} / {{ obtenerMaximo(equipo) }}</p>
+
+                <button 
+                  @click="unirseEquipo(equipo)"  
+                  :disabled="contarParticipantes(equipo) >= obtenerMaximo(equipo)"
+                  class="button1"
+                  style="color: #ffffff; background-color: #6596FF;"
+                >
+                  {{ contarParticipantes(equipo) >= obtenerMaximo(equipo) ? 'Equipo lleno' : 'Unirse' }}
+                </button>
+              </div>
             </div>
-          </div>
-        </section>
-      </div>
-
-
+          </section>
+        </div>
+        <v-dialog v-model="showModalClave" max-width="500px">
+  <v-card>
+    <v-card-title class="headline">Ingresa la clave de acceso</v-card-title>
+    <v-card-text>
+      <v-text-field
+        v-model="claveIngresada"
+        label="Clave de acceso"
+        
+        outlined
+      ></v-text-field>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="blue darken-1" text @click="showModalClave = false">Cancelar</v-btn>
+      <v-btn color="blue darken-1" text @click="confirmarUnirse">Confirmar</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
     </div>
   </DIV>
 
@@ -112,35 +139,38 @@
 
 
 <script>
-import api from "../services/api.js"
+
 import UploadDocumentDialog from "@/components/IdUpload.vue";
+import api from  "../services/api.js"
+  export default{
+    components: { UploadDocumentDialog },
+    name: "App",
+    data(){
+      return{
+        usuario : JSON.parse(localStorage.getItem("userData")) || null,
+        convocatorias: [],
+        fileUploadDialog: false,
+        proyectos: [],
+        equipos: [],
+        loading: false,
+        loadingDone: false,
+        selectedConvocatoria: null,
+        asesores: [],
+        participantes: [],
+        EQUIPOS: [],
+        dependencias: [],
+        instituciones: [],
+        equiposFiltrados: [],
+        busqueda: '',
+        idAsesor: 'none',
+        MAX_PARTICIPANTES: '',
+            showModalClave: false,
+    claveIngresada: '',
+    equipoSeleccionado: null
+      }
+    },
 
-export default {
-  components: { UploadDocumentDialog },
 
-  name: "App",
-  data() {
-    return {
-      usuario: JSON.parse(localStorage.getItem("userData")) || null,
-      convocatorias: [],
-      fileUploadDialog: false,
-      proyectos: [],
-      equipos: [],
-      loading: false,
-      loadingDone: false,
-      selectedConvocatoria: null,
-      asesores: [],
-      participantes: [],
-      EQUIPOS: [],
-      dependencias: [],
-      instituciones: [],
-      equiposFiltrados: [],
-      busqueda: '',
-      idAsesor: 'none',
-      MAX_PARTICIPANTES: '',
-
-    }
-  },
   computed: {
     usuarioTieneEquipo() {
       if (!this.usuario || !this.usuario.idParticipante) return false;
@@ -179,6 +209,7 @@ export default {
     afterSuccesfulDelete() {
       this.$router.push({ name: "Login" });
     },
+
     async uploadIdFile(file) {
       this.loading = true;
 
@@ -280,85 +311,124 @@ export default {
     contarParticipantes(equipo) {
       return this.participantes.filter(p => p.Equipo_idEquipo === equipo.idEquipo).length
     },
-    async unirseEquipo(id) {
-      const usuario = JSON.parse(localStorage.getItem("userData")) || null;
-      const actual = this.participantes.find(p => p.idParticipante === usuario.idParticipante)
-      if (!actual) return alert('Debe iniciar sesión.')
-      if (actual.Equipo_idEquipo) return alert('Ya estás en un equipo.')
-
-      const eq = this.equipos.find(e => e.idEquipo === id)
-      if (!eq) return alert('Equipo no encontrado.')
-
-      const total = this.contarParticipantes(eq);
-      const MAX_PARTICIPANTES = eq.max_integrantes;
-      if (total >= MAX_PARTICIPANTES) return alert('Este equipo ya está lleno.')
-
-      try {
-        const res = await fetch(`http://localhost:3000/api/participante/${actual.idParticipante}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ Equipo_idEquipo: eq.idEquipo })
-        })
-
-        if (!res.ok) throw new Error()
-        alert('Te has unido al equipo con éxito.')
-        location.reload()
-      } catch (err) {
-        alert('No se pudo unir al equipo.')
-      }
-    },
-    async onCheckboxChange(item) {
-      this.$refs.nombre.textContent = "Nombre: ";
-      this.$refs.estado.textContent = "Estado: ";
-      this.$refs.nombreA.textContent = "Asesor: ";
-      this.$refs.estadoE.textContent = "Estado: ";
-      this.$refs.promedioP.textContent = "Promedio: ";
-
-      this.$refs.idE.textContent = "ID Equipo: ";
-      this.$refs.integrantes.textContent = "Integrantes: ";
-
-      try {
-        const response2 = await api.get(`/api/equipo/participante/${this.usuario.idParticipante}`);
-        const equiposos = JSON.parse(JSON.stringify(response2.data));
 
 
-        await Promise.all(equiposos.map(async equipo => {
-          const response3 = await api.get(`/api/proyectos/equipo/${equipo.idEquipo}`);
-          const proyectosos = JSON.parse(JSON.stringify(response3.data));
-
-          await Promise.all(proyectosos.map(async proyecto => {
-            const response = await api.get(`/api/convocatoria/id/${proyecto.idProyecto}`);
-            const convi = (JSON.parse(JSON.stringify(response.data)));
-
-            if (convi[0].idConvocatoria === item.idConvocatoria) {
-              this.proyectos = proyecto;
-              this.$refs.nombre.textContent = "Nombre: " + proyecto.nombre;
-
-              switch (proyecto.EstadosProyecto_idEstadosProyecto) {
-                case 1: this.$refs.estado.textContent = "Estado: Pendiente"; break;
-                case 2: this.$refs.estado.textContent = "Estado: Aceptado"; break;
-                case 3: this.$refs.estado.textContent = "Estado: Rechazado"; break;
-                case 4: this.$refs.estado.textContent = "Estado: Descalificado"; break;
-                case 5: this.$refs.estado.textContent = "Estado: Concluido"; break;
-              }
-
-              const response4 = await api.get(`/api/asesor/${equipo.Asesor_idAsesor}`);
-              const aseso = JSON.parse(JSON.stringify(response4.data));
-              this.$refs.nombreA.textContent = "Asesor: " + aseso[0].nombre + ' ' + aseso[0].apellidoPaterno + ' ' + aseso[0].apellidoMaterno;
-              this.$refs.estadoE.textContent = "Estado: " + equipo.estado;
-              this.$refs.idE.textContent = "ID Equipo: " + equipo.idEquipo;
-              this.$refs.promedioP.textContent = "Promedio: " + (proyecto.promedio ?? "Sin calificar");
-
-              const response5 = await api.get(`/api/participantes/${equipo.idEquipo}`);
-              this.$refs.integrantes.textContent = "Integrantes: " + response5.data.length;
-            }
-          }));
-        }));
-      } catch (error) {
-        console.error("Error al cargar datos:", error);
-
-      }
+    async unirseEquipo(equipo) {  // Ahora recibe el objeto equipo completo
+    const usuario = JSON.parse(localStorage.getItem("userData")) || null;
+    const actual = this.participantes.find(p => p.idParticipante === usuario.idParticipante);
+    
+    if (!actual) {
+      alert('Debe iniciar sesión.');
+      return;
     }
+    
+    if (actual.Equipo_idEquipo) {
+      alert('Ya estás en un equipo.');
+      return;
+    }
+
+    const total = this.contarParticipantes(equipo);
+    const MAX_PARTICIPANTES = equipo.max_integrantes;
+    
+    if (total >= MAX_PARTICIPANTES) {
+      alert('Este equipo ya está lleno.');
+      return;
+    }
+
+    // Guarda el equipo seleccionado y muestra el modal
+    this.equipoSeleccionado = equipo;
+    this.showModalClave = true;
+    this.claveIngresada = '';
+    
+    console.log("Intento de unirse al equipo:", equipo); // Para depuración
+  }, 
+
+      async confirmarUnirse() {
+        if (!this.claveIngresada) {
+          alert('Por favor ingresa la clave de acceso');
+          return;
+        }
+
+        // Verifica la clave
+        if (this.claveIngresada !== this.equipoSeleccionado.claveAcceso) {
+          alert('Clave de acceso incorrecta');
+          return;
+        }
+
+        try {
+          const usuario = JSON.parse(localStorage.getItem("userData"));
+          const response = await fetch(`http://localhost:3000/api/participante/${usuario.idParticipante}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              Equipo_idEquipo: this.equipoSeleccionado.idEquipo 
+            })
+          });
+
+          if (!response.ok) throw new Error('Error en la respuesta del servidor');
+          
+          alert('¡Te has unido al equipo con éxito!');
+          location.reload(); // Recarga para actualizar los datos
+          
+        } catch (error) {
+          console.error('Error al unirse al equipo:', error);
+          alert('No se pudo unir al equipo. Error: ' + error.message);
+        } finally {
+          this.showModalClave = false;
+        }
+      },
+      async onCheckboxChange(item) {
+        this.$refs.nombre.textContent = "Nombre: ";
+        this.$refs.estado.textContent = "Estado: ";
+        this.$refs.nombreA.textContent = "Asesor: ";
+        this.$refs.estadoE.textContent = "Estado: ";
+        this.$refs.promedioP.textContent = "Promedio: ";
+
+        this.$refs.idE.textContent = "ID Equipo: ";
+        this.$refs.integrantes.textContent = "Integrantes: ";
+
+        try {
+          const response2 = await api.get(`/api/equipo/participante/${this.usuario.idParticipante}`);
+          const equiposos = JSON.parse(JSON.stringify(response2.data));
+
+
+          await Promise.all(equiposos.map(async equipo => {
+            const response3 = await api.get(`/api/proyectos/equipo/${equipo.idEquipo}`);
+            const proyectosos = JSON.parse(JSON.stringify(response3.data));
+
+            await Promise.all(proyectosos.map(async proyecto => {
+              const response = await api.get(`/api/convocatoria/id/${proyecto.idProyecto}`);
+              const convi = (JSON.parse(JSON.stringify(response.data)));
+
+              if (convi[0].idConvocatoria === item.idConvocatoria) {
+                this.proyectos = proyecto;
+                this.$refs.nombre.textContent = "Nombre: " + proyecto.nombre;
+
+                switch (proyecto.EstadosProyecto_idEstadosProyecto) {
+                  case 1: this.$refs.estado.textContent = "Estado: Pendiente"; break;
+                  case 2: this.$refs.estado.textContent = "Estado: Aceptado"; break;
+                  case 3: this.$refs.estado.textContent = "Estado: Rechazado"; break;
+                  case 4: this.$refs.estado.textContent = "Estado: Descalificado"; break;
+                  case 5: this.$refs.estado.textContent = "Estado: Concluido"; break;
+                }
+
+                const response4 = await api.get(`/api/asesor/${equipo.Asesor_idAsesor}`);
+                const aseso = JSON.parse(JSON.stringify(response4.data));
+                this.$refs.nombreA.textContent = "Asesor: " + aseso[0].nombre + ' ' + aseso[0].apellidoPaterno + ' ' + aseso[0].apellidoMaterno;
+                this.$refs.estadoE.textContent = "Estado: " + equipo.estado;
+                this.$refs.idE.textContent = "ID Equipo: " + equipo.idEquipo;
+                this.$refs.promedioP.textContent = "Promedio: " + (proyecto.promedio ?? "Sin calificar");
+
+                const response5 = await api.get(`/api/participantes/${equipo.idEquipo}`);
+                this.$refs.integrantes.textContent = "Integrantes: " + response5.data.length;
+              }
+            }));
+          }));
+        } catch (error) {
+          console.error("Error al cargar datos:", error);
+
+        }
+      }
   }
 
 }
