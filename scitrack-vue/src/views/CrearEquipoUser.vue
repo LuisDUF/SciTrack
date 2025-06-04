@@ -31,10 +31,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <div class="contenedor">
-      <h1>Crear equipo</h1>
+    <div class="pa-5 rounded" style="background-color: #FFFDFF;">
+      <h1 class="mb-5">Crear equipo</h1>
       <div class="marco">
-        <div class="contenido">
+        <v-container class="contenido">
           <form>
             <h3>Seleccione un asesor:</h3>
             <select id="selectAsesor" class="selectAsesor" v-model="idAsesor" required>
@@ -79,8 +79,8 @@
 
 
             <div class="row1">
-              <div class="column1">
-                <label for="filtroConvocatoria"><strong>Convocatoria:</strong></label>
+              <div class="column1 pa-4">
+                <label for="filtroConvocatoria" class="text-h5"><strong>Convocatoria:</strong></label>
                 <div id="filtroConvocatoriaContainer" class="native-checkbox-group">
                   <label v-for="convocatoria in CONVOCATORIAS" :key="convocatoria.idConvocatoria"
                     class="native-checkbox-wrapper"
@@ -96,13 +96,10 @@
                 </div>
               </div>
 
-              <div class="column1">
-                <label for="dropzoneVideo"><strong>Código de acceso:</strong></label>
-                <v-text-field v-model="codigoAcceso" placeholder="Presiona para generar para crear código"
-                  readonly></v-text-field>
-                
-
-
+            <div class="column1 pa-4">
+                <label for="dropzoneVideo" class="text-h5"><strong>Código de acceso:</strong></label>
+                <textarea v-model="codigoAcceso" class="text-h2 center-textarea pt-4" style="font-weight: bolder;" placeholder="---"
+                  readonly></textarea>
               </div>
             </div>
 
@@ -152,11 +149,11 @@
               </div> -->
             </div>
 
-            <button id="btnEnviarRevision" type="button" class="submit-button" @click="enviarEquipo">
+            <v-btn id="btnEnviarRevision" type="button" class="submit-button" @click="enviarEquipo">
               Enviar para revisión
-            </button>
+            </v-btn>
           </form>
-        </div>
+        </v-container>
       </div>
     </div>
   </div>
@@ -542,15 +539,26 @@ export default {
 /* Tus estilos originales */
 .contenedor {
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 5px;
   max-width: 100%;
   margin: auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.center-textarea {
+  text-align: center;           /* horizontal centering */
+  vertical-align: middle;
+  display: flex;
+  align-items: center;         /* vertical centering */
+  justify-content: center;     /* horizontal centering */
+  resize: none;                /* optional: disable resizing */
+  height: 100px;               /* optional: give it a fixed height */
+  padding: 0;                  /* optional: remove default padding */
+}
+
 .marco {
   background: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 2rem;
   max-width: 100%;
   margin: auto;
@@ -558,9 +566,8 @@ export default {
 
 .contenido {
   background: #fff;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 2rem;
-  max-width: 100%;
   margin: auto;
 }
 
@@ -618,11 +625,10 @@ textarea {
   display: flex;
   flex-direction: row;
   gap: 10px;
-  height: 350px;
   width: 100%;
   overflow-x: auto;
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 10px;
 }
 
@@ -631,11 +637,11 @@ textarea {
   display: flex;
   flex-direction: row;
   gap: 10px;
-  height: 280px;
+  min-height: 530px;
   width: 80%;
-  overflow-x: auto;
+  overflow-y: auto;
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 15px;
 }
 
@@ -644,10 +650,10 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 330px;
+  height: 500px;
   overflow-y: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 15px;
 }
 
@@ -656,11 +662,10 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 230px;
+  height: 500px;
   overflow-y: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
-  padding: 15px;
+  border-radius: 5px;
 }
 
 .card {
@@ -669,7 +674,7 @@ textarea {
   justify-content: space-between;
   background: white;
   border-left: 5px solid #3b82f6;
-  border-radius: 8px;
+  border-radius: 5px;
   padding: 10px 15px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
@@ -686,7 +691,7 @@ textarea {
   color: white;
   border: none;
   padding: 5px 10px;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
   margin-top: 5px;
 }
@@ -696,7 +701,7 @@ textarea {
   color: white;
   border: none;
   padding: 5px 10px;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
   margin-top: 5px;
   margin-left: 10px;
