@@ -4,12 +4,12 @@
       <h2 ref="baner" class="baner"></h2>
       <h2 class="nombreUsuario">{{ usuario?.nombre +" "+ usuario?.apellidoPaterno}}</h2>
     </div>
-    <div  style="border-radius:10px;height:800px; margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; display: flex; flex-direction: row;background-color:#ffffff; gap: 15px;">
+    <div  style="border-radius:5px; margin-top: 0.666vw; padding: 1vw;  display: flex; flex-direction: row;background-color:#ffffff; gap: 15px;">
       
-      <v-row style=" flex: 2; display: flex; flex-direction: column; gap: 15px; height: 500px; width: 50%; overflow-x: auto; background-color:#ffffff; border-radius: 10px; padding: 15px;">
-        <v-col  style="width:900px; border-radius:10px; background-color: #BFD6FF; ">
-          <h4 style="font-weight: bold;">Equipo</h4>
-          <div class="rounded" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #ffffff; ">
+      <v-row style=" flex: 2; display: flex; flex-direction: column; gap: 15px; height: max-content; width: 50%; overflow-x: auto; background-color:#ffffff; border-radius: 5px; padding: 15px;">
+        <v-col  class="elevation-2" style="width:900px; border-radius:5px; background-color: #BFD6FF; ">
+          <h4 style="font-weight: bolder;">Equipo</h4>
+          <div class="rounded" style="margin-top: 0.666vw; padding: 1vw;  padding-right: 1.33vw; background-color: #ffffff; ">
             <h5 ref="idE">ID Equipo: </h5>
             <h5 ref="integrantes">Integrantes:</h5>
             <h5 ref="estado">Estado: </h5>
@@ -18,9 +18,9 @@
 
         </v-col>
 
-        <v-col style="width:900px; border-radius:10px; background-color: #BFD6FF;  ">
-          <h4 style="font-weight: bold;">Proyecto</h4>
-          <div class="rounded" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #ffffff; ">
+        <v-col class="elevation-2" style="width:900px; border-radius:5px; background-color: #BFD6FF;  ">
+          <h4 style="font-weight: bolder;">Proyecto</h4>
+          <div class="rounded" style="margin-top: 0.666vw; padding: 1vw;  padding-right: 1.33vw; background-color: #ffffff; ">
             <h5 ref="nombre">Nombre: </h5>
             <h5 ref="nombreA">Asesor:</h5>
             <h5 ref="estadoE">Estado: </h5>
@@ -29,11 +29,11 @@
           </div>
         </v-col>
       </v-row>
-      <v-row style=" flex: 1; display: flex; flex-direction: column; gap: 15px; height: 600px; width: 200px; overflow-x: auto; background-color:#ffffff; border-radius: 10px; padding: 15px;">
-        <v-col  style="flex:2;border-radius: 10px; height:500px; width:480px; margin-left: 0.5vw; background-color: #BFD6FF; ">
+      <v-row style=" flex: 1; display: flex; flex-direction: column; gap: 15px; height: 600px; width: 200px; overflow-x: auto; background-color:#ffffff; border-radius: 5px; padding: 15px;">
+        <v-col  style="flex:2;border-radius: 5px; height:max-content; width:480px; margin-left: 0.5vw; background-color: #BFD6FF; ">
           <h4 style="font-weight: bold;">Convocatorias:</h4>
-          <div style="width:450px; border-radius:10px; margin-top: 0.666vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
-            <div style="width:420px; height: 300px; overflow-y: auto; background-color: #EBF2FF;">
+          <div style="width:450px; border-radius:5px; margin-top: 0.666vw;  padding-right: 1.33vw; background-color: #EBF2FF; " class="elevation-5">
+            <div style="width:420px; overflow-y: auto; background-color: #EBF2FF;" class="rounded px-5">
             <v-list style="background-color: #EBF2FF;">
               <v-radio-group v-model="selectedConvocatoria">
                   <v-radio
@@ -49,7 +49,7 @@
           </div>
         </v-col>
         
-          <v-col  style=" display: flex;flex-direction:column; border-radius: 10px; height:100px; width:480px; margin-left: 0.5vw; background-color:#ffffff; ">
+          <v-col  style=" display: flex;flex-direction:column; border-radius: 5px; height:100px; width:480px; margin-left: 0.5vw; background-color:#ffffff; ">
               <button 
                 id="btnCrearProyecto" 
                 type="button" 

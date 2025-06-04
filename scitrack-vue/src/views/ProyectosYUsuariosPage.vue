@@ -58,8 +58,9 @@
           </div>
           
           <div class="row">
-            <label for="filtroInstitucionEquipos"><strong> Filtrar por institución:</strong></label>
-            <div id="filtroInstitucionEquiposContainer" class="native-checkbox-group">
+            <div id="filtroInstitucionEquiposContainer" class="native-checkbox-group pa-5">
+              <label for="filtroInstitucionEquipos"><strong> Filtrar por institución:</strong></label>
+
               <label v-for="institucion in INSTITUCIONES" :key="institucion.idInstitucion" 
                     class="native-checkbox-wrapper" :class="{'is-selected': filtroInstitucionEquipos.includes(institucion.idInstitucion)}">
                 <input
@@ -118,8 +119,8 @@
             </div>
           </div>
 
-          <div class="column">
-            <label for="filtroInstitucionEquipos"><strong> Filtrar por institución:</strong></label>
+          <div class="column" style="height: 10px;">
+            <label for="filtroInstitucionEquipos pa-5"><strong> Filtrar por institución:</strong></label>
             <div id="filtroInstitucionProyectoContainer" class="native-checkbox-group">
               <label v-for="institucion in INSTITUCIONES" :key="institucion.idInstitucion" 
                     class="native-checkbox-wrapper" :class="{'is-selected': filtroInstitucionProyectos.includes(institucion.idInstitucion)}">
@@ -136,7 +137,7 @@
             </div>
           </div>
 
-          <div class="column">
+          <div class="column" style="height: max-content;">
             <label for="filtroConvocatoriaProyectos"><strong> Filtrar por Convocatoria:</strong></label>
             <div id="filtroConvocatoriaProyectoContainer" class="native-checkbox-group">
               <label v-for="convocatoria in CONVOCATORIAS" :key="convocatoria.idConvocatoria" 
@@ -855,8 +856,8 @@ body {
   margin: 0;
   padding: 20px;
   background: #FFFFFF;
-  border-radius: 10px;
-  height: 910px;
+  border-radius: 5px;
+  height: max-content;
 }
 
 h2 {
@@ -896,7 +897,7 @@ h2 {
   height: 770px;
   overflow-y: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 15px;
 }
 
@@ -908,7 +909,7 @@ h2 {
   height: 95%;
   overflow-y: auto;
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 15px;
 }
 
@@ -917,15 +918,16 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 780px;
+  min-height: 600px;
+  height: max-content;
   overflow-y: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 15px;
 }
 
 .column h3 {
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 10px;
 }
 
@@ -997,10 +999,10 @@ h2 {
   display: flex;
   flex-direction:column;
   gap: 1px;
-  height: 10px;
+  height:max-content;
   overflow-y: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 10px;
 }
 .filtro-NombreP{
@@ -1011,7 +1013,7 @@ h2 {
   height: 10px;
   overflow-y: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 10px;
 }
 
@@ -1024,7 +1026,7 @@ h2 {
   height: 55px;
   overflow-x: auto;
   background-color: #BFD6FF;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 15px;
 }
 .modal-section {
@@ -1039,7 +1041,7 @@ h2 {
   width: 80%;
   height: 95%;
   background: #f9f9f9;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .preview-pdf embed {
   width: 100%;
@@ -1176,9 +1178,9 @@ h2 {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f8f9fa;
-  width: 95%;
+  width: 100%;
   margin-bottom: 20px;
-    max-height: 400px; /* Altura máxima antes de mostrar scroll */
+    max-height: 413px; /* Altura máxima antes de mostrar scroll */
   overflow-y: auto; /* Scroll vertical cuando sea necesario */
 }
 
