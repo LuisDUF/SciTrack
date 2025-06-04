@@ -259,6 +259,11 @@ export default {
         }),
       });
 
+      const currentUser = JSON.parse(localStorage.getItem('userData'));
+      currentUser.Archivos_idArchivos = recentFileId;
+      localStorage.setItem("userData", JSON.stringify(currentUser));
+
+
       const dataPart = await responsePart.json();
       console.log("Información actualizada: ", dataPart);
 
@@ -270,7 +275,7 @@ export default {
       this.fileUploadDialog = true;
     },
     afterSuccesfulDelete(){
-      this.$router.push({ name: "Login" });
+      window.location.reload();
     },
     agregarParticipante(participante) {
       // Verificar si ya está agregado

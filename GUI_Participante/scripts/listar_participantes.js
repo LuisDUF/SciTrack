@@ -13,7 +13,7 @@ let PARTICIPANTS =
 window.onload = function () 
 {
 
-    fetch("https://scitrackapi-production.up.railway.app/api/participante/", {
+    fetch("http://localhost:3000/api/participante/", {
         method: "GET",
     })
     .then((response) => response.json())
@@ -50,7 +50,7 @@ function setUpButtons()
 
 function deleteParticipant(id)
 {
-    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${id}`, {
+    fetch(`http://localhost:3000/api/participante/${id}`, {
         method: "DELETE",
     })
     .then((data) => {
@@ -73,7 +73,7 @@ function editParticipant(id)
 
     */
     /*
-    fetch(`https://scitrackapi-production.up.railway.app/api/participante/${id}`, {
+    fetch(`http://localhost:3000/api/participante/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

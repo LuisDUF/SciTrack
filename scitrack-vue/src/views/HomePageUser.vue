@@ -207,7 +207,7 @@ import api from  "../services/api.js"
   },
   methods: {
     afterSuccesfulDelete() {
-      this.$router.push({ name: "Login" });
+      window.location.reload();
     },
 
     async uploadIdFile(file) {
@@ -246,6 +246,10 @@ import api from  "../services/api.js"
           Archivos_idArchivos: recentFileId,
         }),
       });
+
+      const currentUser = JSON.parse(localStorage.getItem('userData'));
+      currentUser.Archivos_idArchivos = recentFileId;
+      localStorage.setItem("userData", JSON.stringify(currentUser));
 
       const dataPart = await responsePart.json();
       console.log("Información actualizada: ", dataPart);
