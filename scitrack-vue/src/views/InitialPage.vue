@@ -100,8 +100,8 @@
 
         </v-col>
       </v-row>
-      <h2 class="mt-5">Estadísticas:</h2>
-      <v-row class="mt-3">
+      <h2 class="mt-5" v-if="selectedConvocatoria != null">Estadísticas:</h2>
+      <v-row class="mt-3" v-if="selectedConvocatoria != null">
         <v-col>
           <div>
             <ApexChart width="500" type="donut" :options="optionsGenderPart" :series="seriesGenderPart"></ApexChart>
@@ -149,14 +149,29 @@ export default {
       convocatorias: [],
       proyectos: [],
 
-      optionsGenderPart: {},
+      optionsGenderPart: {
+        labels: ['Femenino', 'Masculino'],
+        legend: {
+          position: 'bottom'
+        }
+      },
       seriesGenderPart: [30, 30],
 
-      optionsGenderInv: {},
+      optionsGenderInv: {
+        labels: ['Femenino', 'Masculino'],
+        legend: {
+          position: 'bottom'
+        }
+      },
       seriesGenderInv: [30, 30],
 
-      optionsProjects: {},
-      seriesProjects: [30, 30],
+      optionsProjects: {
+        labels: ['Inscritos', 'Aprobados', 'Pendientes','Descalificados','Rechazados','Concluidos'],
+        legend: {
+          position: 'bottom'
+        }
+      },
+      seriesProjects: [0,0,0,0,0,0],
 
       optionsPromedio: {
         chart: {
@@ -167,7 +182,7 @@ export default {
         }
       },
       seriesPromedio: [{
-        name: 'series-1',
+        name: 'Promedios',
         data: [30, 40, 45, 50, 49, 60, 70, 91]
       }],
 
@@ -239,37 +254,45 @@ export default {
         const namesP = [];
         const promsP = [];
 
-        invs.push(...JSON.parse(JSON.stringify((await api.get('/api/investigador/convocatoria/'+item.idConvocatoria)).data)));
-       
+        invs.push(...JSON.parse(JSON.stringify((await api.get('/api/investigador/convocatoria/' + item.idConvocatoria)).data)));
+
         invs = invs.filter(
-        (obj, index, self) =>
-          index === self.findIndex(o => o.idInvestigador === obj.idInvestigador)
+          (obj, index, self) =>
+            index === self.findIndex(o => o.idInvestigador === obj.idInvestigador)
         );
-        
-        parts.push( ...JSON.parse(JSON.stringify(await api.get(`/api/participante/convocatoria/`+item.idConvocatoria))).data);
-        
+
+        parts.push(...JSON.parse(JSON.stringify(await api.get(`/api/participante/convocatoria/` + item.idConvocatoria))).data);
+
         inscritospa = parts.length;
 
-        pendientesinv = invs.filter(s => s.EstadoPersona_idEstadoPersona==1).length;
-        aprobadosinv = invs.filter(s => s.EstadoPersona_idEstadoPersona==2).length;
+        pendientesinv = invs.filter(s => s.EstadoPersona_idEstadoPersona == 1).length;
+        aprobadosinv = invs.filter(s => s.EstadoPersona_idEstadoPersona == 2).length;
         inscritosinv = invs.length;
 
-        proyectosos.push(...JSON.parse(JSON.stringify(await api.get('/api/proyectos/convocatoria/'+item.idConvocatoria))).data); 
-        pendientesp= proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==1).length;
-        aprobadosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==2).length;
-        descalificadosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==4).length;
-        concluidosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==5).length;
-        rechazadosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==3).length;
+        proyectosos.push(...JSON.parse(JSON.stringify(await api.get('/api/proyectos/convocatoria/' + item.idConvocatoria))).data);
+        pendientesp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 1).length;
+        aprobadosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 2).length;
+        descalificadosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 4).length;
+        concluidosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 5).length;
+        rechazadosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 3).length;
+        proyectosos.forEach((pr) =>{
+          if (pr.EstadosProyecto_idEstadosProyecto != 3 && pr.EstadosProyecto_idEstadosProyecto != 1)
+          {
+              console.log(JSON.stringify(pr))
+              namesP.push(pr.nombreProyecto);
+              promsP.push(pr.promedio);
+          }
+        })
 
         inscritos = proyectosos.length
 
-        equiposos.push(...JSON.parse(JSON.stringify(await api.get('/api/equipos/convocatoria/'+item.idConvocatoria))).data);
+        equiposos.push(...JSON.parse(JSON.stringify(await api.get('/api/equipos/convocatoria/' + item.idConvocatoria))).data);
         equiposos = equiposos.filter(
-        (obj, index, self) =>
-          index === self.findIndex(o => o.idEquipo === obj.idEquipo)
-        ); 
-        pendientes = equiposos.filter(s=> s.estado=="Pendiente de revisión").length;
-        aprobados = equiposos.filter(s=> s.estado=="Aprobado").length;
+          (obj, index, self) =>
+            index === self.findIndex(o => o.idEquipo === obj.idEquipo)
+        );
+        pendientes = equiposos.filter(s => s.estado == "Pendiente de revisión").length;
+        aprobados = equiposos.filter(s => s.estado == "Aprobado").length;
         var inscri = equiposos.length;
 
 
@@ -293,7 +316,9 @@ export default {
         this.seriesGenderInv = [numM, numF];
         console.log('Second Coming: ', numF)
 
-        this.seriesProjects = [(inscritos - aprobadosp), aprobadosp]
+
+        
+        this.seriesProjects = [inscritos, aprobadosp,pendientesp, descalificadosp,rechazadosp,concluidosp]
 
         this.seriesPromedio = [{
           name: 'Promedio',
@@ -322,8 +347,6 @@ export default {
         this.$refs.inscritosinv.textContent = "Inscritos: " + inscritosinv;
         this.$refs.aprobadosinv.textContent = "Aprobados: " + aprobadosinv;
         this.$refs.pendientesinv.textContent = "Pendientes: " + pendientesinv;
-  
-
 
       } catch (error) {
         console.error("Error al cargar datos:", error);
@@ -335,9 +358,8 @@ export default {
   }
 
 }
-
-
 </script>
+
 <style>
 .baner {
   font-weight: normal;
