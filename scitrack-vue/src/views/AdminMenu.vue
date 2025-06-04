@@ -93,7 +93,7 @@ export default {
         },
       },
       {
-        message: "Proyectos y Usuarios",
+        message: "Proyectos y Equipos",
         id: "btnProyectos",
         icon: "mdi-lightbulb-outline",
         onClick: () => {
