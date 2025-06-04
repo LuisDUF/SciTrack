@@ -94,3 +94,20 @@ export default {
     }
 };
 </script>
+
+
+<style scoped>
+.full-height {
+  height: 100%;
+  min-height: 100vh;
+}
+
+.main-wrapper {
+  height: 100%;
+}
+
+.sidebar {
+  min-height: 100vh;
+}
+</style>
+
