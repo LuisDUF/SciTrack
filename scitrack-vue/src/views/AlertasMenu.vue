@@ -310,7 +310,7 @@ async submitForm() {
     endLoad() {
       this.loading = false;
     },
-    showAlert(text) {
+    show//alert(text) {
       this.confirmAlert = text;
       setTimeout(() => {
         this.confirmAlert = '';

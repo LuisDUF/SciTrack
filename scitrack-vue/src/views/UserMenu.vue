@@ -200,7 +200,7 @@ export default {
       })
         .then(response => response.json())
         .then(() => {
-          alert('Se han enviado sus datos.');
+          //alert('Se han enviado sus datos.');
           location.reload();
         })
         .catch(error => console.error("Error:", error));

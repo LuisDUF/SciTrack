@@ -277,7 +277,7 @@ export default {
     this.dialog = true;
   } catch (error) {
     console.error('Error al abrir evaluación:', error, project);
-    alert('Hubo un problema al cargar los datos del proyecto.');
+    //alert('Hubo un problema al cargar los datos del proyecto.');
   }
 }
 
@@ -321,7 +321,7 @@ export default {
     this.loadProjects();
   } catch (err) {
     console.error('Error al enviar evaluación:', err);
-    alert('Error al enviar evaluación. Intenta de nuevo.');
+    //alert('Error al enviar evaluación. Intenta de nuevo.');
   }
 }
 

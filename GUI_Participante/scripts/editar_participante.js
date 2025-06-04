@@ -29,7 +29,7 @@ const insertParticipant = async (participante) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        alert('Se han enviado sus datos.');
+        //alert('Se han enviado sus datos.');
         window.location.reload();
         console.log(data);
       })
@@ -283,7 +283,7 @@ window.onload = function () {
                     })
                     .then((response) => response.json())
                     .then((data) => {
-                        alert('Se han modificado los datos.');
+                        //alert('Se han modificado los datos.');
                         console.log(data);
 
                         sessionStorage.setItem('sci:participant_to_edit',undefined);
@@ -332,7 +332,7 @@ window.onload = function () {
     }
     catch (ex)
     {
-        alert(ex)
+        //alert(ex)
     }
    
   }

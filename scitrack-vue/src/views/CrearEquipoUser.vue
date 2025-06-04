@@ -280,7 +280,7 @@ export default {
       if (!this.participantesSeleccionados.some(p => p.idParticipante === participante.idParticipante)) {
         this.participantesSeleccionados.push(participante);
       } else {
-        alert('Este participante ya fue agregado');
+        //alert('Este participante ya fue agregado');
       }
     },
     generarCodigo() {
@@ -361,7 +361,7 @@ export default {
       const usuario = JSON.parse(localStorage.getItem("userData")) || null;
       console.log(usuario)
       if (!usuario || !usuario.idParticipante) {
-        alert("No se pudo identificar al usuario líder. Por favor, inicie sesión nuevamente.");
+        //alert("No se pudo identificar al usuario líder. Por favor, inicie sesión nuevamente.");
         return;
       }
       
@@ -372,12 +372,12 @@ export default {
       }
 
       if (usuario.Equipo_idEquipo !== null) {
-        alert("Usted ya forma parte de un equipo.");
+        //alert("Usted ya forma parte de un equipo.");
         return;
       }
 
       if (!this.idAsesor || !this.convocatoriaSeleccionada || !this.codigoAcceso) {
-        alert("Por favor complete todos los campos requeridos.");
+        //alert("Por favor complete todos los campos requeridos.");
         return;
       }
 
@@ -396,7 +396,7 @@ export default {
       const numOm = convocatoria.max_integrantes - 1;
 
       if (this.participantesSeleccionados.length > numOm) {
-        alert(`Cantidad de participantes sobrepasada (Máximo permitido omitiendo al líder: ${numOm}). Por favor, seleccione la cantidad aceptada en la convocatoria.`);
+        //alert(`Cantidad de participantes sobrepasada (Máximo permitido omitiendo al líder: ${numOm}). Por favor, seleccione la cantidad aceptada en la convocatoria.`);
         return;
       }
 
@@ -456,7 +456,7 @@ export default {
         await Promise.all(actualizaciones);
 
         // 3. Mostrar mensaje de éxito y resetear el formulario
-        alert(`Equipo creado exitosamente con ${this.participantesSeleccionados.length} participantes`);
+        //alert(`Equipo creado exitosamente con ${this.participantesSeleccionados.length} participantes`);
 
         // Resetear el formulario
         this.idAsesor = null;
@@ -467,7 +467,7 @@ export default {
         
       } catch (err) {
         console.error('Error al crear equipo:', err);
-        alert("Ocurrió un error al crear el equipo: " + err.message);
+        //alert("Ocurrió un error al crear el equipo: " + err.message);
       } 
     },
 
@@ -475,7 +475,7 @@ export default {
       try {
         // Validación reforzada para Genero_idGenero
         if (!this.nuevoAsesor.Genero_idGenero) {
-          alert('Por favor seleccione un género');
+          //alert('Por favor seleccione un género');
           return;
         }
 
@@ -491,7 +491,7 @@ export default {
 
         // Verificar conversión numérica
         if (isNaN(datosAsesor.Genero_idGenero)) {
-          alert('El género seleccionado no es válido');
+          //alert('El género seleccionado no es válido');
           return;
         }
 
@@ -525,10 +525,10 @@ export default {
           Genero_idGenero: null
         };
 
-        alert('Asesor registrado correctamente');
+        //alert('Asesor registrado correctamente');
       } catch (error) {
         console.error('Error:', error);
-        alert('Error al registrar asesor: ' + error.message);
+        //alert('Error al registrar asesor: ' + error.message);
       }
     }
   }
