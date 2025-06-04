@@ -100,7 +100,7 @@
                 <label for="dropzoneVideo"><strong>Código de acceso:</strong></label>
                 <v-text-field v-model="codigoAcceso" placeholder="Presiona para generar para crear código"
                   readonly></v-text-field>
-                <button class="add-button2" type="button" @click="generarCodigo()">Generar</button>
+                
 
 
               </div>
@@ -220,6 +220,7 @@ export default {
     await this.cargarEquipos();
     await this.cargarDependencias();
     await this.cargarInstituciones();
+    await this.generarCodigo()
   },
   methods: {
     async uploadIdFile(file) {
