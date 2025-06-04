@@ -616,7 +616,8 @@ export default {
       try {
         const actualizado = {
           idEquipo: idEquipo,
-          estado: 'Aprobado'
+          estado: 'Aprobado',
+          claveAcceso: equipo.claveAcceso
         };
 
         // Aquí iría tu llamada a la API

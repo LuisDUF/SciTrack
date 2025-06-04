@@ -410,11 +410,12 @@ export default {
           Asesor_idAsesor: this.idAsesor,
           estado: "Pendiente de revisión",
           max_integrantes: convocatoria.max_integrantes,
-          codigoAcceso: this.codigoAcceso
-
+          claveAcceso: this.codigoAcceso
 
         };
 
+        console.log(equipoData);
+        
         // Enviar solicitud para crear el equipo
         const responseEquipo = await fetch('http://localhost:3000/api/equipo/', {
           method: 'POST',
@@ -465,11 +466,11 @@ export default {
         this.participantesSeleccionados = [];
         this.busquedaParticipante = '';
         this.codigoAcceso = '';
-
+        
       } catch (err) {
         console.error('Error al crear equipo:', err);
         alert("Ocurrió un error al crear el equipo: " + err.message);
-      }
+      } 
     },
 
     async registrarAsesor() {
