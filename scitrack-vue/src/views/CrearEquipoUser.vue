@@ -405,7 +405,7 @@ export default {
           Asesor_idAsesor: this.idAsesor,
           estado: "Pendiente de revisión",
           max_integrantes: convocatoria.max_integrantes,
-          codigo_acceso: this.codigoAcceso
+          codigoAcceso: this.codigoAcceso
 
 
         };
@@ -459,7 +459,7 @@ export default {
         this.convocatoriaSeleccionada = null;
         this.participantesSeleccionados = [];
         this.busquedaParticipante = '';
-        this.codigo_acceso = '';
+        this.codigoAcceso = '';
 
       } catch (err) {
         console.error('Error al crear equipo:', err);

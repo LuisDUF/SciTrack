@@ -275,7 +275,7 @@ import api from  "../services/api.js"
     },
     buscarEquipos() {
       const q = this.busqueda.toLowerCase()
-      this.equiposFiltrados = this.equipos.filter(e => {
+      this.equiposFiltrados = this.EQUIPOS.filter(e => {
         if (e.estado !== 'Aprobado') return false
         const lider = this.participantes.find(p => p.idParticipante === e.Participante_idLider)
         const asesor = this.asesores.find(a => a.idAsesor === e.Asesor_idAsesor)
