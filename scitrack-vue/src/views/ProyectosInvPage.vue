@@ -204,28 +204,30 @@ export default {
         institution: p.institucion_investigador || 'No especificada',
         areas: p.areas_conocimiento || 'No especificadas',
         leader: p.lider_equipo || 'No asignado',
-        criterios: [],  // Se cargarán en detalle al abrir modal
+        criterios: [],
         advisor: p.asesor || 'No asignado',
         members: p.integrantes ? p.integrantes.split(', ') : [],
         comment: p.comentario_calificacion || '',
         convocatory: p.nombre_convocatoria || 'Sin convocatoria',
         status: p.estado_proyecto || 'Sin estado',
+        promedio: p.promedio, // <--- AGREGADO
       };
     });
 
-    // Mostrar solo los estados válidos en la columna izquierda (sin evaluar)
+    // Mostrar solo proyectos que no han sido evaluados Y no tienen promedio
     this.unevaluatedProjects = processed.filter(p =>
-      ['Pendiente', 'Aceptado'].includes(p.status)
+      ['Pendiente', 'Aceptado'].includes(p.status) && (p.promedio == null)
     );
 
-    // Todos los demás se consideran evaluados (incluidos los rechazados, concluidos, etc.)
+    // Evaluados = los que tienen promedio o estado diferente
     this.evaluatedProjects = processed.filter(p =>
-      !['Pendiente', 'Aceptado'].includes(p.status)
+      p.promedio != null || !['Pendiente', 'Aceptado'].includes(p.status)
     );
   } catch (err) {
     console.error('Error al cargar proyectos:', err);
   }
 }
+
 ,
 
     async loadConvocatorias() {
@@ -280,38 +282,39 @@ export default {
     alert('Hubo un problema al cargar los datos del proyecto.');
   }
 }
-
-
 ,
 
-
     async submitEvaluation() {
-      try {
-        const evaluaciones = this.rubric.map(crit => ({
-          calificacion: crit.score,
-          idFase: 1,
-          idCriterio: crit.id,
-          comentario: this.selectedProject.comment,
-          Proyecto_idProyecto: this.selectedProject.id,
-        }));
+  try {
+    // Calcular promedio ponderado
+    let total = 0;
+    let totalPonderacion = 0;
 
-        const res = await fetch('http://localhost:3000/api/calificacion/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(evaluaciones),
-        });
+    this.rubric.forEach(crit => {
+      total += crit.score * crit.ponderacion;
+      totalPonderacion += crit.ponderacion;
+    });
 
-        if (!res.ok) throw new Error('Error al enviar la evaluación');
+    const promedio = totalPonderacion > 0 ? total / totalPonderacion : 0;
 
-        console.log('Evaluación enviada con éxito');
-        this.dialog = false;
-        // Opcional: recargar lista después de enviar evaluación
-        this.loadProjects();
-      } catch (err) {
-        console.error('Error al enviar evaluación:', err);
-        alert('Error al enviar evaluación. Intenta de nuevo.');
-      }
-    },
+    // Enviar promedio a la API de actualización
+    const resProm = await fetch(`http://localhost:3000/api/proyectoProm/${this.selectedProject.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ promedio }),
+    });
+
+    if (!resProm.ok) throw new Error('Error al actualizar el promedio');
+
+    console.log('Evaluación y promedio enviados con éxito');
+    this.dialog = false;
+    this.loadProjects();
+  } catch (err) {
+    console.error('Error al enviar evaluación:', err);
+    alert('Error al enviar evaluación. Intenta de nuevo.');
+  }
+}
+,
   },
 };
 </script>
