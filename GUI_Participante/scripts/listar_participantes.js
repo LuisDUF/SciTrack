@@ -54,7 +54,7 @@ function deleteParticipant(id)
         method: "DELETE",
     })
     .then((data) => {
-        //alert('El participante ha sido eliminado');
+        alert('El participante ha sido eliminado');
         console.log("Data was deleted!");
         window.location.reload();
     })

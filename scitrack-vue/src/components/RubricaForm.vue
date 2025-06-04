@@ -113,13 +113,13 @@ export default {
     },
     async guardarNuevoCriterio() {
   if (!this.nuevoCriterio.descripcion || this.nuevoCriterio.ponderacion == null) {
-    //alert("Completa todos los campos.");
+    alert("Completa todos los campos.");
     return;
   }
 
   // Validar que haya una rúbrica cargada
   if (!this.rubrica || !this.rubrica.rubrica_id) {
-    //alert("No hay una rúbrica seleccionada.");
+    alert("No hay una rúbrica seleccionada.");
     return;
   }
 
@@ -150,19 +150,19 @@ export default {
     this.dialogNuevoCriterio = false;
   } catch (error) {
     console.error("Error al crear criterio:", error);
-    //alert("Error al guardar el criterio: " + error.message);
+    alert("Error al guardar el criterio: " + error.message);
   }
 }
 ,
     async eliminarCriterio(index) {
       const criterio = this.form.criterios[index];
       if (!criterio.idCriterios) {
-        //alert("Este criterio no existe en la base de datos.");
+        alert("Este criterio no existe en la base de datos.");
         return;
       }
 
       if (!confirm("¿Eliminar este criterio?")) return;
-        //alert(index)
+        alert(index)
       try {
         const res = await fetch(`http://localhost:3000/api/criterio/`+criterio.idCriterios, {
           method: "DELETE"
@@ -172,11 +172,11 @@ export default {
           this.form.criterios.splice(index, 1);
         } else {
           const errorData = await res.json();
-          //alert("Error al eliminar el criterio: " + errorData.message);
+          alert("Error al eliminar el criterio: " + errorData.message);
         }
       } catch (error) {
         console.error("Error al eliminar:", error);
-        //alert("Ocurrió un error al eliminar.");
+        alert("Ocurrió un error al eliminar.");
       }
     },
     async editarCriterio(index) {
@@ -204,7 +204,7 @@ export default {
           };
         } catch (error) {
           console.error("Error al editar:", error);
-          //alert("Error al editar criterio.");
+          alert("Error al editar criterio.");
         }
       }
     }

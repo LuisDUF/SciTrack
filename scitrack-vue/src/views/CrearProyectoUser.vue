@@ -196,7 +196,7 @@ export default {
       if (file && file.type === 'application/pdf') {
         this.archivo = file;
       } else {
-        //alert("Por favor seleccione un archivo PDF válido.");
+        alert("Por favor seleccione un archivo PDF válido.");
         this.archivo = null;
       }
     },

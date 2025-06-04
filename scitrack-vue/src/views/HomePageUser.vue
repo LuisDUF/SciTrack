@@ -312,12 +312,12 @@ export default {
       const actual = this.participantes.find(p => p.idParticipante === usuario.idParticipante);
 
       if (!actual) {
-        //alert('Debe iniciar sesión.');
+        alert('Debe iniciar sesión.');
         return;
       }
 
       if (actual.Equipo_idEquipo) {
-        //alert('Ya estás en un equipo.');
+        alert('Ya estás en un equipo.');
         return;
       }
 
@@ -325,7 +325,7 @@ export default {
       const MAX_PARTICIPANTES = equipo.max_integrantes;
 
       if (total >= MAX_PARTICIPANTES) {
-        //alert('Este equipo ya está lleno.');
+        alert('Este equipo ya está lleno.');
         return;
       }
 
@@ -339,13 +339,13 @@ export default {
 
     async confirmarUnirse() {
       if (!this.claveIngresada) {
-        //alert('Por favor ingresa la clave de acceso');
+        alert('Por favor ingresa la clave de acceso');
         return;
       }
 
       // Verifica la clave
       if (this.claveIngresada !== this.equipoSeleccionado.claveAcceso) {
-        //alert('Clave de acceso incorrecta');
+        alert('Clave de acceso incorrecta');
         return;
       }
 
@@ -365,7 +365,7 @@ export default {
 
       } catch (error) {
         console.error('Error al unirse al equipo:', error);
-        //alert('No se pudo unir al equipo. Error: ' + error.message);
+        alert('No se pudo unir al equipo. Error: ' + error.message);
       } finally {
         this.showModalClave = false;
       }

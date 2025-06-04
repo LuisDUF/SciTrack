@@ -191,7 +191,7 @@ export default {
         this.rubrics = this.rubrics.filter(r => r.rubrica_id !== id);
       } catch (err) {
         console.error('Error al eliminar rúbrica:', err);
-        //alert('Hubo un problema al eliminar la rúbrica.');
+        alert('Hubo un problema al eliminar la rúbrica.');
       }
     },
     cancelar() {
@@ -207,7 +207,7 @@ export default {
     async guardarNuevaRubrica() {
       const isValid = await this.$refs.formCrear.validate();
       if (!isValid) {
-        //alert("Por favor, completa todos los campos correctamente.");
+        alert("Por favor, completa todos los campos correctamente.");
         return;
       }
 
@@ -215,11 +215,11 @@ export default {
       const areaId = this.nuevaRubrica.area_id;
 
       if (!descripcion) {
-        //alert("Por favor, ingresa la descripción de la rúbrica.");
+        alert("Por favor, ingresa la descripción de la rúbrica.");
         return;
       }
       if (!areaId || typeof areaId !== "number" || areaId <= 0) {
-        //alert("Por favor, selecciona un área de conocimiento válida.");
+        alert("Por favor, selecciona un área de conocimiento válida.");
         return;
       }
 
@@ -252,10 +252,10 @@ export default {
         this.dialogCrear = false;
         this.$refs.formCrear.resetValidation();
 
-        //alert("Rúbrica creada correctamente.");
+        alert("Rúbrica creada correctamente.");
       } catch (error) {
         console.error("Error al crear la rúbrica:", error);
-        //alert("No se pudo guardar la rúbrica. Intenta de nuevo.");
+        alert("No se pudo guardar la rúbrica. Intenta de nuevo.");
       }
     }
   }

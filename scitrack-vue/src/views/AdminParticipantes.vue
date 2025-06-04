@@ -250,7 +250,7 @@ export default {
           }),
         }
       );
-      if (response.ok) //alert("Realizado");
+      if (response.ok) alert("Realizado");
       location.reload();
     },
     abrirArchivo(doc) {
