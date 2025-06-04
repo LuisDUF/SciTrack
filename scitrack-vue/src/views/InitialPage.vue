@@ -48,6 +48,9 @@
             <h5 ref="inscritosp">Incritos: </h5>
             <h5 ref="aprobadosp">Aprobados: </h5>
             <h5 ref="pendientesp">Pendientes: </h5>
+            <h5 ref="descalificadosp">Descalificados: </h5>
+            <h5 ref="rechazadosp">Rechazados: </h5>
+            <h5 ref="concluidosp">Concluidos: </h5>
             <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
           </div>
         </v-col>
@@ -76,8 +79,8 @@
           <h4 style="font-weight: bold;">Participantes</h4>
           <div class="rounded"
             style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #ffffff; ">
-            <h5 ref="inscritospa">Inscritos: </h5>
-            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;" @click="$router.push('/');">Revisar</button>
+            <h5 ref="inscritospa">Incritos: </h5>
+            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
           </div>
 
         </v-col>
@@ -97,26 +100,26 @@
 
         </v-col>
       </v-row>
-      <h2 class="mt-5" v-if="selectedConvocatoria != null">Estadísticas:</h2>
-      <v-row class="mt-3" v-if="selectedConvocatoria != null">
+      <h2 class="mt-5">Estadísticas:</h2>
+      <v-row class="mt-3">
         <v-col>
           <div>
-            <ApexChart style="width: 100%;" type="donut" :options="optionsGenderPart" :series="seriesGenderPart"></ApexChart>
+            <ApexChart width="500" type="donut" :options="optionsGenderPart" :series="seriesGenderPart"></ApexChart>
           </div>
         </v-col>
         <v-col>
           <div>
-            <ApexChart style="width: 100%;" type="donut" :options="optionsGenderInv" :series="seriesGenderInv"></ApexChart>
+            <ApexChart width="500" type="donut" :options="optionsGenderInv" :series="seriesGenderInv"></ApexChart>
           </div>
         </v-col>
         <v-col>
           <div>
-            <ApexChart style="width: 100%;" type="donut" :options="optionsProjects" :series="seriesProjects"></ApexChart>
+            <ApexChart width="500" type="donut" :options="optionsProjects" :series="seriesProjects"></ApexChart>
           </div>
         </v-col>
         <v-col>
           <div>
-            <ApexChart style="width: 100%;" type="line" :options="optionsPromedio" :series="seriesPromedio"></ApexChart>
+            <ApexChart width="500" type="line" :options="optionsPromedio" :series="seriesPromedio"></ApexChart>
           </div>
         </v-col>
       </v-row>
@@ -212,6 +215,9 @@ export default {
       this.$refs.inscritosinv.textContent = "Inscritos: ";
       this.$refs.aprobadosinv.textContent = "Aprobados: ";
       this.$refs.pendientesinv.textContent = "Pendientes: ";
+      this.$refs.descalificadosp.textContent = "Descalificados: ";
+      this.$refs.concluidosp.textContent = "Concluidos: ";
+      this.$refs.rechazadosp.textContent = "Rechazados: ";
 
       try {
         var inscritos = 0;
@@ -223,69 +229,60 @@ export default {
         var pendientesinv = 0;
         var aprobadosinv = 0;
         var inscritosinv = 0;
-        const response3 = await api.get(`/api/proyecto/`);
-        const proyectosos = JSON.parse(JSON.stringify(response3.data));
+        var rechazadosp = 0;
+        var descalificadosp = 0;
+        var concluidosp = 0;
+        var proyectosos = [];
+        var equiposos = [];
         const parts = [];
-        const invs = [];
+        var invs = [];
         const namesP = [];
         const promsP = [];
 
-        await Promise.all(proyectosos.map(async proyecto => {
-          const response = await api.get(`/api/convocatoria/id/${proyecto.idProyecto}`);
-          const convi = (JSON.parse(JSON.stringify(response.data)));
+        invs.push(...JSON.parse(JSON.stringify((await api.get('/api/investigador/convocatoria/'+item.idConvocatoria)).data)));
+       
+        invs = invs.filter(
+        (obj, index, self) =>
+          index === self.findIndex(o => o.idInvestigador === obj.idInvestigador)
+        );
+        
+        parts.push( ...JSON.parse(JSON.stringify(await api.get(`/api/participante/convocatoria/`+item.idConvocatoria))).data);
+        
+        inscritospa = parts.length;
 
-          if (convi[0].idConvocatoria === item.idConvocatoria) {
+        pendientesinv = invs.filter(s => s.EstadoPersona_idEstadoPersona==1).length;
+        aprobadosinv = invs.filter(s => s.EstadoPersona_idEstadoPersona==2).length;
+        inscritosinv = invs.length;
 
-            inscritos++;
-            if (proyecto.EstadosProyecto_idEstadosProyecto == 1)
-              pendientesp++;
-            else if (proyecto.EstadosProyecto_idEstadosProyecto == 2 || proyecto.EstadosProyecto_idEstadosProyecto == 5)
-              aprobadosp++;
+        proyectosos.push(...JSON.parse(JSON.stringify(await api.get('/api/proyectos/convocatoria/'+item.idConvocatoria))).data); 
+        pendientesp= proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==1).length;
+        aprobadosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==2).length;
+        descalificadosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==4).length;
+        concluidosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==5).length;
+        rechazadosp = proyectosos.filter(s=> s.EstadosProyecto_idEstadosProyecto==3).length;
 
-            promsP.push(proyecto.promedio);
-            namesP.push(proyecto.nombre);
+        inscritos = proyectosos.length
+
+        equiposos.push(...JSON.parse(JSON.stringify(await api.get('/api/equipos/convocatoria/'+item.idConvocatoria))).data);
+        equiposos = equiposos.filter(
+        (obj, index, self) =>
+          index === self.findIndex(o => o.idEquipo === obj.idEquipo)
+        ); 
+        pendientes = equiposos.filter(s=> s.estado=="Pendiente de revisión").length;
+        aprobados = equiposos.filter(s=> s.estado=="Aprobado").length;
+        var inscri = equiposos.length;
 
 
-            const response4 = await api.get(`/api/equipo/proyecto/${proyecto.idProyecto}`);
-            const equiposos = JSON.parse(JSON.stringify(response4.data));
 
-            if (equiposos[0].estado == "Aprobado")
-              aprobados++;
-            else if (equiposos[0].estado == "Pendiente de revisión")
-              pendientes++;
-
-            const response5 = await api.get(`/api/participantes/${equiposos[0].idEquipo}`);
-            inscritospa += response5.data.length;
-            parts.push(response5.data)
-
-            
-            const response6 = await api.get(`/api/investigador/${proyecto.Investigador_idInvestigador}`);
-            const inve = JSON.parse(JSON.stringify(response6.data));
-
-            if (!invs.includes(inve[0])) {
-              inscritosinv++;
-
-              invs.push(inve[0])
-            }
-
-            if (inve[0].EstadoPersona_idEstadoPersona == 1)
-              pendientesinv++;
-            else if (inve[0].EstadoPersona_idEstadoPersona == 2 || inve[0].EstadoPersona_idEstadoPersona == 4)
-              aprobadosinv++;
-
-          }
-        }));
 
         let numF = 0;
         let numM = 0;
-        console.log(JSON.stringify(invs))
         parts.forEach(pa => {
-          if (pa[0].Genero_idGenero === 1) numM = numM + 1;
+          if (pa.Genero_idGenero === 1) numM = numM + 1;
           else numF = numF + 1;
         });
 
         this.seriesGenderPart = [numM, numF];
-
 
         numF = 0;
         numM = 0;
@@ -312,16 +309,20 @@ export default {
           }
         }
 
-        this.$refs.inscritos.textContent = "Inscritos: " + inscritos;
+        this.$refs.inscritos.textContent = "Inscritos: " + inscri;
         this.$refs.aprobados.textContent = "Aprobados: " + aprobados;
         this.$refs.pendientes.textContent = "Pendientes: " + pendientes;
         this.$refs.inscritosp.textContent = "Incritos: " + inscritos;
         this.$refs.aprobadosp.textContent = "Aprobados: " + aprobadosp;
+        this.$refs.rechazadosp.textContent = "Rechazados: " + rechazadosp;
+        this.$refs.concluidosp.textContent = "Concluidos: " + concluidosp;
+        this.$refs.descalificadosp.textContent = "Descalificados: " + descalificadosp;
         this.$refs.pendientesp.textContent = "Pendientes: " + pendientesp;
         this.$refs.inscritospa.textContent = "Inscritos: " + inscritospa;
         this.$refs.inscritosinv.textContent = "Inscritos: " + inscritosinv;
         this.$refs.aprobadosinv.textContent = "Aprobados: " + aprobadosinv;
         this.$refs.pendientesinv.textContent = "Pendientes: " + pendientesinv;
+  
 
 
       } catch (error) {
