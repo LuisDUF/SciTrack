@@ -264,7 +264,7 @@ export default {
       members: Array.isArray(fullData.integrantes)
         ? fullData.integrantes
         : (fullData.integrantes || '').split(', ').filter(m => m.trim() !== ''),
-      comment: fullData.comentario_calificacion || '',
+      comment: fullData.comentario || '',
     };
 
     this.rubric = Array.isArray(fullData.criterios)

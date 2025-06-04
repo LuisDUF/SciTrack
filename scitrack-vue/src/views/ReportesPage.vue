@@ -108,8 +108,8 @@
                         <v-simple-table>
                           <tbody>
                             <tr v-for="(criteria, i) in currentReport.criteria || []" :key="'criteria-'+i">
-                              <td>{{ criteria.descripcion }}</td>
-                              <td class="text-right font-weight-bold">Ponderación: {{ criteria.ponderacion }}</td>
+                              <td>{{ criteria.descripcion || '-' }}</td>
+                              <td class="text-right font-weight-bold">Ponderación: {{ criteria.ponderacion || '-' }}</td>
                             </tr>
                           </tbody>
                         </v-simple-table>
@@ -204,7 +204,7 @@ export default {
             rubric: 'N/A',
             criteria: criterios,
             finalScore,
-            judgeComments: ''
+            judgeComments: detalle.comentario_proyecto || 'Sin comentarios aún.'
           };
         });
 
