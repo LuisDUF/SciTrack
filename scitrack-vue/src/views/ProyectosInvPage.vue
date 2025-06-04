@@ -97,29 +97,28 @@
                   <p>{{ crit.descripcion }}</p>
                   <p class="text-caption grey--text">Ponderación: {{ crit.ponderacion }}%</p>
                   <v-row dense>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model.number="crit.score"
-                        label="Calif."
-                        type="number"
-                        dense
-                        :readonly="isReadOnly"
-                        :disabled="isReadOnly"
-                        min="0"
-                        :max="crit.ponderacion"
-                      />
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        :value="crit.ponderacion"
-                        label="Máximo"
-                        type="number"
-                        dense
-                        readonly
-                        disabled
-                      />
-                    </v-col>
-                  </v-row>
+  <v-col cols="6" v-if="!isReadOnly">
+    <v-text-field
+      v-model.number="crit.score"
+      label="Calif."
+      type="number"
+      dense
+      min="0"
+      :max="crit.ponderacion"
+    />
+  </v-col>
+  <v-col :cols="isReadOnly ? 12 : 6">
+    <v-text-field
+      :value="crit.ponderacion"
+      label="Máximo"
+      type="number"
+      dense
+      readonly
+      disabled
+    />
+  </v-col>
+</v-row>
+
                 </v-card>
               </div>
 
