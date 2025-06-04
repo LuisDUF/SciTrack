@@ -70,7 +70,7 @@ import api from  "../services/api.js"
           const response2 = await api.get(`/api/proyectos/id/${this.usuario.idInvestigador}`);
           
           if(response2.data){
-            alert();
+            
                       this.proyectos = JSON.parse(JSON.stringify(response2.data));
           
           this.$refs.asignados.textContent = "Asignados: "+ this.proyectos.length;
@@ -78,7 +78,7 @@ import api from  "../services/api.js"
           this.$refs.pendientes.textContent="Pendientes: "+this.proyectos.filter(s=>s.promedio==null).length
           }
            else {
-            alert();
+           
     this.proyectos = []; // Asigna un valor por defecto
     console.warn('No se encontraron proyectos para el investigador');
     
