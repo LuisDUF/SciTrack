@@ -233,6 +233,7 @@ export default {
       this.error = null;
       
       try {
+        this.loading = false;
         await Promise.all([
           this.cargarAsesores(),
           this.cargarParticipantes(),
@@ -249,7 +250,7 @@ export default {
           this.cargarEstados(),
           this.cargarArchivos()
         ]);
-                this.loading = false;
+                
 
       } catch (error) {
         this.error = "Error al cargar los datos. Por favor intenta nuevamente.";
