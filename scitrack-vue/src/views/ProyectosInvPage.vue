@@ -282,7 +282,10 @@ export default {
     alert('Hubo un problema al cargar los datos del proyecto.');
   }
 }
+
+
 ,
+
 
     async submitEvaluation() {
   try {
@@ -306,7 +309,16 @@ export default {
 
     if (!resProm.ok) throw new Error('Error al actualizar el promedio');
 
-    console.log('Evaluación y promedio enviados con éxito');
+    // Enviar comentario a la API de actualización
+    const resCom = await fetch(`http://localhost:3000/api/comentario/${this.selectedProject.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ comentario: this.selectedProject.comment || '' }),
+    });
+
+    if (!resCom.ok) throw new Error('Error al actualizar el comentario');
+
+    console.log('Evaluación, promedio y comentario enviados con éxito');
     this.dialog = false;
     this.loadProjects();
   } catch (err) {
@@ -314,8 +326,9 @@ export default {
     alert('Error al enviar evaluación. Intenta de nuevo.');
   }
 }
+
 ,
-  },
+},
 };
 </script>
 
