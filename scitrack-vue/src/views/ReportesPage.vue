@@ -102,7 +102,7 @@
                   <v-card outlined class="h-100">
                     <v-card-title class="subtitle-1 font-weight-bold">Ponderación</v-card-title>
                     <v-card-text>
-                      <p class="font-weight-bold mb-2">RÚBRICA: #{{ currentReport.rubric || 'N/A' }}</p>
+                      <p class="font-weight-bold mb-2">RÚBRICA:</p>
                       <p class="font-weight-bold mb-2">CRITERIOS:</p>
                       <div style="max-height: 200px; overflow-y: auto;">
                         <v-simple-table>
