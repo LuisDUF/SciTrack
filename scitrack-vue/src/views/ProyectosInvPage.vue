@@ -199,26 +199,24 @@ export default {
       return {
         id: p.id || i,
         displayId: 'PRJ' + (1000 + i),
-        name: p.nombre_proyecto,
-        institution: p.institucion_investigador || 'No especificada',
+        name: p.nombre_proyecto || 'Sin nombre',
+        institution: p.institucion_investigador || p.institucion || 'No especificada',
         areas: p.areas_conocimiento || 'No especificadas',
         leader: p.lider_equipo || 'No asignado',
         criterios: [],
         advisor: p.asesor || 'No asignado',
-        members: p.integrantes ? p.integrantes.split(', ') : [],
+        members: typeof p.integrantes === 'string' ? p.integrantes.split(', ') : [],
         comment: p.comentario_calificacion || '',
         convocatory: p.nombre_convocatoria || 'Sin convocatoria',
         status: p.estado_proyecto || 'Sin estado',
-        promedio: p.promedio, // <--- AGREGADO
+        promedio: p.promedio || null,
       };
     });
 
-    // Mostrar solo proyectos que no han sido evaluados Y no tienen promedio
     this.unevaluatedProjects = processed.filter(p =>
       ['Pendiente', 'Aceptado'].includes(p.status) && (p.promedio == null)
     );
 
-    // Evaluados = los que tienen promedio o estado diferente
     this.evaluatedProjects = processed.filter(p =>
       p.promedio != null || !['Pendiente', 'Aceptado'].includes(p.status)
     );
@@ -226,6 +224,7 @@ export default {
     console.error('Error al cargar proyectos:', err);
   }
 }
+
 
 ,
 
