@@ -41,7 +41,7 @@
                 :key="conv.idConvocatoria || conv"
                 v-model="selectedConvocatories"
                 :label="conv.nombre || conv"
-                :value="conv.nombre || conv"
+                :value="(conv.nombre || conv).trim()"
                 dense
                 hide-details
               />
@@ -163,15 +163,12 @@ export default {
 
     async loadAndCombineProyectos() {
       try {
-        // Cargar proyectos con detalles (criterios, integrantes, etc)
         const resDetalles = await fetch('http://localhost:3000/api/reportes/');
         const detalles = await resDetalles.json();
 
-        // Cargar datos complementarios (convocatoria, estado, nombre, institucion)
         const resVp = await fetch('http://localhost:3000/api/reportesVp/');
         const infoVp = await resVp.json();
 
-        // Crear un mapa para acceso rápido por nombre de proyecto
         const detallesMap = new Map();
         detalles.forEach(d => {
           detallesMap.set(d.nombre_proyecto, d);
@@ -179,10 +176,9 @@ export default {
 
         this.projects = infoVp.map(item => {
           const detalle = detallesMap.get(item.nombre_proyecto) || {};
-
-          // Calcular promedio de ponderaciones de criterios
           const criterios = detalle.criterios || [];
           let finalScore = 'N/A';
+
           if (criterios.length > 0) {
             const suma = criterios.reduce((acc, c) => acc + (c.ponderacion || 0), 0);
             finalScore = (suma / criterios.length).toFixed(2);
@@ -192,9 +188,8 @@ export default {
             id: detalle.idProyecto || null,
             name: item.nombre_proyecto,
             institution: item.institucion_investigador,
-            convocatory: item.nombre_convocatoria || 'N/A',
+            convocatory: (item.nombre_convocatoria || 'N/A').trim(),
             status: item.estado_proyecto || 'N/A',
-
             area: detalle.area_conocimiento_categoria || 'N/A',
             leader: detalle.lider_equipo || 'N/A',
             advisor: detalle.asesor_equipo || 'N/A',
@@ -208,7 +203,6 @@ export default {
           };
         });
 
-        // Inicialmente mostrar todos
         this.filteredProjects = [...this.projects];
       } catch (error) {
         console.error('Error cargando proyectos:', error);
@@ -221,13 +215,14 @@ export default {
     },
 
     applyFilters() {
-      if (this.selectedConvocatories.length === 0) {
-        this.filteredProjects = [...this.projects];
-      } else {
-        this.filteredProjects = this.projects.filter(project =>
-          this.selectedConvocatories.includes(project.convocatory)
-        );
-      }
+      const selected = this.selectedConvocatories.map(c => c.trim().toLowerCase());
+
+      console.log('Selected convocatorias:', selected);
+
+      this.filteredProjects = this.projects.filter(project => {
+        const conv = (project.convocatory || '').trim().toLowerCase();
+        return selected.includes(conv);
+      });
     }
   }
 };
@@ -238,20 +233,16 @@ export default {
   border-radius: 4px !important;
   border: 1px solid #e0e0e0 !important;
 }
-
 .v-btn {
   text-transform: none;
   letter-spacing: normal;
 }
-
 .text-subtitle-1 {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.75rem;
   letter-spacing: 0.009375em;
 }
-
-/* Scroll personalizado */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -266,16 +257,12 @@ export default {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-
-/* Estilos para el overlay */
 .v-dialog {
   overflow-y: hidden !important;
 }
-
 .v-card__text {
   padding: 20px !important;
 }
-
 ul {
   padding-left: 20px;
   margin: 0;
