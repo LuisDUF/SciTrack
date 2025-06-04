@@ -48,25 +48,28 @@
           </div>
           </div>
         </v-col>
-        <v-col  style=" display: flex;flex-direction:column; border-radius: 10px; height:100px; width:480px; margin-left: 0.5vw; background-color:#ffffff; ">
-            <button 
-              id="btnCrearProyecto" 
-              type="button" 
-              class="submit-button"
-              @click="irACrearProyecto"
-            >
-              Crear un nuevo proyecto
-            </button>
-
-<button 
-  id="btnCrearEquipo" 
-  type="button" 
-  class="submit-button2"
-  @click="irACrearEquipo"
->
-  Crear un nuevo equipo
-</button>
-        </v-col>
+        
+          <v-col  style=" display: flex;flex-direction:column; border-radius: 10px; height:100px; width:480px; margin-left: 0.5vw; background-color:#ffffff; ">
+              <button 
+                id="btnCrearProyecto" 
+                type="button" 
+                class="submit-button"
+                @click="irACrearProyecto"
+              >
+                Crear un nuevo proyecto
+              </button>
+              <div v-if="!usuarioTieneEquipo" class= "botonAncho">
+                <button 
+                  id="btnCrearEquipo" 
+                  type="button" 
+                  class="submit-button2"
+                  @click="irACrearEquipo"
+                >
+                  Crear un nuevo equipo
+                </button>
+              </div>
+          </v-col>
+        
       </v-row>
     </div>
   </DIV>
@@ -83,13 +86,20 @@ import api from  "../services/api.js"
         usuario : JSON.parse(localStorage.getItem("userData")) || null,
         convocatorias: [],
         proyectos: [],
+        PARTICIPANTE: [],
         equipos: [],
         selectedConvocatoria: null
       }
     },
-    created(){
-
-    },async mounted(){
+  computed: {
+    usuarioTieneEquipo() {
+      if (!this.usuario || !this.usuario.idParticipante) return false;
+      const participante = this.PARTICIPANTE.find(p => p.idParticipante === this.usuario.idParticipante);
+      return participante && participante.Equipo_idEquipo;
+    }
+  },
+  async mounted(){
+      await this.cargarParticipantes();
       switch(this.usuario.Genero_idGenero){
         case 1: this.$refs.baner.textContent = "¡Bienvenido!"; break;
         case 2: this.$refs.baner.textContent = "¡Bienvenida!"; break;
@@ -165,9 +175,18 @@ import api from  "../services/api.js"
       this.$router.push({ name: 'CrearProyecto' })
     },
     
+    
     irACrearEquipo() {
       this.$router.push({ name: 'CrearEquipo' })
-    }
+    },
+        async cargarParticipantes() {
+      try {
+        const response = await fetch("http://localhost:3000/api/participante/");
+        this.PARTICIPANTE = await response.json();
+      } catch (error) {
+        console.error("Error al obtener participantes:", error);
+      }
+    },
     }
 
   }
@@ -188,6 +207,7 @@ import api from  "../services/api.js"
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
+  width: 100%;
 }
 .submit-button {
   margin-top: 10px;
@@ -198,5 +218,8 @@ import api from  "../services/api.js"
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
+}
+.botonAncho{
+  width: 100%;
 }
 </style>
