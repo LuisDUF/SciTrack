@@ -37,47 +37,47 @@
         
         <v-col class="rounded"  style="margin-left: 1.5vw;">
           <v-row>
-            <v-col class="rounded" style=" background-color: #BFD6FF; margin-bottom: 2vw;">
-                        <h4 style="font-weight: bold;">Filtrar por area de conocimiento:</h4>
-          <div class="rounded pa-0" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
-            <div style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
-            <v-list class="ma-5 my-0" style="background-color: #EBF2FF; ">
-              <v-radio-group v-model="selectedAreaDeConocimiento" style="margin-top: 0;">
-                  <v-radio
-                  v-for="AreaDeConocimiento in AreaDeConocimientos"
-                  :key="AreaDeConocimiento.idAreaDeConocimientoInv"
-                  :label="AreaDeConocimiento.nombre"
-                  :value="AreaDeConocimiento.idAreaDeConocimientoInv"
-                  @change="selectedAreaDeConocimiento=AreaDeConocimiento, onCheckboxChange()"
-                ></v-radio>
-              </v-radio-group>
-
-
-            </v-list>
-          </div>
-          </div>
+            <v-col cols="12" class="rounded" style=" background-color: #BFD6FF; margin-bottom: 2vw;">
+                <h4 style="font-weight: bold;">Filtrar por area de conocimiento:</h4>
+                <div class="rounded pa-0" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
+                  <div style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
+                    <v-list class="ma-5 my-0" style="background-color: #EBF2FF; ">
+                        <v-radio-group v-model="selectedAreaDeConocimiento" style="margin-top: 0;">
+                          <v-radio
+                          v-for="AreaDeConocimiento in AreaDeConocimientos"
+                          :key="AreaDeConocimiento.idAreaDeConocimientoInv"
+                          :label="AreaDeConocimiento.nombre"
+                          :value="AreaDeConocimiento.idAreaDeConocimientoInv"
+                          @change="selectedAreaDeConocimiento=AreaDeConocimiento, onCheckboxChange()"
+                        ></v-radio>
+                      </v-radio-group>
+                    </v-list>
+                  </div>
+                </div>
             </v-col>
-            <v-col class="rounded" style=" background-color: #BFD6FF;">
-                        <h4 style="font-weight: bold;">Filtrar por institución:</h4>
-          <div class="rounded pa-0" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
-            <div class="" style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
-            <v-list class="ma-5 my-0" style="background-color: #EBF2FF; ">
-              <v-radio-group class="" v-model="selectedInstitucion" style="margin-top: 0;">
-                  <v-radio class=""
-                  v-for="Institucion in Institucions"
-                  :key="Institucion.idInstitucion"
-                  :label="Institucion.nombre"
-                  :value="Institucion.idInstitucion"
-                  @change="selectedInstitucion=Institucion, onCheckboxChange()"
-                ></v-radio>
-              </v-radio-group>
-
-
-            </v-list>
-          </div>
-          </div>
+            <v-col cols="12" class="rounded" style=" background-color: #BFD6FF;">
+                <h4 style="font-weight: bold;">Filtrar por institución:</h4>
+                <div class="rounded pa-0" style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #EBF2FF; ">
+                  <div class="" style="max-height: 5.5vw; overflow-y: auto; background-color: #EBF2FF; ">
+                    <v-list class="ma-5 my-0" style="background-color: #EBF2FF; ">
+                      <v-radio-group class="" v-model="selectedInstitucion" style="margin-top: 0;">
+                          <v-radio class=""
+                          v-for="Institucion in Institucions"
+                          :key="Institucion.idInstitucion"
+                          :label="Institucion.nombre"
+                          :value="Institucion.idInstitucion"
+                          @change="selectedInstitucion=Institucion, onCheckboxChange()"
+                        ></v-radio>
+                      </v-radio-group>
+                    </v-list>
+                  </div>
+                </div>
             </v-col>
-          </v-row>
+            <v-col cols="12">
+              <button style="color: #ffffff; background-color: #6596FF; width: 100%;" class="rounded py-2 mt-3" @click="generar()">Generar CSV</button>
+            </v-col>
+
+        </v-row>
 
         </v-col>
 
@@ -227,6 +227,16 @@ import itemListaInv from "@/components/itemListaInv.vue";
       cerrar(){
         this.vari.no = 'NO';
         this.pdfUrl = null;
+      },async generar(){
+        try{
+        window.open('http://localhost:3000/api/crearExel', '_blank');
+      } catch (error) {
+        console.error('Error al exportar:', error);
+        this.$toast.error('Error al generar el archivo Excel');
+      } finally {
+        this.loading = false;
+      }
+       
       },
     
      async onCheckboxChange(){
