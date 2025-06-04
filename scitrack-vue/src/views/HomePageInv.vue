@@ -54,6 +54,9 @@ import api from  "../services/api.js"
     created(){
 
     },async mounted(){
+      if(!this.usuario) this.$router.push('/login');
+
+
       switch(this.usuario.Genero_idGenero){
         case 1: this.$refs.baner.textContent = "¡Bienvenido!"; break;
         case 2: this.$refs.baner.textContent = "¡Bienvenida!"; break;
