@@ -103,8 +103,8 @@
               </div>
             </div>
 
-            <div class="row">
-              <!-- Esto era para agregar participantes a tu equipo a lo bestia.
+            <!--<div class="row">
+               Esto era para agregar participantes a tu equipo a lo bestia.
               <div class="column">
                 <label><strong>Participantes disponibles:</strong></label>
                 <input 
@@ -146,8 +146,8 @@
                     </tr>
                   </tbody>
                 </table>
-              </div> -->
-            </div>
+              </div> 
+            </div> -->
 
             <v-btn id="btnEnviarRevision" type="button" class="submit-button" @click="enviarEquipo">
               Enviar para revisión
@@ -541,7 +541,9 @@ export default {
   background: #ffffff;
   border-radius: 5px;
   max-width: 100%;
-  margin: auto;
+  height: 920px ;
+  margin: 10px;
+  margin-top: 2%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -561,11 +563,11 @@ export default {
   border-radius: 5px;
   padding: 2rem;
   max-width: 100%;
-  margin: auto;
+  margin: 20px;
 }
 
 .contenido {
-  background: #fff;
+  background: #ffffff;
   border-radius: 5px;
   padding: 2rem;
   margin: auto;
@@ -662,7 +664,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 500px;
+  height: 460px;
   overflow-y: auto;
   background-color: #BFD6FF;
   border-radius: 5px;
