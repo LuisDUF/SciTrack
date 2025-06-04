@@ -2,21 +2,13 @@
   <div id="app">
     <div class="contenedor">
       <h2>Gestión de Equipos</h2>
-           <loading-dialog v-model="loading" />
+      <loading-dialog v-model="loading" />
 
       <div class="tabs">
-        <v-btn 
-          class="tab" 
-          :class="{ active: activeTab === 'equipos' }" 
-          @click="mostrarSeccion('equipos')"
-        >
+        <v-btn class="tab" :class="{ active: activeTab === 'equipos' }" @click="mostrarSeccion('equipos')">
           Equipos
         </v-btn>
-        <v-btn 
-          class="tab" 
-          :class="{ active: activeTab === 'proyectos' }" 
-          @click="mostrarSeccion('proyectos')"
-        >
+        <v-btn class="tab" :class="{ active: activeTab === 'proyectos' }" @click="mostrarSeccion('proyectos')">
           Proyectos
         </v-btn>
       </div>
@@ -32,7 +24,7 @@
             <v-btn @click="mostrarModal('equipo', equipo)" class="blue-btn">Revisar</v-btn>
           </div>
         </div>
-        
+
         <div class="column" id="equiposAprobados">
           <h3>Equipos Aprobados</h3>
           <div v-for="equipo in mostrarEquiposAprobados" :key="equipo.idEquipo" class="card">
@@ -47,29 +39,20 @@
           <div class="filtro-Nombre">
             <p><strong>Buscar por nombre del líder o asesor:</strong></p>
             <div class="native-search-container">
-              <input
-                type="text"
-                v-model="busquedaEquipos"
-                @input="filtrarEquipos"
-                placeholder="Buscar por líder o asesor"
-                class="native-search-input"
-              >
+              <input type="text" v-model="busquedaEquipos" @input="filtrarEquipos"
+                placeholder="Buscar por líder o asesor" class="native-search-input">
             </div>
           </div>
-          
+
           <div class="row">
             <div id="filtroInstitucionEquiposContainer" class="native-checkbox-group pa-5">
               <label for="filtroInstitucionEquipos"><strong> Filtrar por institución:</strong></label>
 
-              <label v-for="institucion in INSTITUCIONES" :key="institucion.idInstitucion" 
-                    class="native-checkbox-wrapper" :class="{'is-selected': filtroInstitucionEquipos.includes(institucion.idInstitucion)}">
-                <input
-                  type="checkbox"
-                  v-model="filtroInstitucionEquipos"
-                  :value="institucion.idInstitucion"
-                  @change="filtrarEquipos"
-                  class="native-checkbox"
-                >
+              <label v-for="institucion in INSTITUCIONES" :key="institucion.idInstitucion"
+                class="native-checkbox-wrapper"
+                :class="{ 'is-selected': filtroInstitucionEquipos.includes(institucion.idInstitucion) }">
+                <input type="checkbox" v-model="filtroInstitucionEquipos" :value="institucion.idInstitucion"
+                  @change="filtrarEquipos" class="native-checkbox">
                 <span class="checkmark"></span>
                 <span class="label-text">{{ institucion.nombre }}</span>
               </label>
@@ -84,24 +67,28 @@
           <div v-for="proyecto in proyectosPendientesFiltrados" :key="proyecto.idProyecto" class="card">
             <p><strong>Nombre del proyecto:</strong> {{ proyecto.nombre }}</p>
             <p><strong>Categoria:</strong> {{ obtenerCategoria(proyecto.Categoria_idCategoria) }}</p>
-            <p><strong>Nombre del líder del equipo:</strong> {{ obtenerNombreLiderEquipo(proyecto.Equipo_idEquipo) }}</p>
+            <p><strong>Nombre del líder del equipo:</strong> {{ obtenerNombreLiderEquipo(proyecto.Equipo_idEquipo) }}
+            </p>
             <p><strong>Institución:</strong> {{ obtenerInstitucionProyecto(proyecto.Equipo_idEquipo) }}</p>
             <p><strong>Convocatoria:</strong> {{ obtenerConvocatoriaProyecto(proyecto) }}</p>
-            <p class="estado pendiente"><strong>Estatus:</strong> {{ obtenerEstatusProyecto(proyecto.EstadosProyecto_idEstadosProyecto) }}</p>
+            <p class="estado pendiente"><strong>Estatus:</strong> {{
+              obtenerEstatusProyecto(proyecto.EstadosProyecto_idEstadosProyecto) }}</p>
             <v-btn @click="mostrarModal('proyecto', proyecto)" class="blue-btn">Revisar</v-btn>
           </div>
         </div>
-        
+
         <div class="column" id="listaProyectosAprobados">
           <h3>Proyectos Aprobados</h3>
           <div v-for="proyecto in proyectosAprobadosFiltrados" :key="proyecto.idProyecto" class="card">
             <p><strong>Nombre del proyecto:</strong> {{ proyecto.nombre }}</p>
             <p><strong>Categoria:</strong> {{ obtenerCategoria(proyecto.Categoria_idCategoria) }}</p>
-            <p><strong>Nombre del líder del equipo:</strong> {{ obtenerNombreLiderEquipo(proyecto.Equipo_idEquipo) }}</p>
+            <p><strong>Nombre del líder del equipo:</strong> {{ obtenerNombreLiderEquipo(proyecto.Equipo_idEquipo) }}
+            </p>
             <p><strong>Institución:</strong> {{ obtenerInstitucionProyecto(proyecto.Equipo_idEquipo) }}</p>
             <p><strong>Fase:</strong> {{ obtenerFaseProyecto(proyecto.Fase_idFase) }}</p>
             <p><strong>Convocatoria:</strong> {{ obtenerConvocatoriaProyecto(proyecto) }}</p>
-            <p class="estado disponible"><strong>Estatus:</strong> {{ obtenerEstatusProyecto(proyecto.EstadosProyecto_idEstadosProyecto) }}</p>
+            <p class="estado disponible"><strong>Estatus:</strong> {{
+              obtenerEstatusProyecto(proyecto.EstadosProyecto_idEstadosProyecto) }}</p>
           </div>
         </div>
 
@@ -109,28 +96,19 @@
           <div class="filtro-NombreP">
             <p><strong>Buscar por nombre del proyecto o lider:</strong></p>
             <div class="native-search-container">
-              <input
-                type="text"
-                v-model="busquedaProyectos"
-                @input="filtrarProyectos"
-                placeholder="Inserte el nombre..."
-                class="native-search-input"
-              >
+              <input type="text" v-model="busquedaProyectos" @input="filtrarProyectos"
+                placeholder="Inserte el nombre..." class="native-search-input">
             </div>
           </div>
 
           <div class="column" style="height: 10px;">
             <label for="filtroInstitucionEquipos pa-5"><strong> Filtrar por institución:</strong></label>
             <div id="filtroInstitucionProyectoContainer" class="native-checkbox-group">
-              <label v-for="institucion in INSTITUCIONES" :key="institucion.idInstitucion" 
-                    class="native-checkbox-wrapper" :class="{'is-selected': filtroInstitucionProyectos.includes(institucion.idInstitucion)}">
-                <input
-                  type="checkbox"
-                  v-model="filtroInstitucionProyectos"
-                  :value="institucion.idInstitucion"
-                  @change="filtrarProyectos"
-                  class="native-checkbox"
-                >
+              <label v-for="institucion in INSTITUCIONES" :key="institucion.idInstitucion"
+                class="native-checkbox-wrapper"
+                :class="{ 'is-selected': filtroInstitucionProyectos.includes(institucion.idInstitucion) }">
+                <input type="checkbox" v-model="filtroInstitucionProyectos" :value="institucion.idInstitucion"
+                  @change="filtrarProyectos" class="native-checkbox">
                 <span class="checkmark"></span>
                 <span class="label-text">{{ institucion.nombre }}</span>
               </label>
@@ -140,15 +118,11 @@
           <div class="column" style="height: max-content;">
             <label for="filtroConvocatoriaProyectos"><strong> Filtrar por Convocatoria:</strong></label>
             <div id="filtroConvocatoriaProyectoContainer" class="native-checkbox-group">
-              <label v-for="convocatoria in CONVOCATORIAS" :key="convocatoria.idConvocatoria" 
-                    class="native-checkbox-wrapper" :class="{'is-selected': filtroConvocatoriaProyectos.includes(convocatoria.idConvocatoria)}">
-                <input
-                  type="checkbox"
-                  v-model="filtroConvocatoriaProyectos"
-                  :value="convocatoria.idConvocatoria"
-                  @change="filtrarProyectos"
-                  class="native-checkbox"
-                >
+              <label v-for="convocatoria in CONVOCATORIAS" :key="convocatoria.idConvocatoria"
+                class="native-checkbox-wrapper"
+                :class="{ 'is-selected': filtroConvocatoriaProyectos.includes(convocatoria.idConvocatoria) }">
+                <input type="checkbox" v-model="filtroConvocatoriaProyectos" :value="convocatoria.idConvocatoria"
+                  @change="filtrarProyectos" class="native-checkbox">
                 <span class="checkmark"></span>
                 <span class="label-text">{{ convocatoria.nombre }}</span>
               </label>
@@ -180,9 +154,9 @@
                 <strong>Rechazar</strong>
               </v-btn>
             </div>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -191,7 +165,7 @@
 import LoadingDialog from "@/components/LoadingDialog.vue";
 
 export default {
-    components: {LoadingDialog },
+  components: { LoadingDialog },
 
   data() {
     return {
@@ -205,10 +179,10 @@ export default {
       modalDetalles: '',
       pdfPreview: '',
       tipoActual: '',
-      loading:false,
+      loading: false,
       datosActuales: null,
-      
-// Datos de API
+
+      // Datos de API
       ASESOR: [],
       PARTICIPANTE: [],
       EQUIPOS: [],
@@ -225,14 +199,14 @@ export default {
       ARCHIVOS: []
     }
   },
-    mounted() {
+  mounted() {
     this.cargarData();
   },
   methods: {
     async cargarData() {
       this.loading = true;
       this.error = null;
-      
+
       try {
         this.loading = false;
         await Promise.all([
@@ -251,18 +225,18 @@ export default {
           this.cargarEstados(),
           this.cargarArchivos()
         ]);
-                
+
 
       } catch (error) {
         this.error = "Error al cargar los datos. Por favor intenta nuevamente.";
         console.error("Error cargando datos:", error);
-                this.loading = false;
+        this.loading = false;
 
       } finally {
         this.loading = false;
       }
     },
-    
+
     async cargarAsesores() {
       try {
         const response = await fetch("http://localhost:3000/api/asesor/");
@@ -272,7 +246,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarParticipantes() {
       try {
         const response = await fetch("http://localhost:3000/api/participante/");
@@ -282,7 +256,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarEquipos() {
       try {
         const response = await fetch("http://localhost:3000/api/equipo/");
@@ -292,7 +266,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarDependencias() {
       try {
         const response = await fetch("http://localhost:3000/api/dependencia/");
@@ -302,7 +276,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarInstituciones() {
       try {
         const response = await fetch("http://localhost:3000/api/institucion/");
@@ -312,7 +286,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarGeneros() {
       try {
         const response = await fetch("http://localhost:3000/api/genero/");
@@ -322,7 +296,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarFases() {
       try {
         const response = await fetch("http://localhost:3000/api/fase/");
@@ -332,7 +306,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarItems() {
       try {
         const response = await fetch("http://localhost:3000/api/itemconvocatoria_fase/");
@@ -342,7 +316,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarConvocatorias() {
       try {
         const response = await fetch("http://localhost:3000/api/convocatoria/");
@@ -352,7 +326,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarProyectos() {
       try {
         const response = await fetch("http://localhost:3000/api/proyecto/");
@@ -362,7 +336,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarCategorias() {
       try {
         const response = await fetch("http://localhost:3000/api/categoria/");
@@ -372,7 +346,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarAreas() {
       try {
         const response = await fetch("http://localhost:3000/api/areadeconocimientocat/");
@@ -382,7 +356,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarEstados() {
       try {
         const response = await fetch("http://localhost:3000/api/estadosproyecto/");
@@ -392,7 +366,7 @@ export default {
         throw error;
       }
     },
-    
+
     async cargarArchivos() {
       try {
         const response = await fetch("http://localhost:3000/api/archivos/");
@@ -403,54 +377,54 @@ export default {
         throw error;
       }
     },
-    
-     // Métodos auxiliares (no reactivos, por eso van en methods)
+
+    // Métodos auxiliares (no reactivos, por eso van en methods)
     cumpleFiltroInstitucion(lider) {
       if (this.filtroInstitucionProyectos.length === 0) return true;
-      
+
       const dependencia = lider ? this.DEPENDENCIAS.find(d => d.idDependencia === lider.Dependencia_idDependencia) : null;
       const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
-      
+
       return this.filtroInstitucionProyectos.includes(String(institucionId));
     },
 
     cumpleFiltroConvocatoria(proyecto) {
       if (this.filtroConvocatoriaProyectos.length === 0) return true;
-      
+
       const fase = proyecto ? this.FASES.find(f => f.idFase === proyecto.Fase_idFase) : null;
       const item = fase ? this.ITEMCF.find(i => i.Fase_idFase === fase.idFase) : null;
       const convocatoriaId = item ? item.Convocatoria_idConvocatoria : null;
-      
+
       return this.filtroConvocatoriaProyectos.includes(String(convocatoriaId));
     },
 
-  actualizarFiltroInstitucion(id, checked) {
-    if (checked) {
-      this.filtroInstitucionEquipos.push(id);
-    } else {
-      this.filtroInstitucionEquipos = this.filtroInstitucionEquipos.filter(item => item !== id);
-    }
-    this.filtrarEquipos();
-  },
+    actualizarFiltroInstitucion(id, checked) {
+      if (checked) {
+        this.filtroInstitucionEquipos.push(id);
+      } else {
+        this.filtroInstitucionEquipos = this.filtroInstitucionEquipos.filter(item => item !== id);
+      }
+      this.filtrarEquipos();
+    },
 
 
-  actualizarFiltroInstitucionPro(id, checked) {
-    if (checked) {
-      this.filtroInstitucionProyectos.push(id);
-    } else {
-      this.filtroInstitucionProyectos = this.filtroInstitucionProyectos.filter(item => item !== id);
-    }
-    this.filtrarProyectos();
-  },
+    actualizarFiltroInstitucionPro(id, checked) {
+      if (checked) {
+        this.filtroInstitucionProyectos.push(id);
+      } else {
+        this.filtroInstitucionProyectos = this.filtroInstitucionProyectos.filter(item => item !== id);
+      }
+      this.filtrarProyectos();
+    },
 
-  actualizarFiltroConvocatoria(id, checked) {
-    if (checked) {
-      this.filtroConvocatoriaProyectos.push(id);
-    } else {
-      this.filtroConvocatoriaProyectos = this.filtroConvocatoriaProyectos.filter(item => item !== id);
-    }
-    this.filtrarProyectos();
-  },
+    actualizarFiltroConvocatoria(id, checked) {
+      if (checked) {
+        this.filtroConvocatoriaProyectos.push(id);
+      } else {
+        this.filtroConvocatoriaProyectos = this.filtroConvocatoriaProyectos.filter(item => item !== id);
+      }
+      this.filtrarProyectos();
+    },
 
     mostrarSeccion(seccion) {
       this.activeTab = seccion;
@@ -497,7 +471,7 @@ export default {
       const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
       const institucion = this.INSTITUCIONES.find(i => i.idInstitucion === (dependencia ? dependencia.Institucion_idInstitucion : null));
       return institucion ? institucion.nombre : 'Sin institución';
-    },   
+    },
     obtenerCategoria(idCategoria) {
       const categoria = this.CATEGORIAS.find(c => c.idCategoria === idCategoria);
       return categoria ? categoria.nombre : 'Sin categoria';
@@ -524,7 +498,7 @@ export default {
         const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
         const institucion = this.INSTITUCIONES.find(i => i.idInstitucion === (dependencia ? dependencia.Institucion_idInstitucion : null));
         const archivo = this.ARCHIVOS.find(a => a.idArchivos === (lider ? lider.Archivos_idArchivos : null));
-        
+
         this.modalDetalles = `
           <p><strong>Nombre del líder:</strong> ${lider ? `${lider.nombre} ${lider.apellidoPaterno}` : 'Sin líder'}</p>
           <p><strong>Correo del líder:</strong> ${lider ? lider.correo : 'N/A'}</p>
@@ -533,19 +507,19 @@ export default {
           <p><strong>Estado:</strong> ${datos.estado}</p>
         `;
 
-  if (archivo && archivo.contenido && archivo.contenido.data) {
-    // Convertir el buffer a Blob y crear URL
-    const byteArray = new Uint8Array(archivo.contenido.data);
-    const blob = new Blob([byteArray], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    
-    this.pdfPreview = `
+        if (archivo && archivo.contenido && archivo.contenido.data) {
+          // Convertir el buffer a Blob y crear URL
+          const byteArray = new Uint8Array(archivo.contenido.data);
+          const blob = new Blob([byteArray], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+
+          this.pdfPreview = `
       <embed src="${url}" type="application/pdf" width="100%" height="100%">
 
     `;
-  } else {
-    this.pdfPreview = '<p style="text-align: center">No se encontró el archivo.</p>';
-  }
+        } else {
+          this.pdfPreview = '<p style="text-align: center">No se encontró el archivo.</p>';
+        }
       } else if (tipo === 'proyecto') {
         const equipo = this.EQUIPOS.find(e => e.idEquipo === datos.Equipo_idEquipo);
         const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
@@ -555,7 +529,7 @@ export default {
         const categoria = this.CATEGORIAS.find(c => c.idCategoria === datos.Categoria_idCategoria);
         const area = this.AREAS.find(a => a.idAreaDeConocimientoCat === (categoria ? categoria.AreaDeConocimientoCat_idAreaDeConocimientoCat : null));
         const estado = this.ESTADOP.find(es => es.idEstadosProyecto === datos.EstadosProyecto_idEstadosProyecto);
-        
+
         this.modalDetalles = `
           <p><strong>Nombre del proyecto:</strong> ${datos.nombre}</p>
           <p><strong>Fecha de registro:</strong> ${datos.fechaRegistro}</p>
@@ -568,19 +542,19 @@ export default {
           <p class="estado pendiente"><strong>Estatus:</strong> ${estado.nombre}</p>
         `;
 
-  if (archivo && archivo.contenido && archivo.contenido.data) {
-    // Convertir el buffer a Blob y crear URL
-    const byteArray = new Uint8Array(archivo.contenido.data);
-    const blob = new Blob([byteArray], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    
-    this.pdfPreview = `
+        if (archivo && archivo.contenido && archivo.contenido.data) {
+          // Convertir el buffer a Blob y crear URL
+          const byteArray = new Uint8Array(archivo.contenido.data);
+          const blob = new Blob([byteArray], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+
+          this.pdfPreview = `
       <embed src="${url}" type="application/pdf" width="100%" height="100%">
 
     `;
-  } else {
-    this.pdfPreview = '<p style="text-align: center">No se encontró el archivo.</p>';
-  }
+        } else {
+          this.pdfPreview = '<p style="text-align: center">No se encontró el archivo.</p>';
+        }
       }
 
       this.modalVisible = true;
@@ -625,21 +599,21 @@ export default {
         // Aquí iría tu llamada a la API
         const response = await fetch(`http://localhost:3000/api/equipo/${idEquipo}`, {
           method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(actualizado)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(actualizado)
         });
         if (!response.ok) throw new Error(`Error al aprobar equipo: ${response.status}`);
-        
-        
+
+
         console.log("Actualizando líder:", {
-            id: lider.idParticipante,
-            body: { Equipo_idEquipo: idEquipo }
+          id: lider.idParticipante,
+          body: { Equipo_idEquipo: idEquipo }
         });
         // Asociar líder con el equipo aprobado
         const resLider = await fetch(`http://localhost:3000/api/participante/${lider.idParticipante}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Equipo_idEquipo: idEquipo })
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ Equipo_idEquipo: idEquipo })
         });
 
         if (!resLider.ok) throw new Error("Error al asociar líder al equipo");
@@ -660,8 +634,8 @@ export default {
         // Aquí iría tu llamada a la API
         const response = await fetch(`http://localhost:3000/api/equipo/${idEquipo}`, {
           method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(actualizado)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(actualizado)
         });
         if (!response.ok) throw new Error(`Error al rechazar equipo: ${response.status}`);
         // Recargar datos
@@ -680,11 +654,11 @@ export default {
         // Aquí iría tu llamada a la API
         const resProyecto = await fetch(`http://localhost:3000/api/proyecto/${idProyecto}`, {
           method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(actualizado)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(actualizado)
         });
         if (!resProyecto.ok) throw new Error(`Error al aprobar proyecto: ${resProyecto.status}`);
-        
+
         // Recargar datos
         await this.cargarData();
       } catch (error) {
@@ -702,47 +676,47 @@ export default {
         // Aquí iría tu llamada a la API
         const response = await fetch(`http://localhost:3000/api/proyecto/${idProyecto}`, {
           method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(actualizado)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(actualizado)
         });
         if (!response.ok) throw new Error(`Error al rechazar participante: ${response.status}`);
-        
+
         // Recargar datos
         await this.cargarData();
       } catch (error) {
         console.error("Error al rechazar proyecto:", error);
       }
     },
-    
+
   },
 
   computed: {
     mostrarEquiposPendientes() {
       return this.EQUIPOS.filter(equipo => {
-      // Filtro por estado
-      if (equipo.estado !== "Pendiente de revisión") return false;
-      
-      // Filtro por texto (líder o asesor)
-      const texto = this.busquedaEquipos.toLowerCase();
-      const lider = this.PARTICIPANTE.find(p => p.idParticipante === equipo.Participante_idLider);
-      const asesor = this.ASESOR.find(a => a.idAsesor === equipo.Asesor_idAsesor);
-      
-      const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
-      const nombreAsesor = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}`.toLowerCase() : '';
-      const coincideNombre = nombreLider.includes(texto) || nombreAsesor.includes(texto);
-      
-      // Filtro por institución
-      const filtroInstitucionActivo = this.filtroInstitucionEquipos.length > 0;
-      const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
-      const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
-      
-      // Convertir IDs a string para comparación segura
-      const institucionSeleccionada = filtroInstitucionActivo 
-        ? this.filtroInstitucionEquipos.map(String).includes(String(institucionId))
-        : true;
-      
-      return coincideNombre && institucionSeleccionada;
-    });
+        // Filtro por estado
+        if (equipo.estado !== "Pendiente de revisión") return false;
+
+        // Filtro por texto (líder o asesor)
+        const texto = this.busquedaEquipos.toLowerCase();
+        const lider = this.PARTICIPANTE.find(p => p.idParticipante === equipo.Participante_idLider);
+        const asesor = this.ASESOR.find(a => a.idAsesor === equipo.Asesor_idAsesor);
+
+        const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
+        const nombreAsesor = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}`.toLowerCase() : '';
+        const coincideNombre = nombreLider.includes(texto) || nombreAsesor.includes(texto);
+
+        // Filtro por institución
+        const filtroInstitucionActivo = this.filtroInstitucionEquipos.length > 0;
+        const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
+        const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
+
+        // Convertir IDs a string para comparación segura
+        const institucionSeleccionada = filtroInstitucionActivo
+          ? this.filtroInstitucionEquipos.map(String).includes(String(institucionId))
+          : true;
+
+        return coincideNombre && institucionSeleccionada;
+      });
     },
     mostrarEquiposAprobados() {
       return this.EQUIPOS.filter(equipo => {
@@ -755,85 +729,85 @@ export default {
         const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
         const nombreAsesor = asesor ? `${asesor.nombre} ${asesor.apellidoPaterno}`.toLowerCase() : '';
         const coincideNombre = nombreLider.includes(texto) || nombreAsesor.includes(texto);
-        
+
         // Filtro por institución
         const filtroInstitucionActivo = this.filtroInstitucionEquipos.length > 0;
         const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
         const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
-      
-      // Convertir IDs a string para comparación segura
-      const institucionSeleccionada = filtroInstitucionActivo 
-        ? this.filtroInstitucionEquipos.map(String).includes(String(institucionId))
-        : true;
-      
+
+        // Convertir IDs a string para comparación segura
+        const institucionSeleccionada = filtroInstitucionActivo
+          ? this.filtroInstitucionEquipos.map(String).includes(String(institucionId))
+          : true;
+
         return coincideNombre && institucionSeleccionada;
       });
     },
-     proyectosPendientesFiltrados() {
-    return this.PROYECTOS.filter(proyecto => {
-      if (proyecto.EstadosProyecto_idEstadosProyecto !== 1) return false; // Cambiar a !
-      const texto = this.busquedaProyectos.toLowerCase();
-      const equipo = this.EQUIPOS.find(e => e.idEquipo === proyecto.Equipo_idEquipo);
-      const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
-      
-      const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
-      const nombreProy = proyecto.nombre ? proyecto.nombre.toLowerCase() : '';
-      const coincideNombre = nombreLider.includes(texto) || nombreProy.includes(texto);
-      
-      // Filtro por institución
-      const filtroInstitucionActivo = this.filtroInstitucionProyectos.length > 0;
-      const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
-      const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
-      
-      const institucionSeleccionada = filtroInstitucionActivo 
-        ? this.filtroInstitucionProyectos.map(String).includes(String(institucionId))
-        : true;
-      
-      // Filtro por convocatoria
-      const filtroConvocatoriaActivo = this.filtroConvocatoriaProyectos.length > 0;
-      const fase = this.FASES.find(f => f.idFase === proyecto.Fase_idFase);
-      const item = fase ? this.ITEMCF.find(i => i.Fase_idFase === fase.idFase) : null;
-      const convocatoriaId = item ? item.Convocatoria_idConvocatoria : null;
-      
-      const convocatoriaSeleccionada = filtroConvocatoriaActivo 
-        ? this.filtroConvocatoriaProyectos.map(String).includes(String(convocatoriaId))
-        : true;
-      
-      return coincideNombre && institucionSeleccionada && convocatoriaSeleccionada;
-    });
-  },
-  
-  proyectosAprobadosFiltrados() {
-    return this.PROYECTOS.filter(proyecto => {
-      if (proyecto.EstadosProyecto_idEstadosProyecto === 1) return false; //Cambiar a !
-      const texto = this.busquedaProyectos.toLowerCase();
-      const equipo = this.EQUIPOS.find(e => e.idEquipo === proyecto.Equipo_idEquipo);
-      const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
-      
-      const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
-      const nombreProy = proyecto.nombre ? proyecto.nombre.toLowerCase() : '';
-      const coincideNombre = nombreLider.includes(texto) || nombreProy.includes(texto);
-      
-      const filtroInstitucionActivo = this.filtroInstitucionProyectos.length > 0;
-      const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
-      const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
-      
-      const institucionSeleccionada = filtroInstitucionActivo 
-        ? this.filtroInstitucionProyectos.map(String).includes(String(institucionId))
-        : true;
-      
-      const filtroConvocatoriaActivo = this.filtroConvocatoriaProyectos.length > 0;
-      const fase = this.FASES.find(f => f.idFase === proyecto.Fase_idFase);
-      const item = fase ? this.ITEMCF.find(i => i.Fase_idFase === fase.idFase) : null;
-      const convocatoriaId = item ? item.Convocatoria_idConvocatoria : null;
-      
-      const convocatoriaSeleccionada = filtroConvocatoriaActivo 
-        ? this.filtroConvocatoriaProyectos.map(String).includes(String(convocatoriaId))
-        : true;
-      
-      return coincideNombre && institucionSeleccionada && convocatoriaSeleccionada;
-    });
-  }
+    proyectosPendientesFiltrados() {
+      return this.PROYECTOS.filter(proyecto => {
+        if (proyecto.EstadosProyecto_idEstadosProyecto !== 1) return false; // Cambiar a !
+        const texto = this.busquedaProyectos.toLowerCase();
+        const equipo = this.EQUIPOS.find(e => e.idEquipo === proyecto.Equipo_idEquipo);
+        const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
+
+        const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
+        const nombreProy = proyecto.nombre ? proyecto.nombre.toLowerCase() : '';
+        const coincideNombre = nombreLider.includes(texto) || nombreProy.includes(texto);
+
+        // Filtro por institución
+        const filtroInstitucionActivo = this.filtroInstitucionProyectos.length > 0;
+        const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
+        const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
+
+        const institucionSeleccionada = filtroInstitucionActivo
+          ? this.filtroInstitucionProyectos.map(String).includes(String(institucionId))
+          : true;
+
+        // Filtro por convocatoria
+        const filtroConvocatoriaActivo = this.filtroConvocatoriaProyectos.length > 0;
+        const fase = this.FASES.find(f => f.idFase === proyecto.Fase_idFase);
+        const item = fase ? this.ITEMCF.find(i => i.Fase_idFase === fase.idFase) : null;
+        const convocatoriaId = item ? item.Convocatoria_idConvocatoria : null;
+
+        const convocatoriaSeleccionada = filtroConvocatoriaActivo
+          ? this.filtroConvocatoriaProyectos.map(String).includes(String(convocatoriaId))
+          : true;
+
+        return coincideNombre && institucionSeleccionada && convocatoriaSeleccionada;
+      });
+    },
+
+    proyectosAprobadosFiltrados() {
+      return this.PROYECTOS.filter(proyecto => {
+        if (proyecto.EstadosProyecto_idEstadosProyecto === 1) return false; //Cambiar a !
+        const texto = this.busquedaProyectos.toLowerCase();
+        const equipo = this.EQUIPOS.find(e => e.idEquipo === proyecto.Equipo_idEquipo);
+        const lider = this.PARTICIPANTE.find(p => p.idParticipante === (equipo ? equipo.Participante_idLider : null));
+
+        const nombreLider = lider ? `${lider.nombre} ${lider.apellidoPaterno}`.toLowerCase() : '';
+        const nombreProy = proyecto.nombre ? proyecto.nombre.toLowerCase() : '';
+        const coincideNombre = nombreLider.includes(texto) || nombreProy.includes(texto);
+
+        const filtroInstitucionActivo = this.filtroInstitucionProyectos.length > 0;
+        const dependencia = this.DEPENDENCIAS.find(d => d.idDependencia === (lider ? lider.Dependencia_idDependencia : null));
+        const institucionId = dependencia ? dependencia.Institucion_idInstitucion : null;
+
+        const institucionSeleccionada = filtroInstitucionActivo
+          ? this.filtroInstitucionProyectos.map(String).includes(String(institucionId))
+          : true;
+
+        const filtroConvocatoriaActivo = this.filtroConvocatoriaProyectos.length > 0;
+        const fase = this.FASES.find(f => f.idFase === proyecto.Fase_idFase);
+        const item = fase ? this.ITEMCF.find(i => i.Fase_idFase === fase.idFase) : null;
+        const convocatoriaId = item ? item.Convocatoria_idConvocatoria : null;
+
+        const convocatoriaSeleccionada = filtroConvocatoriaActivo
+          ? this.filtroConvocatoriaProyectos.map(String).includes(String(convocatoriaId))
+          : true;
+
+        return coincideNombre && institucionSeleccionada && convocatoriaSeleccionada;
+      });
+    }
 
 
 
@@ -852,7 +826,7 @@ body {
   background: #C4CEF2;
 }
 
-.contenedor{
+.contenedor {
   margin: 0;
   padding: 20px;
   background: #FFFFFF;
@@ -936,7 +910,7 @@ h2 {
   border-left: 5px solid #3b82f6;
   border-radius: 8px;
   padding: 10px 15px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card p {
@@ -944,9 +918,20 @@ h2 {
   font-size: 14px;
 }
 
-.estado.pendiente { color: #f59e0b; font-weight: bold; }
-.estado.lleno { color: #f87171; font-weight: bold; }
-.estado.disponible { color: #10b981; font-weight: bold; }
+.estado.pendiente {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.estado.lleno {
+  color: #f87171;
+  font-weight: bold;
+}
+
+.estado.disponible {
+  color: #10b981;
+  font-weight: bold;
+}
 
 .blue-btn {
   margin-top: 8px;
@@ -979,7 +964,7 @@ h2 {
 
 .rechazar {
   margin-top: 8px;
-  background: linear-gradient(to right,  #E02E7B, #961E44);
+  background: linear-gradient(to right, #E02E7B, #961E44);
   color: white;
   border: none;
   border-radius: 6px;
@@ -994,21 +979,22 @@ h2 {
   justify-content: center;
 }
 
-.filtro-Nombre{
+.filtro-Nombre {
   flex: 1;
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 1px;
-  height:max-content;
+  height: max-content;
   overflow-y: auto;
   background-color: #BFD6FF;
   border-radius: 5px;
   padding: 10px;
 }
-.filtro-NombreP{
+
+.filtro-NombreP {
   flex: 0.5;
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 1px;
   height: 10px;
   overflow-y: auto;
@@ -1021,7 +1007,7 @@ h2 {
 .row {
   flex: 4;
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 15px;
   height: 55px;
   overflow-x: auto;
@@ -1029,6 +1015,7 @@ h2 {
   border-radius: 5px;
   padding: 15px;
 }
+
 .modal-section {
   flex: 1;
   min-width: 300px;
@@ -1039,13 +1026,14 @@ h2 {
   border: 1px solid #ddd;
   padding: 10px;
   width: 80%;
-  height: 95%;
+  height: 720px;
   background: #f9f9f9;
   border-radius: 5px;
 }
+
 .preview-pdf embed {
   width: 100%;
-  height: 200px;
+  height: 720px;
   border: none;
 }
 
@@ -1065,6 +1053,7 @@ h2 {
   font-size: 14px;
   background: transparent;
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1091,7 +1080,7 @@ h2 {
   border-radius: 8px;
   padding: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  max-height: 90vh;
+  max-height: 100vh;
   overflow-y: auto;
 }
 
@@ -1131,7 +1120,7 @@ h2 {
   padding: 15px;
   background: #f8f9fa;
   border-radius: 6px;
-  max-height: 70vh;
+  height: 720px;
   overflow-y: auto;
 }
 
@@ -1180,8 +1169,10 @@ h2 {
   background-color: #f8f9fa;
   width: 100%;
   margin-bottom: 20px;
-    max-height: 413px; /* Altura máxima antes de mostrar scroll */
-  overflow-y: auto; /* Scroll vertical cuando sea necesario */
+  max-height: 413px;
+  /* Altura máxima antes de mostrar scroll */
+  overflow-y: auto;
+  /* Scroll vertical cuando sea necesario */
 }
 
 .native-checkbox-wrapper {
@@ -1217,7 +1208,7 @@ h2 {
   margin-right: 10px;
 }
 
-.native-checkbox:checked ~ .checkmark {
+.native-checkbox:checked~.checkmark {
   background-color: #007bff;
 }
 
@@ -1227,7 +1218,7 @@ h2 {
   display: none;
 }
 
-.native-checkbox:checked ~ .checkmark:after {
+.native-checkbox:checked~.checkmark:after {
   display: block;
 }
 
