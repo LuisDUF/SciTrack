@@ -36,7 +36,7 @@
             <h5 ref="aprobados">Aprobados: </h5>
             <h5 ref="pendientes">Pendientes: </h5>
             <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;"
-              @click="dea()">Revisar</button>
+              @click="goToTeams()">Revisar</button>
           </div>
 
         </v-col>
@@ -51,7 +51,8 @@
             <h5 ref="descalificadosp">Descalificados: </h5>
             <h5 ref="rechazadosp">Rechazados: </h5>
             <h5 ref="concluidosp">Concluidos: </h5>
-            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
+            <button @click="goToProjects()" class="rounded px-12 mt-2"
+              style="color: #ffffff; background-color: #6596FF;">Revisar</button>
           </div>
         </v-col>
 
@@ -80,7 +81,8 @@
           <div class="rounded"
             style="margin-top: 0.666vw; padding: 1vw; padding-left:1.33vw; padding-right: 1.33vw; background-color: #ffffff; ">
             <h5 ref="inscritospa">Incritos: </h5>
-            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
+            <button @click="goToParticipants()" class="rounded px-12 mt-2"
+              style="color: #ffffff; background-color: #6596FF;">Revisar</button>
           </div>
 
         </v-col>
@@ -92,7 +94,8 @@
             <h5 ref="inscritosinv">Incritos: </h5>
             <h5 ref="aprobadosinv">Aprobados: </h5>
             <h5 ref="pendientesinv">Pendientes: </h5>
-            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
+            <button class="rounded px-12 mt-2" @click="goToInvs()"
+              style="color: #ffffff; background-color: #6596FF;">Revisar</button>
           </div>
         </v-col>
 
@@ -124,22 +127,22 @@
         </v-col>
       </v-row>
       <h2 class="mt-5">Otros:</h2>
-     <v-row class="mt-3" justify="start">
-  <v-col class="d-flex" cols="auto">
-    <v-btn text color="#FFFFFF" class="mx-2" @click="doPhaseManager()"
-      style="background: linear-gradient(to left, #7b2ff7, #4277ff);">
-      Progresar Fases
-      <v-icon class="ml-3">mdi-clipboard-text-clock</v-icon>
-    </v-btn>
-  </v-col>
-  <v-col class="d-flex" cols="auto">
-    <v-btn text color="#FFFFFF" class="mx-2" @click="convStart()"
-      style="background: linear-gradient(to left, #7b2ff7, #4277ff);">
-      Asignar Jueces
-      <v-icon class="ml-3">mdi-abacus</v-icon>
-    </v-btn>
-  </v-col>
-</v-row>
+      <v-row class="mt-3" justify="start">
+        <v-col class="d-flex" cols="auto">
+          <v-btn text color="#FFFFFF" class="mx-2" @click="doPhaseManager()"
+            style="background: linear-gradient(to left, #7b2ff7, #4277ff);">
+            Progresar Fases
+            <v-icon class="ml-3">mdi-clipboard-text-clock</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col class="d-flex" cols="auto">
+          <v-btn text color="#FFFFFF" class="mx-2" @click="convStart()"
+            style="background: linear-gradient(to left, #7b2ff7, #4277ff);">
+            Asignar Jueces
+            <v-icon class="ml-3">mdi-abacus</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
 
 
     </div>
@@ -176,12 +179,12 @@ export default {
       seriesGenderInv: [30, 30],
 
       optionsProjects: {
-        labels: ['Inscritos', 'Aprobados', 'Pendientes','Descalificados','Rechazados','Concluidos'],
+        labels: ['Inscritos', 'Aprobados', 'Pendientes', 'Descalificados', 'Rechazados', 'Concluidos'],
         legend: {
           position: 'bottom'
         }
       },
-      seriesProjects: [0,0,0,0,0,0],
+      seriesProjects: [0, 0, 0, 0, 0, 0],
 
       optionsPromedio: {
         chart: {
@@ -221,6 +224,18 @@ export default {
     }
     this.loading = false;
   }, methods: {
+    goToProjects() {
+      this.$router.push('/adminmenu/proyectosyusuarios');
+    },
+     goToTeams() {
+      this.$router.push('/adminmenu/proyectosyusuarios');
+    },
+     goToParticipants() {
+      this.$router.push('/adminmenu/constancias');
+    },
+     goToInvs() {
+      this.$router.push('/adminmenu/listainvestigadores');
+    },
     async doPhaseManager() {
       this.loading = true;
       const responsePhase = await api.get('/api/phasemanager');
@@ -292,12 +307,11 @@ export default {
         descalificadosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 4).length;
         concluidosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 5).length;
         rechazadosp = proyectosos.filter(s => s.EstadosProyecto_idEstadosProyecto == 3).length;
-        proyectosos.forEach((pr) =>{
-          if (pr.EstadosProyecto_idEstadosProyecto != 3 && pr.EstadosProyecto_idEstadosProyecto != 1)
-          {
-              console.log(JSON.stringify(pr))
-              namesP.push(pr.nombreProyecto);
-              promsP.push(pr.promedio);
+        proyectosos.forEach((pr) => {
+          if (pr.EstadosProyecto_idEstadosProyecto != 3 && pr.EstadosProyecto_idEstadosProyecto != 1) {
+            console.log(JSON.stringify(pr))
+            namesP.push(pr.nombreProyecto);
+            promsP.push(pr.promedio);
           }
         })
 
@@ -334,8 +348,8 @@ export default {
         console.log('Second Coming: ', numF)
 
 
-        
-        this.seriesProjects = [inscritos, aprobadosp,pendientesp, descalificadosp,rechazadosp,concluidosp]
+
+        this.seriesProjects = [inscritos, aprobadosp, pendientesp, descalificadosp, rechazadosp, concluidosp]
 
         this.seriesPromedio = [{
           name: 'Promedio',

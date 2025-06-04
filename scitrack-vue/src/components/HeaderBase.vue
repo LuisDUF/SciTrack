@@ -41,7 +41,7 @@
           >mdi-cog</v-icon>
         </template>
         <v-list class="pa-3">
-        <p @click="alerta()">Salir</p>
+<v-btn text small class="pa-0 ma-0" elevation="0" @click="alerta()">Salir</v-btn>
         </v-list>
       </v-menu>
 
@@ -52,13 +52,13 @@
         ><br />{{ options.userRole }}
       </h4>
       <v-img
-        src="../assets/default-user-pfp.png"
-        alt="User Profile"
-        class="rounded-circle"
-        max-width="40px"
-        max-height="40px"
-        cover
-      />
+  :src="userProfileImage"
+  alt="User Profile"
+  class="rounded-circle"
+  max-width="40px"
+  max-height="40px"
+  cover
+/>
     </v-col>
             <transition name="fade">
         <div v-if="vari.no=='SI'" class="overlay" @click.self="cerrar">
@@ -114,7 +114,18 @@ export default {
     this.bandera = (!JSON.parse(localStorage.getItem('userData')).idAdministrador)
     console.log(this.bandera);
 
-  },methods:{
+  },
+  
+  computed: {
+    userProfileImage() {
+      const user = JSON.parse(localStorage.getItem('userData'));
+      if (user?.idParticipante) return require('@/assets/participant-pfp.png');
+      if (user?.idInvestigador) return require('@/assets/investigator-pfp.png');
+      if (user?.idAdministrador) return require('@/assets/admin-pfp.png');
+      return require('@/assets/default-user-pfp.png');
+    }
+  },
+  methods:{
           async abrirArchivo(Archivo_idArchivo){
             if(!Archivo_idArchivo)
             return

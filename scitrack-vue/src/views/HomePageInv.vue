@@ -13,7 +13,7 @@
             <h5 ref="asignados">Asignados: </h5>
             <h5 ref="evaluados">Evaluados:</h5>
             <h5 ref="pendientes">Pendientes: </h5>
-            <button class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar</button>
+            <button @click="clicked()" class="rounded px-12 mt-2" style="color: #ffffff; background-color: #6596FF;">Revisar </button>
           </div>
 
         </v-col>
@@ -103,7 +103,10 @@ import api from  "../services/api.js"
   this.$refs.pendientes.textContent = "Pendientes: 0";
       }
     },methods: {
+      clicked(){
+         this.$router.push('/invmenu/proyectos');
 
+      }
     }
 
   }
