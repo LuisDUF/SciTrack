@@ -112,34 +112,48 @@ export default {
       this.dialogNuevoCriterio = true;
     },
     async guardarNuevoCriterio() {
-      if (!this.nuevoCriterio.descripcion || this.nuevoCriterio.ponderacion == null) {
-        alert("Completa todos los campos.");
-        return;
-      }
+  if (!this.nuevoCriterio.descripcion || this.nuevoCriterio.ponderacion == null) {
+    alert("Completa todos los campos.");
+    return;
+  }
 
-      try {
-        const res = await fetch("http://localhost:3000/api/criterio/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            descripcion: this.nuevoCriterio.descripcion,
-            ponderacion: this.nuevoCriterio.ponderacion
-          })
-        });
+  // Validar que haya una rúbrica cargada
+  if (!this.rubrica || !this.rubrica.rubrica_id) {
+    alert("No hay una rúbrica seleccionada.");
+    return;
+  }
 
-        const data = await res.json();
-        this.form.criterios.push({
-          idCriterios: data.idCriterios,
-          descripcion: data.descripcion,
-          ponderacion: data.ponderacion
-        });
+  try {
+    const res = await fetch("http://localhost:3000/api/criterio/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        descripcion: this.nuevoCriterio.descripcion,
+        ponderacion: this.nuevoCriterio.ponderacion,
+        Rubrica_idRubrica: this.rubrica.rubrica_id
+      })
+    });
 
-        this.dialogNuevoCriterio = false;
-      } catch (error) {
-        console.error("Error al crear criterio:", error);
-        alert("Error al guardar el criterio.");
-      }
-    },
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(`Error ${res.status}: ${msg}`);
+    }
+
+    const data = await res.json();
+
+    this.form.criterios.push({
+      idCriterios: data.idCriterios,
+      descripcion: data.descripcion,
+      ponderacion: data.ponderacion
+    });
+
+    this.dialogNuevoCriterio = false;
+  } catch (error) {
+    console.error("Error al crear criterio:", error);
+    alert("Error al guardar el criterio: " + error.message);
+  }
+}
+,
     async eliminarCriterio(index) {
       const criterio = this.form.criterios[index];
       if (!criterio.idCriterios) {
