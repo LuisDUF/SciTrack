@@ -1,5 +1,5 @@
-<template>
-  <v-app>
+<template >
+  <v-app >
     <v-main>
       <v-container class="pa-6" fluid>
         <h2 class="text-h4 mb-4">Reportes</h2>

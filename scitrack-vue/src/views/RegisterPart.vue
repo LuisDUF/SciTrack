@@ -324,6 +324,7 @@ export default {
         this.$refs.form.reset();
         this.confirmPassword = '';
         this.showDependencySelect = false;
+        this.$router.push("/login")
       } catch (error) {
         console.error("Error:", error);
         this.submitError = "Ocurrió un error al enviar los datos. Por favor intente nuevamente.";

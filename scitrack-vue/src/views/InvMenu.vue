@@ -59,13 +59,16 @@ export default {
     }
   }, async created() {
         const response = await api.get('/api/notificacion/investigador/'+this.investigador.idInvestigador);
+        if(response.data){
     this.Notificaciones.push (...JSON.parse(JSON.stringify(response.data)));
     if(this.Notificaciones.filter(s=> s.esLeido!='T').length>=1)
     this.notification = true;
 
     
     this.notis = this.Notificaciones;
-      
+        }else{
+          this.notification = false;
+        }
       if (!this.investigador) {
         // Redirige si no hay datos
         this.$router.push('/login');

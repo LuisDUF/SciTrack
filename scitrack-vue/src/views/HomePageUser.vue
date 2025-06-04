@@ -394,9 +394,11 @@ import api from  "../services/api.js"
         try {
           const response2 = await api.get(`/api/equipo/participante/${this.usuario.idParticipante}`);
           const equiposos = JSON.parse(JSON.stringify(response2.data));
+         
 
 
           await Promise.all(equiposos.map(async equipo => {
+            
             const response3 = await api.get(`/api/proyectos/equipo/${equipo.idEquipo}`);
             const proyectosos = JSON.parse(JSON.stringify(response3.data));
 
@@ -409,17 +411,17 @@ import api from  "../services/api.js"
                 this.$refs.nombre.textContent = "Nombre: " + proyecto.nombre;
 
                 switch (proyecto.EstadosProyecto_idEstadosProyecto) {
-                  case 1: this.$refs.estado.textContent = "Estado: Pendiente"; break;
-                  case 2: this.$refs.estado.textContent = "Estado: Aceptado"; break;
-                  case 3: this.$refs.estado.textContent = "Estado: Rechazado"; break;
-                  case 4: this.$refs.estado.textContent = "Estado: Descalificado"; break;
-                  case 5: this.$refs.estado.textContent = "Estado: Concluido"; break;
+                  case 1: this.$refs.estadoE.textContent = "Estado: Pendiente"; break;
+                  case 2: this.$refs.estadoE.textContent = "Estado: Aceptado"; break;
+                  case 3: this.$refs.estadoE.textContent = "Estado: Rechazado"; break;
+                  case 4: this.$refs.estadoE.textContent = "Estado: Descalificado"; break;
+                  case 5: this.$refs.estadoE.textContent = "Estado: Concluido"; break;
                 }
 
                 const response4 = await api.get(`/api/asesor/${equipo.Asesor_idAsesor}`);
                 const aseso = JSON.parse(JSON.stringify(response4.data));
                 this.$refs.nombreA.textContent = "Asesor: " + aseso[0].nombre + ' ' + aseso[0].apellidoPaterno + ' ' + aseso[0].apellidoMaterno;
-                this.$refs.estadoE.textContent = "Estado: " + equipo.estado;
+                this.$refs.estado.textContent = "Estado: " + equipo.estado;
                 this.$refs.idE.textContent = "ID Equipo: " + equipo.idEquipo;
                 this.$refs.promedioP.textContent = "Promedio: " + (proyecto.promedio ?? "Sin calificar");
 

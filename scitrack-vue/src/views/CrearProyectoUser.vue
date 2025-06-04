@@ -123,6 +123,8 @@
 </template>
 
 <script>
+import api from '@/services/api';
+
 export default {
   data() {
     return {
@@ -279,8 +281,10 @@ export default {
     
      async enviarProyecto() {
       const errores = [];
-      const usuario = JSON.parse(localStorage.getItem("userData")) || null;
+      var usuario = JSON.parse(localStorage.getItem("userData")) || null;
       
+      usuario = JSON.parse(JSON.stringify((await api.get('/api/participante/'+usuario.idParticipante)).data[0]));
+     
       if (!usuario || !usuario.idParticipante) {
         this.mostrarErroresModal(
           "Error de usuario",
@@ -290,7 +294,7 @@ export default {
         return;
       }
 
-      if (usuario.Equipo_idEquipo === null) {
+      if (usuario.Equipo_idEquipo == null) {
         this.mostrarErroresModal(
           "Error en equipo",
           "No puedes crear un proyecto:",
@@ -401,8 +405,25 @@ export default {
          await resProyecto.json();
         console.log(resProyecto);
         if (resProyecto.ok) {
-          alert('Proyecto enviado a revisión correctamente.');
-          this.resetForm();
+
+          const formData = new FormData();
+          formData.append("email", usuario.correo);
+          formData.append("asunto", "Creación del equipo.");
+          formData.append("mensaje", "Haz creado un equipo con éxito.");
+          formData.append("Administrador_idAdministrador",1);
+          formData.append("Participante_idParticipante",usuario.idParticipante);
+
+          return fetch("http://localhost:3000/api/constancias/enviarMensaje", {
+          method: "POST",
+          body: formData
+        }).then(res => {res.json();           
+            this.resetForm();
+            this.$router.push("/usermenu");
+            }).catch(err => {
+            console.error("Error enviando a:", usuario.correo, err);
+            throw err; // para que Promise.all lo capture
+          });
+    
         } else {
           throw new Error("Error al registrar el proyecto");
         }

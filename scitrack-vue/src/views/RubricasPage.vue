@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-main>
+  <v-app >
+    <v-main class="pa-0">
       <v-container class="pa-6">
         <h1 class="text-h4 mb-6">Rúbricas</h1>
 
