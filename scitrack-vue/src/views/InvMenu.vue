@@ -1,25 +1,20 @@
 <template>
-  <v-main>
-    <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
-    <div class="d-flex">
-      <SideBarBase :options="sideBarSettings" style="min-height: 100vh" />
-      <div class="flex-grow-1" style="background-color: #c4cef2">
-        <HeaderBase :options="headerSettings" />
-        <div
-          id="content"
-          class="py-3 px-3"
-          style="background-color: #c4cef2; margin: 0; padding: 0"
-        >
-          <div
-            class="actual-content"
-            style="background-color: #C4CEF2"
-          >
-            <router-view />
+  <v-app>
+    <v-main class="main-wrapper">
+      <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
+      <div class="d-flex full-height">
+        <SideBarBase :options="sideBarSettings" class="sidebar" />
+        <div class="flex-grow-1 d-flex flex-column" style="background-color: #C4CEF2;">
+          <HeaderBase :options="headerSettings" />
+          <div id="content" class="flex-grow-1 py-3 px-3" style="background-color: #C4CEF2;">
+            <div class="actual-content full-height" style="background-color: #C4CEF2;">
+              <router-view />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </v-main>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -97,3 +92,20 @@ export default {
     }
 };
 </script>
+
+
+<style scoped>
+.full-height {
+  height: 100%;
+  min-height: 100vh;
+}
+
+.main-wrapper {
+  height: 100%;
+}
+
+.sidebar {
+  min-height: 100vh;
+}
+</style>
+

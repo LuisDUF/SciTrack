@@ -331,6 +331,33 @@
                       </v-menu>
 
                       <p class="text-h6 font-weight-bold">
+                        FECHA DE CIERRE DE INSCRIPCIONES:
+                      </p>
+                      <v-menu
+                        ref="menuInicioConv"
+                        v-model="menuFinIns"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="currentConv.fechaFinRegistro"
+                            label="Fecha de Final de Registro"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="currentConv.fechaFinRegistro"
+                          @input="menuFinIns = false"
+                        ></v-date-picker>
+                      </v-menu>
+
+                      <p class="text-h6 font-weight-bold">
                         FECHA DE CIERRE DE LA CONVOCATORIA:
                       </p>
 
@@ -539,6 +566,34 @@
                           @input="menuInicioConv = false"
                         ></v-date-picker>
                       </v-menu>
+
+                       <p class="text-h6 font-weight-bold">
+                        FECHA DE CIERRE DE INSCRIPCIONES:
+                      </p>
+                      <v-menu
+                        ref="menuInicioConv"
+                        v-model="menuFinIns"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="newConv.fechaFinRegistro"
+                            label="Fecha de Final de Registro"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="newConv.fechaFinRegistro"
+                          @input="menuFinIns = false"
+                        ></v-date-picker>
+                      </v-menu>
+
 
                       <p class="text-h6 font-weight-bold">
                         FECHA DE CIERRE DE LA CONVOCATORIA:
@@ -1096,6 +1151,7 @@ export default {
         idUbicacion: null,
       },
       menuInicioConv: false,
+      menuFinIns:false,
       menuFinConv: false,
       menuInicio: false,
       menuFin: false,
@@ -1423,6 +1479,7 @@ export default {
               descripcion: this.currentConv.descripcion,
               fechaInicio: this.currentConv.fechaInicioRaw,
               fechaFin: this.currentConv.fechaFinRaw,
+              F: this.currentConv.fechaFinRegistro,
               max_integrantes: this.currentConv.max_integrantes,
               Archivos_idArchivos: this.currentConv.Archivos_idArchivos,
             }),
@@ -1508,6 +1565,7 @@ export default {
               descripcion: this.newConv.descripcion,
               fechaInicio: this.newConv.fechaInicioRaw,
               fechaFin: this.newConv.fechaFinRaw,
+              fechaFinRegistro: this.newConv.fechaFinRegistro,
               estado: "Pendiente",
               max_integrantes: this.newConv.max_integrantes,
               Archivos_idArchivos: this.newConv.Archivos_idArchivos,
@@ -1557,6 +1615,8 @@ export default {
             estado: item.estado || "Desconocido",
             descripcion: item.descripcion || "...",
             fechaInicioRaw: item.fechaInicio?.slice(0, 10) || "",
+                        fechaFinRegistro: item.fechaFinRegistro?.slice(0, 10) || "",
+
             fechaFinRaw: item.fechaFin?.slice(0, 10) || "",
             fechaInicio: this.weirdDateToNormalDate(item.fechaInicio),
             fechaFin: this.weirdDateToNormalDate(item.fechaFin),
