@@ -13,7 +13,7 @@
         <v-card class="text-center pa-5">
           <v-icon class="text-h1 text-center mt-4" color="green lighten-2">mdi-check-circle</v-icon>
           <p class="font-weight-bold text-h4 mt-5">
-            Se han procesado las fases
+            Se ha procesado la solicitud
           </p>
           <v-card-actions class="d-flex justify-center">
             <v-btn color="white" style="background-color: #6596ff" text @click="loadingDone = false">Aceptar</v-btn>
@@ -124,13 +124,23 @@
         </v-col>
       </v-row>
       <h2 class="mt-5">Otros:</h2>
-      <v-row class="mt-3">
-        <v-col>
-          <v-btn text color="#FFFFFF" class="mx-2" @click="doPhaseManager()"
-            style="background: linear-gradient(to left, #7b2ff7, #4277ff);">Progresar Fases <v-icon
-              class="ml-3">mdi-clipboard-text-clock</v-icon></v-btn>
-        </v-col>
-      </v-row>
+     <v-row class="mt-3" justify="start">
+  <v-col class="d-flex" cols="auto">
+    <v-btn text color="#FFFFFF" class="mx-2" @click="doPhaseManager()"
+      style="background: linear-gradient(to left, #7b2ff7, #4277ff);">
+      Progresar Fases
+      <v-icon class="ml-3">mdi-clipboard-text-clock</v-icon>
+    </v-btn>
+  </v-col>
+  <v-col class="d-flex" cols="auto">
+    <v-btn text color="#FFFFFF" class="mx-2" @click="convStart()"
+      style="background: linear-gradient(to left, #7b2ff7, #4277ff);">
+      Asignar Jueces
+      <v-icon class="ml-3">mdi-abacus</v-icon>
+    </v-btn>
+  </v-col>
+</v-row>
+
 
     </div>
   </DIV>
@@ -214,6 +224,13 @@ export default {
     async doPhaseManager() {
       this.loading = true;
       const responsePhase = await api.get('/api/phasemanager');
+      console.log(JSON.parse(JSON.stringify(responsePhase.data)));
+      this.loading = false;
+      this.loadingDone = true;
+    },
+    async convStart() {
+      this.loading = true;
+      const responsePhase = await api.get('/api/convstart');
       console.log(JSON.parse(JSON.stringify(responsePhase.data)));
       this.loading = false;
       this.loadingDone = true;

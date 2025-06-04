@@ -1479,7 +1479,7 @@ export default {
               descripcion: this.currentConv.descripcion,
               fechaInicio: this.currentConv.fechaInicioRaw,
               fechaFin: this.currentConv.fechaFinRaw,
-              F: this.currentConv.fechaFinRegistro,
+              fechaFinRegistro: this.currentConv.fechaFinRegistro,
               max_integrantes: this.currentConv.max_integrantes,
               Archivos_idArchivos: this.currentConv.Archivos_idArchivos,
             }),
