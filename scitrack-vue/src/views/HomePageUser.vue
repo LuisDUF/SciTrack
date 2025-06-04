@@ -371,8 +371,7 @@ import api from  "../services/api.js"
 
           if (!response.ok) throw new Error('Error en la respuesta del servidor');
           
-          alert('¡Te has unido al equipo con éxito!');
-          location.reload(); // Recarga para actualizar los datos
+          location.reload();
           
         } catch (error) {
           console.error('Error al unirse al equipo:', error);
